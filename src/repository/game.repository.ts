@@ -1,12 +1,13 @@
 import AppDataSource from "../config/mysql.config";
 import { Game } from "../entity/game.entity"
 import { Repository } from "typeorm";
+import { GameListRequestDto} from "../dto/gameListRequest.dto";
 
 const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
-export const findGameList = async(limit: number, offset: number, sort: 'popularity' | 'latest' | 'download_times' = 'popularity'): Promise<Game[]> =>{
+export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
     let orderField: string;
-    switch (sort) {
+    switch (gameListRequestDto.sort) {
         case 'latest':
             orderField = 'game.registered_at';
             break;
@@ -21,8 +22,8 @@ export const findGameList = async(limit: number, offset: number, sort: 'populari
     return await gameRepo.createQueryBuilder('game')
         .select(['game.id', 'game.title', 'game.thumnail_url']) // 최소 필드만
         .orderBy(orderField, 'DESC')
-        .offset(offset)
-        .limit(limit)
+        .offset((gameListRequestDto.page - 1) * gameListRequestDto.limit)
+        .limit(gameListRequestDto.limit)
         .getRawMany();
 };
 }

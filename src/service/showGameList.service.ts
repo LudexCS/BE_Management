@@ -1,11 +1,11 @@
-import { GameListRequestDto } from '../dto/gameListRequest.dto'
-import { findGameList } from '../repository/game.repository'
+import { GameListRequestDto} from "../dto/gameListRequest.dto";
+import { findGameList, findOriginGameList, findVarientGameList } from '../repository/game.repository'
 
 export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
     const { page, limit, sort} = gameListRequestDto;
     const offset = (page - 1) * limit;
     try{
-        return await findGameList({limit, offset, sort});
+        return await findGameList(gameListRequestDto);
     } catch(err){
         throw err;
     }
