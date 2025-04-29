@@ -1,5 +1,7 @@
 import {Request, Response, Router} from "express";
 import { loadGameListControl, showOriginGameHierarchyControl, showVarientGameHierarchyControl } from "../controller/showGameList.controller"
+import { getGameByTagControl } from "../controller/getGameByTag.controller"
+import { getGameDetailControl} from "../controller/getGameDetail.controller";
 
 const router: Router = Router();
 
@@ -32,3 +34,25 @@ router.post('/games/variant', async (req: Request, res: Response) => {
         res.status(500).json({ message: '파생 게임 조회 중 오류 발생' });
     }
 });
+
+router.post('/games/byTags', async (req: Request, res: Response) =>{
+    try{
+        const games = await getGameByTagControl(req);
+        res.status(200).json(games);
+    } catch(err){
+        res.status(500).json({ message: '태그로 게임 불러오기 실패'});
+    }
+});
+
+router.post('/game/:game_id', async(req: Request, res: Response) =>{
+    try{
+        const gameDetails = await getGameDetailControl(req);
+        res.status(200).json(gameDetails);
+    } catch(err){
+        res.status(500).json({ message: '게임 정보 불러오기 오류 발생' });
+    }
+});
+
+
+export default router;
+

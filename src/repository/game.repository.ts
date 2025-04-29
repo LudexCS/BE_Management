@@ -2,6 +2,7 @@ import AppDataSource from "../config/mysql.config";
 import { Game } from "../entity/game.entity"
 import { Repository } from "typeorm";
 import { GameListRequestDto} from "../dto/gameListRequest.dto";
+import {GameTempDetailDto} from "../dto/gameTempDetail.dto";
 
 const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
@@ -25,7 +26,6 @@ export const findGameList = async(gameListRequestDto: GameListRequestDto): Promi
         .offset((gameListRequestDto.page - 1) * gameListRequestDto.limit)
         .limit(gameListRequestDto.limit)
         .getRawMany();
-};
 }
 
 export const findOriginGameList = async (
@@ -64,3 +64,43 @@ export const findVarientGameList = async (
         .select(['game.title AS title', 'game.thumnail_url AS thumnail_url'])
         .getRawMany();
 };
+
+export const findGameWithTag = async(tags: string[])=>{
+    const tagCount = tags.length;
+
+    const result = await gameRepo
+        .createQueryBuilder('game')
+        .innerJoin('game_tag', 'gt', 'gt.game_id = game.id')
+        .innerJoin('tag', 'tag', 'tag.id = gt.tag_id')
+        .where('tag.name IN (:...tagNames)', { tags })
+        .groupBy('game.id')
+        .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
+        .select(['game.title AS title', 'game.thumnail_url AS thumnail_url'])
+        .getRawMany();
+
+    return result;
+}
+
+export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempDetailDto> =>{
+    try{
+        const gameDetails = await gameRepo.findOne({
+            select: [
+                'id',
+                'title',
+                'userId',
+                'price',
+                'thumnailUrl',
+                'description',
+                'registeredAt',
+                'updatedAt'
+            ],
+            where: { id: gameId },
+        });
+        if(!gameDetails){
+            throw new Error("게임 찾기 실패");
+        }
+        return gameDetails;
+    } catch(err){
+        throw err;
+    }
+}
