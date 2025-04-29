@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { getGameList, getOriginGameInfo, getVarientGameInfo } from '../serviece/showGameList.service'
+import { getGameList, getOriginGameInfo, getVarientGameInfo } from '../service/showGameList.service'
 import { GameListRequestDto} from "../dto/gameListRequest.dto";
 
 export const loadGameListControl = async (req: Request) =>{

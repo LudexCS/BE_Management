@@ -19,7 +19,7 @@ export const getOriginGameInfo = async(gameId: number) => {
     }
 }
 
-export const getVarientGameIfo = async(gameId: number) => {
+export const getVarientGameInfo = async(gameId: number) => {
     try{
         return await findVarientGameList(gameId);
     } catch(err){
