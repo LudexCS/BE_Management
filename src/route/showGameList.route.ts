@@ -32,3 +32,5 @@ router.post('/games/variant', async (req: Request, res: Response) => {
         res.status(500).json({ message: '파생 게임 조회 중 오류 발생' });
     }
 });
+
+export default router;
