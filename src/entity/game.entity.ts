@@ -3,36 +3,30 @@ import {
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
-    UpdateDateColumn,
+    UpdateDateColumn
 } from 'typeorm';
 
 @Entity('game')
-export class Game   {
+export class Game {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: 'varchar', length: 255 })
     title: string;
 
-    @Column({ name: 'user_id'})
+    @Column({ name: 'user_id', type: 'int', nullable: true, default: 0 })
     userId: number;
 
-    @Column({ type: 'int', default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
     price: number;
 
-    @Column({ name: 'thumnail_url'})
+    @Column({ name: 'thumnail_url', type: 'varchar', length: 255 })
     thumnailUrl: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     description: string;
 
-    @Column({ name: 'origin_or_varient'})
-    originOrVariant: string;
-
-    @Column({ type: 'int', default: 0 })
-    popularity: number;
-
-    @Column({ type: 'int', default: 0 , name: 'download_times'})
+    @Column({ type: 'int', default: 0, name: 'download_times' })
     downloadTimes: number;
 
     @CreateDateColumn({ type: 'timestamp', name: 'registered_at' })

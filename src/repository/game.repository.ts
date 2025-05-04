@@ -26,7 +26,6 @@ export const findGameList = async(gameListRequestDto: GameListRequestDto): Promi
         .limit(gameListRequestDto.limit)
         .getRawMany();
 };
-}
 
 export const findOriginGameList = async (
     gameId: number
