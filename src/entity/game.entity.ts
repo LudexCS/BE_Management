@@ -24,8 +24,8 @@ export class Game {
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     price: number;
 
-    @Column({ name: 'thumnail_url', type: 'varchar', length: 255, nullable: false })
-    thumnailUrl: string;
+    @Column({ name: 'thumbnail_url', type: 'varchar', length: 255, nullable: false })
+    thumbnailUrl: string;
 
     @Column({ type: 'varchar', length: 255, nullable: true })
     description: string;
