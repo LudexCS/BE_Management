@@ -21,6 +21,25 @@ export const saveGame = async(game: Game) => {
     }
 }
 
+/**
+ * Updates specific fields of a game entity
+ * @param gameId - The ID of the game to update
+ * @param partialUpdate - An object containing the fields to update
+ * @returns Promise<void>
+ * @throws Error if update fails
+ */
+export const updateGameFields = async (
+    gameId: number,
+    partialUpdate: Partial<Game>
+): Promise<void> => {
+    try {
+        await gameRepo.update({ id: gameId }, partialUpdate);
+    } catch (error) {
+        console.error("Failed to update game fields:", error);
+        throw new Error("Failed to update game fields in database");
+    }
+};
+
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
     let orderField: string;
     switch (gameListRequestDto.sort) {

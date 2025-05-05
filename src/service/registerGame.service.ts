@@ -3,9 +3,10 @@ import {
     toGameEntity,
     toGameImageUrlEntities,
     toGameRequirementEntities,
-    toGameTagEntities, toOriginGameEntities
+    toGameTagEntities,
+    toOriginGameEntities
 } from "../dto/createGame.dto";
-import {saveGame} from "../repository/game.repository";
+import {saveGame, updateGameFields} from "../repository/game.repository";
 import {saveGameImageUrl} from "../repository/gameImageUrl.repository";
 import {saveGameRequirement} from "../repository/gameRequirement.repository";
 import {saveGameTag} from "../repository/gameTag.repository";
@@ -16,6 +17,8 @@ export const registerGame = async (createGameDto: CreateGameDto) => {
     try {
         const game = toGameEntity(createGameDto);
         const gameId = await saveGame(game);
+        const thumbnailUrl = { thumbnailUrl: await uploadToS3(createGameDto.thumbnailUrl, gameId) };
+        await updateGameFields(gameId, thumbnailUrl);
 
         let imageUrls: string[] = [];
         if (createGameDto.imageUrls && createGameDto.imageUrls.length > 0) {
