@@ -107,14 +107,20 @@ const upload = multer({ dest: "uploads/" });
  *           schema:
  *             type: object
  *             properties:
+ *               json:
+ *                  type: string
+ *                  format: application/json
+ *                  description: JSON string of CreateGameDto
  *               thumbnail:
  *                 type: string
  *                 format: binary
+ *                 description: Thumbnail file
  *               images:
  *                 type: array
  *                 items:
  *                   type: string
  *                   format: binary
+ *                   description: Image files
  *     responses:
  *       201:
  *         description: Game created successfully
