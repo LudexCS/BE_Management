@@ -1,12 +1,9 @@
-import {Request} from 'express';
 import {CreateGameDto} from "../dto/createGame.dto";
 import {getUserIdByEmail} from "../grpc/auth.client";
 import {registerGame} from "../service/registerGame.service";
 
-export const createGameControl = async (req: Request) => {
+export const createGameControl = async (createGameDto: CreateGameDto, email: string) => {
     try {
-        const email = req.user as string;
-        const createGameDto: CreateGameDto = req.body;
         if (createGameDto.isOrigin && createGameDto.originGameIds) {
             throw new Error("originGameIds must not exist when isOrigin is true");
         }
