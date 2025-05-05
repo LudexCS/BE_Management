@@ -90,6 +90,8 @@ import {CreateGameDto} from "../dto/createGame.dto";
  */
 const router: Router = Router();
 
+const upload = multer({ dest: "uploads/" });
+
 /**
  * @swagger
  * /api/protected/create/game:
@@ -180,7 +182,6 @@ const router: Router = Router();
  *                 message:
  *                   type: string
  */
-const upload = multer({ dest: "uploads/" });
 router.post('/game', upload.fields([
   { name: 'thumbnail', maxCount: 1 },
   { name: 'images' }
