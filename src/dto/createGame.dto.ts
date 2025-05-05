@@ -53,12 +53,12 @@ export function toGameEntity(createGameDto: CreateGameDto): Game {
     return game;
 }
 
-export function toGameImageUrlEntities(imageUrl: string[] , gameId: number): GameImageUrl[] {
-    if(!imageUrl || imageUrl.length === 0) {
+export function toGameImageUrlEntities(imageUrls: string[], gameId: number): GameImageUrl[] {
+    if(!imageUrls || imageUrls.length === 0) {
         return [];
     }
 
-    return imageUrl.map(url => {
+    return imageUrls.map(url => {
         const gameImageUrl = new GameImageUrl();
         gameImageUrl.gameId = gameId;
         gameImageUrl.url = url;
