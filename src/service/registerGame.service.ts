@@ -17,13 +17,14 @@ export const registerGame = async (createGameDto: CreateGameDto) => {
         const game = toGameEntity(createGameDto);
         const gameId = await saveGame(game);
 
-        const gameImageUrls = toGameImageUrlEntities(createGameDto, gameId);
-
-        for (const imageUrl of gameImageUrls) {
-            const s3Url = await uploadToS3(imageUrl);
-            imageUrl.url = s3Url;
-            await saveGameImageUrl(imageUrl);
+        let imageUrls: string[] = [];
+        if (createGameDto.imageUrls && createGameDto.imageUrls.length > 0) {
+            imageUrls = await Promise.all(
+                createGameDto.imageUrls.map(image => uploadToS3(image, gameId))
+            );
         }
+        const gameImageUrls = toGameImageUrlEntities(imageUrls, gameId);
+        await Promise.all(gameImageUrls.map(saveGameImageUrl));
 
         const gameTags = toGameTagEntities(createGameDto, gameId);
         gameTags.forEach(saveGameTag);

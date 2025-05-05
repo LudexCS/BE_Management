@@ -8,9 +8,15 @@ interface BaseGameDto {
     title: string;
     userId?: number;
     price: number;
-    thumbnailUrl: string;
+    thumbnailUrl: {
+        path: string;
+        mimetype: string;
+    };
     description?: string;
-    imageUrls?: string[];
+    imageUrls?: {
+        path: string;
+        mimetype: string;
+    }[];
 
     requirements: {
         isMinimum: boolean;
@@ -39,7 +45,7 @@ export function toGameEntity(createGameDto: CreateGameDto): Game {
     game.title = createGameDto.title;
     game.userId = createGameDto.userId as number;
     game.price = createGameDto.price;
-    game.thumbnailUrl = createGameDto.thumbnailUrl;
+    game.thumbnailUrl = createGameDto.thumbnailUrl.path;
     game.description = createGameDto.description as string;
     game.downloadTimes = 0;
     game.registeredAt = new Date();
@@ -47,11 +53,12 @@ export function toGameEntity(createGameDto: CreateGameDto): Game {
     return game;
 }
 
-export function toGameImageUrlEntities(createGameDto: CreateGameDto, gameId: number): GameImageUrl[] {
-    if(!createGameDto.imageUrls || createGameDto.imageUrls.length === 0) {
+export function toGameImageUrlEntities(imageUrl: string[] , gameId: number): GameImageUrl[] {
+    if(!imageUrl || imageUrl.length === 0) {
         return [];
     }
-    return createGameDto.imageUrls.map(url => {
+
+    return imageUrl.map(url => {
         const gameImageUrl = new GameImageUrl();
         gameImageUrl.gameId = gameId;
         gameImageUrl.url = url;
