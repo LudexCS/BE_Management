@@ -4,40 +4,46 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
+    Check
 } from 'typeorm';
 
 @Entity('game')
-export class Game   {
+@Check('price >= 0')
+export class Game {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ type: 'varchar', length: 255, nullable: false })
     title: string;
 
-    @Column({ name: 'user_id'})
+    @Column({ name: 'user_id', type: 'int', default: 0 })
     userId: number;
 
-    @Column({ type: 'int', default: 0 })
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
     price: number;
 
-    @Column({ name: 'thumnail_url'})
-    thumnailUrl: string;
+    @Column({ name: 'thumbnail_url', type: 'varchar', length: 255, nullable: false })
+    thumbnailUrl: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     description: string;
 
-    @Column({ name: 'origin_or_varient'})
-    originOrVariant: string;
-
-    @Column({ type: 'int', default: 0 })
-    popularity: number;
-
-    @Column({ type: 'int', default: 0 , name: 'download_times'})
+    @Column({ name: 'download_times', type: 'int', default: 0 })
     downloadTimes: number;
 
-    @CreateDateColumn({ type: 'timestamp', name: 'registered_at' })
+    @CreateDateColumn({ 
+        type: 'timestamp',
+        name: 'registered_at',
+        nullable: false,
+        default: () => 'CURRENT_TIMESTAMP'
+    })
     registeredAt: Date;
 
-    @UpdateDateColumn({ type: 'timestamp', name: 'updated_at' })
+    @UpdateDateColumn({ 
+        type: 'timestamp',
+        name: 'updated_at',
+        nullable: false,
+        default: () => 'CURRENT_TIMESTAMP'
+    })
     updatedAt: Date;
 }

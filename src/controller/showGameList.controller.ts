@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { getGameList, getOriginGameInfo, getVarientGameInfo } from '../serviece/showGameList.service'
+import { getGameList, getOriginGameInfo, getVariantGameInfo } from '../service/showGameList.service'
 import { GameListRequestDto} from "../dto/gameListRequest.dto";
 
 export const loadGameListControl = async (req: Request) =>{
@@ -23,7 +23,7 @@ export const showOriginGameHierarchyControl = async (req: Request) =>{
 export const showVarientGameHierarchyControl = async (req: Request) =>{
     const gameId = req.body;
     try{
-        return await getVarientGameInfo(gameId);
+        return await getVariantGameInfo(gameId);
     } catch(err){
         throw err;
     }
