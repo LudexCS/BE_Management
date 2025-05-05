@@ -19,7 +19,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://3.37.46.45:30302',
+        url: 'http://3.37.46.45:30353',
         description: '게임 관리 API 서버'
       }
     ],
