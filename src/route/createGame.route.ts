@@ -110,34 +110,6 @@ const upload = multer({ dest: "uploads/" });
  *               json:
  *                 type: string
  *                 description: JSON string of CreateGameDto. See schema: CreateGameDto.
- *                 example: '{
- *                   "title": "My Game",
- *                   "userId": 1,
- *                   "price": 19.99,
- *                   "description": "A sample game description.",
- *                   "requirements": [
- *                     {
- *                       "isMinimum": true,
- *                       "os": "Windows 10",
- *                       "cpu": "Intel i5",
- *                       "gpu": "GTX 1050",
- *                       "ram": "8GB",
- *                       "storage": "20GB"
- *                     }
- *                   ],
- *                   "tags": [
- *                     {
- *                       "tagId": 1,
- *                       "priority": 10
- *                     },
- *                     {
- *                       "tagId": 2,
- *                       "priority": 5
- *                     }
- *                   ],
- *                   "isOrigin": false,
- *                   "originGameIds": [101, 102]
- *                 }'
  *               thumbnail:
  *                 type: string
  *                 format: binary
