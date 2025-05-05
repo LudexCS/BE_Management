@@ -5,6 +5,22 @@ import { GameListRequestDto} from "../dto/gameListRequest.dto";
 
 const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
+/**
+ * Saves a new game entity to the database
+ * @param game - The game entity to be saved
+ * @returns Promise<number> The ID of the saved game entity
+ * @throws Error if saving the game metadata fails
+ */
+export const saveGame = async(game: Game) => {
+    try {
+        // id 반환. 다른 엔티티 저장 시 필요.
+        return (await gameRepo.save(game)).id;
+    } catch (error) {
+        console.error('Failed to save game metadata:', error);
+        throw new Error('Failed to save game metadata to database');
+    }
+}
+
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
     let orderField: string;
     switch (gameListRequestDto.sort) {

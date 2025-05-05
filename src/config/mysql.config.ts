@@ -1,5 +1,10 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
+import { Game } from '../entity/game.entity';
+import { GameTag } from "../entity/gameTag.entity";
+import {GameImageUrl} from "../entity/gameImageUrl.entity";
+import {GameRequirement} from "../entity/gameRequirement.entity";
+import {OriginGame} from "../entity/originGame.entity";
 
 const HOST = process.env.DB_HOST || 'localhost';
 const PORT = Number(process.env.DB_PORT) || 3306;
@@ -16,7 +21,7 @@ const AppDataSource = new DataSource({
     database: DB_NAME,
     synchronize: false,
     logging: true,
-    entities: [  ],
+    entities: [ Game, GameTag, GameImageUrl, GameRequirement, OriginGame ],
     migrations: [],
     subscribers: [],
 });

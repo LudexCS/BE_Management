@@ -9,7 +9,7 @@ import jwtGuard from './middleware/jwt.guard';
 const app : Express = express();
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: process.env.CLIENT_ORIGIN,
     credentials: true
 }))
 

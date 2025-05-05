@@ -9,6 +9,7 @@
     "generate:proto": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./src/generated --grpc_out=grpc_js:./src/generated --ts_out=grpc_js:./src/generated -I ./src/proto ./src/proto/*.proto"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.802.0",
     "@grpc/grpc-js": "^1.13.3",
     "@grpc/proto-loader": "^0.7.13",
     "class-transformer": "^0.5.1",
