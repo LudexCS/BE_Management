@@ -1,4 +1,3 @@
-import {Request} from 'express';
 import {CreateGameDto} from "../dto/createGame.dto";
 import {getUserIdByEmail} from "../grpc/auth.client";
 import {registerGame} from "../service/registerGame.service";

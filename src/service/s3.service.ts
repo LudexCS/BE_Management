@@ -1,7 +1,6 @@
 import { S3 } from "../config/s3.config";
 import {PutObjectCommand} from "@aws-sdk/client-s3";
 import {v4 as uuidv4} from 'uuid';
-import {GameImageUrl} from "../entity/gameImageUrl.entity";
 import { readFile } from 'fs/promises';
 
 export const uploadToS3 = async (image: {path: string; mimetype: string}, gameId: number): Promise<string> => {
