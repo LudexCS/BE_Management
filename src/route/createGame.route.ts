@@ -144,6 +144,13 @@ const router: Router = Router();
  *                 items:
  *                   type: string
  *                   format: binary
+ *           encoding:
+ *             json:
+ *               contentType: application/json
+ *             thumbnail:
+ *               contentType: image/jpeg
+ *             images:
+ *               contentType: image/jpeg
  *     responses:
  *       201:
  *         description: Game created successfully
