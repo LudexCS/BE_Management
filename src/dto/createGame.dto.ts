@@ -67,6 +67,7 @@ export function toGameImageUrlEntities(imageUrl: string[] , gameId: number): Gam
 }
 
 export function toGameTagEntities(createGameDto: CreateGameDto, gameId: number): GameTag[] {
+    console.log("tags:", createGameDto.tags);
     if(!createGameDto.tags || createGameDto.tags.length === 0) {
         return [];
     }
@@ -80,6 +81,7 @@ export function toGameTagEntities(createGameDto: CreateGameDto, gameId: number):
 }
 
 export function toGameRequirementEntities(createGameDto: CreateGameDto, gameId: number): GameRequirement[] {
+    console.log("requirements:", createGameDto.requirements);
     if (!createGameDto.requirements || createGameDto.requirements.length === 0) {
         return [];
     }
@@ -98,6 +100,7 @@ export function toGameRequirementEntities(createGameDto: CreateGameDto, gameId: 
 }
 
 export function toOriginGameEntities(createGameDto: CreateGameDto, gameId: number): OriginGame[] {
+    console.log("originGameIds:", createGameDto.originGameIds);
     if (createGameDto.isOrigin || !createGameDto.originGameIds || createGameDto.originGameIds.length === 0) {
         return [];
     }
