@@ -1,5 +1,7 @@
 import {Request, Response, Router} from "express";
 import {createGameControl} from "../controller/createGame.controller";
+import multer from "multer";
+import {CreateGameDto} from "../dto/createGame.dto";
 
 /**
  * @swagger
@@ -41,7 +43,6 @@ import {createGameControl} from "../controller/createGame.controller";
  *       required:
  *         - title
  *         - price
- *         - thumbnailUrl
  *         - requirements
  *         - tags
  *         - isOrigin
@@ -52,14 +53,8 @@ import {createGameControl} from "../controller/createGame.controller";
  *           type: number
  *         price:
  *           type: number
- *         thumbnailUrl:
- *           type: string
  *         description:
  *           type: string
- *         imageUrls:
- *           type: array
- *           items:
- *             type: string
  *         requirements:
  *           type: array
  *           items:
@@ -106,9 +101,49 @@ const router: Router = Router();
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/CreateGameDto'
+ *             type: object
+ *             properties:
+ *               json:
+ *                 type: string
+ *                 description: JSON string of CreateGameDto. See schema: CreateGameDto.
+ *                 example: '{
+ *                   "title": "My Game",
+ *                   "userId": 1,
+ *                   "price": 19.99,
+ *                   "description": "A sample game description.",
+ *                   "requirements": [
+ *                     {
+ *                       "isMinimum": true,
+ *                       "os": "Windows 10",
+ *                       "cpu": "Intel i5",
+ *                       "gpu": "GTX 1050",
+ *                       "ram": "8GB",
+ *                       "storage": "20GB"
+ *                     }
+ *                   ],
+ *                   "tags": [
+ *                     {
+ *                       "tagId": 1,
+ *                       "priority": 10
+ *                     },
+ *                     {
+ *                       "tagId": 2,
+ *                       "priority": 5
+ *                     }
+ *                   ],
+ *                   "isOrigin": false,
+ *                   "originGameIds": [101, 102]
+ *                 }'
+ *               thumbnail:
+ *                 type: string
+ *                 format: binary
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
  *     responses:
  *       201:
  *         description: Game created successfully
@@ -138,15 +173,36 @@ const router: Router = Router();
  *                 message:
  *                   type: string
  */
-router.post('/game', async (req: Request, res: Response) => {
+const upload = multer({ dest: "uploads/" });
+router.post('/game', upload.fields([
+  { name: 'thumbnail', maxCount: 1 },
+  { name: 'images' }
+]), async (req: Request, res: Response) => {
     try {
-        await createGameControl(req);
-        res.status(201).json({message: "Game created"});
+        // Expect game data as JSON string under the 'json' field
+        const parsedBody = JSON.parse(req.body.json) as CreateGameDto;
+
+        // Inject file info into parsedBody
+        const thumbnailFile = (req.files as any)?.['thumbnail']?.[0];
+        const imageFiles = (req.files as any)?.['images'] || [];
+
+        parsedBody.thumbnailUrl = {
+            path: thumbnailFile.path,
+            mimetype: thumbnailFile.mimetype
+        };
+        parsedBody.imageUrls = imageFiles.map((file: Express.Multer.File) => ({
+            path: file.path,
+            mimetype: file.mimetype
+        }));
+
+        const email = req.user as string;
+        await createGameControl(parsedBody, email);
+        res.status(201).json({ message: "Game created" });
     } catch (error) {
         if (error instanceof Error) {
-            res.status(400).json({message: error.message});
+            res.status(400).json({ message: error.message });
         } else {
-            res.status(500).json({message: "Server Error"});
+            res.status(500).json({ message: "Server Error" });
         }
     }
 });
