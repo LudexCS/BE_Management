@@ -30,13 +30,13 @@ export const registerGame = async (createGameDto: CreateGameDto) => {
         await Promise.all(gameImageUrls.map(saveGameImageUrl));
 
         const gameTags = toGameTagEntities(createGameDto, gameId);
-        gameTags.forEach(saveGameTag);
+        await Promise.all(gameTags.map(saveGameTag));
 
         const gameRequirements = toGameRequirementEntities(createGameDto, gameId);
-        gameRequirements.forEach(saveGameRequirement);
+        await Promise.all(gameRequirements.map(saveGameRequirement));
 
         const originGames = toOriginGameEntities(createGameDto, gameId);
-        originGames.forEach(saveOriginGame);
+        await Promise.all(originGames.map(saveOriginGame));
 
     } catch (error) {
         throw error;
