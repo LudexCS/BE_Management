@@ -15,7 +15,6 @@ import {uploadToS3} from "./s3.service";
 
 export const registerGame = async (createGameDto: CreateGameDto) => {
     try {
-        console.log("registerGame");
         const game = toGameEntity(createGameDto);
         const gameId = await saveGame(game);
         const thumbnailUrl = { thumbnailUrl: await uploadToS3(createGameDto.thumbnailUrl, gameId) };
@@ -31,16 +30,13 @@ export const registerGame = async (createGameDto: CreateGameDto) => {
         await Promise.all(gameImageUrls.map(saveGameImageUrl));
 
         const gameTags = toGameTagEntities(createGameDto, gameId);
-        console.log("tags: " + gameTags);
-        gameTags.forEach(saveGameTag);
+        await Promise.all(gameTags.map(saveGameTag));
 
         const gameRequirements = toGameRequirementEntities(createGameDto, gameId);
-        console.log("req: " + gameRequirements);
-        gameRequirements.forEach(saveGameRequirement);
+        await Promise.all(gameRequirements.map(saveGameRequirement));
 
         const originGames = toOriginGameEntities(createGameDto, gameId);
-        console.log("ori: " + originGames);
-        originGames.forEach(saveOriginGame);
+        await Promise.all(originGames.map(saveOriginGame));
 
     } catch (error) {
         throw error;
