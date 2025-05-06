@@ -43,22 +43,22 @@ export type CreateGameDto =
 export function toGameEntity(createGameDto: CreateGameDto): Game {
     const game = new Game();
     game.title = createGameDto.title;
-    game.userId = createGameDto.userId as number;
+    if (createGameDto.userId !== undefined) game.userId = createGameDto.userId;
     game.price = createGameDto.price;
-    game.thumbnailUrl = createGameDto.thumbnailUrl.path;
-    game.description = createGameDto.description as string;
+    //game.thumbnailUrl = createGameDto.thumbnailUrl.path;
+    if (createGameDto.description !== undefined) game.description = createGameDto.description;
     game.downloadTimes = 0;
     game.registeredAt = new Date();
     game.updatedAt = new Date();
     return game;
 }
 
-export function toGameImageUrlEntities(imageUrl: string[] , gameId: number): GameImageUrl[] {
-    if(!imageUrl || imageUrl.length === 0) {
+export function toGameImageUrlEntities(imageUrls: string[], gameId: number): GameImageUrl[] {
+    if(!imageUrls || imageUrls.length === 0) {
         return [];
     }
 
-    return imageUrl.map(url => {
+    return imageUrls.map(url => {
         const gameImageUrl = new GameImageUrl();
         gameImageUrl.gameId = gameId;
         gameImageUrl.url = url;
@@ -87,12 +87,12 @@ export function toGameRequirementEntities(createGameDto: CreateGameDto, gameId: 
         const gameRequirement = new GameRequirement();
         gameRequirement.gameId = gameId;
         gameRequirement.isMinimum = requirement.isMinimum;
-        if (requirement.os) gameRequirement.os = requirement.os;
-        if (requirement.cpu) gameRequirement.cpu = requirement.cpu;
-        if (requirement.gpu) gameRequirement.gpu = requirement.gpu;
-        if (requirement.ram) gameRequirement.ram = requirement.ram;
-        if (requirement.storage) gameRequirement.storage = requirement.storage;
-        if (requirement.network) gameRequirement.network = requirement.network;
+        if (requirement.os !== undefined) gameRequirement.os = requirement.os;
+        if (requirement.cpu !== undefined) gameRequirement.cpu = requirement.cpu;
+        if (requirement.gpu !== undefined) gameRequirement.gpu = requirement.gpu;
+        if (requirement.ram !== undefined) gameRequirement.ram = requirement.ram;
+        if (requirement.storage !== undefined) gameRequirement.storage = requirement.storage;
+        if (requirement.network !== undefined) gameRequirement.network = requirement.network;
         return gameRequirement;
     });
 }

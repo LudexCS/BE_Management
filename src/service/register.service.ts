@@ -11,19 +11,22 @@ import {saveGameImageUrl} from "../repository/gameImageUrl.repository";
 import {saveGameRequirement} from "../repository/gameRequirement.repository";
 import {saveGameTag} from "../repository/gameTag.repository";
 import {saveOriginGame} from "../repository/originGame.repository";
-import {uploadToS3} from "./s3.service";
+import {uploadGameImageToS3, uploadResourceImageToS3} from "./s3.service";
+import {CreateResourceDto, toResourceEntity, toResourceImageUrlEntities} from "../dto/createResource.dto";
+import {saveResource} from "../repository/resource.repository";
+import {saveResourceImageUrl} from "../repository/resourceImageUrl.repository";
 
 export const registerGame = async (createGameDto: CreateGameDto) => {
     try {
         const game = toGameEntity(createGameDto);
         const gameId = await saveGame(game);
-        const thumbnailUrl = { thumbnailUrl: await uploadToS3(createGameDto.thumbnailUrl, gameId) };
+        const thumbnailUrl = { thumbnailUrl: await uploadGameImageToS3(createGameDto.thumbnailUrl, gameId) };
         await updateGameFields(gameId, thumbnailUrl);
 
         let imageUrls: string[] = [];
         if (createGameDto.imageUrls && createGameDto.imageUrls.length > 0) {
             imageUrls = await Promise.all(
-                createGameDto.imageUrls.map(image => uploadToS3(image, gameId))
+                createGameDto.imageUrls.map(image => uploadGameImageToS3(image, gameId))
             );
         }
         const gameImageUrls = toGameImageUrlEntities(imageUrls, gameId);
@@ -41,4 +44,23 @@ export const registerGame = async (createGameDto: CreateGameDto) => {
     } catch (error) {
         throw error;
     }
-}
+};
+
+export const registerResource = async (createResourceDto: CreateResourceDto) => {
+    try {
+        const resource = toResourceEntity(createResourceDto);
+        const resourceId = await saveResource(resource);
+
+        let imageUrls: string[] = [];
+        if (createResourceDto.imageUrls && createResourceDto.imageUrls.length > 0) {
+            imageUrls = await Promise.all(
+                createResourceDto.imageUrls.map(image => uploadResourceImageToS3(image, resourceId))
+            );
+        }
+        const resourceImageUrls = toResourceImageUrlEntities(imageUrls, resourceId);
+        await Promise.all(resourceImageUrls.map(saveResourceImageUrl));
+
+    } catch (error) {
+        throw error;
+    }
+};

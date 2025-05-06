@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {createGameControl} from "../controller/createGame.controller";
+import {createGameControl} from "../controller/create.controller";
 import multer from "multer";
 import {CreateGameDto} from "../dto/createGame.dto";
 
@@ -94,7 +94,7 @@ const upload = multer({ dest: "uploads/" });
 
 /**
  * @swagger
- * /api/protected/create/game:
+ * /api/protected/game/create:
  *   post:
  *     summary: Create a new game
  *     tags: [Games]
@@ -150,7 +150,7 @@ const upload = multer({ dest: "uploads/" });
  *                 message:
  *                   type: string
  */
-router.post('/game', upload.fields([
+router.post('/create', upload.fields([
   { name: 'thumbnail', maxCount: 1 },
   { name: 'images' }
 ]), async (req: Request, res: Response) => {
