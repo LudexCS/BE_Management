@@ -1,6 +1,7 @@
 import {CreateGameDto} from "../dto/createGame.dto";
 import {getUserIdByEmail} from "../grpc/auth.client";
-import {registerGame} from "../service/registerGame.service";
+import {registerGame, registerResource} from "../service/register.service";
+import {CreateResourceDto} from "../dto/createResource.dto";
 
 export const createGameControl = async (createGameDto: CreateGameDto, email: string) => {
     try {
@@ -15,6 +16,13 @@ export const createGameControl = async (createGameDto: CreateGameDto, email: str
     } catch (error) {
         throw error;
     }
+};
 
-
-}
+export const createResourceControl = async (createResourceDto: CreateResourceDto, email: string) => {
+    try {
+        createResourceDto.userId = await getUserIdByEmail(email);
+        await registerResource(createResourceDto);
+    } catch (error) {
+        throw error;
+    }
+};
