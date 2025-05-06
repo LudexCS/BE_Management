@@ -79,14 +79,14 @@ const router = Router();
 
 /**
  * @swagger
- * /api/{userId}/tradeInfo:
+ * /api/{user_id}/tradeInfo:
  *   get:
  *     summary: 사용자 거래 내역 조회
  *     description: 특정 사용자의 게임 및 리소스 거래 내역을 조회합니다.
  *     tags: [TradeInfo]
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: user_id
  *         required: true
  *         schema:
  *           type: integer
@@ -105,7 +105,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/:userId/tradeInfo', async (req: Request, res: Response) => {
+router.get('/:user_id', async (req: Request, res: Response) => {
     try {
         const tradeHistory: TradeHistoryDto = await getTradeHistoryControl(parseInt(req.params.userId, 10));
         res.status(200).json(tradeHistory);

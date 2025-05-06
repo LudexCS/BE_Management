@@ -211,7 +211,7 @@ router.post('/games/byTags', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/game/:game_id', async (req: Request, res: Response) => {
+router.get('/games/:game_id', async (req: Request, res: Response) => {
     try {
         const gameDetails = await getGameDetailControl(req);
         res.status(200).json(gameDetails);

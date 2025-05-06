@@ -9,6 +9,6 @@ app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
 }))
-app.use('get', GameDataRoute);
-app.use('get', TradeInfoRoute)
+app.use('/games', GameDataRoute);
+app.use('/tradeInfo', TradeInfoRoute)
 export default app;
