@@ -4,7 +4,7 @@ import { getPresignedUrl } from "../service/s3.service";
 
 
 export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
-    const { page, limit, sort} = gameListRequestDto;
+    const { page, limit } = gameListRequestDto;
     const offset = (page - 1) * limit;
     try{
         const gameListRows =  await findGameList(gameListRequestDto);

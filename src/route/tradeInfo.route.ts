@@ -113,3 +113,5 @@ router.get('/:userId/tradeInfo', async (req: Request, res: Response) => {
         res.status(500).json({ message: '게임 거래 내역 불러오기 실패' });
     }
 });
+
+export default router;
