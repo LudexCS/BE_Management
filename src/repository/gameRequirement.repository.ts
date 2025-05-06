@@ -8,15 +8,19 @@ const gameRequirementRepo: Repository<GameRequirement> = AppDataSource.getReposi
 
 export const findGameRequirementWithGameId = async (gameId: number): Promise<GameRequirementDto[]> => {
     const rows = await gameRequirementRepo.find({
-        select: ['type', 'spec_min_value', 'spec_rec_value'],
+        select: ['is_minimum', 'os', 'cpu', 'gpu', 'ram', 'storage', 'network'],
         where: { game_id: gameId },
     });
 
 
     const requirements: GameRequirementDto[] = rows.map(row => ({
-        type: row.type,
-        spec_min_value: row.spec_min_value,
-        spec_rec_value: row.spec_rec_value,
+        is_minimum: row.is_minimum,
+        os: row.os ?? undefined,
+        cpu: row.cpu ?? undefined,
+        gpu: row.gpu ?? undefined,
+        ram: row.ram ?? undefined,
+        storage: row.storage ?? undefined,
+        network: row.network ?? undefined
     }));
     return requirements;
 };

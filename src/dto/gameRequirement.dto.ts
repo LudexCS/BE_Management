@@ -1,5 +1,9 @@
 export interface GameRequirementDto {
-    type: string;
-    spec_min_value: string;
-    spec_rec_value: string;
+    is_minimum: boolean;
+    os?: string;
+    cpu?: string;
+    gpu?: string;
+    ram?: string;
+    storage?: string;
+    network?: string;
 }

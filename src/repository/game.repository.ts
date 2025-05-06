@@ -7,22 +7,9 @@ import {GameTempDetailDto} from "../dto/gameTempDetail.dto";
 const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
-    let orderField: string;
-    switch (gameListRequestDto.sort) {
-        case 'latest':
-            orderField = 'game.registered_at';
-            break;
-        case 'download_times':
-            orderField = 'game.download_times';
-            break;
-        case 'popularity':
-        default:
-            orderField = 'game.popularity';
-            break;
-    }
     return await gameRepo.createQueryBuilder('game')
         .select(['game.id', 'game.title', 'game.thumnail_url']) // 최소 필드만
-        .orderBy(orderField, 'DESC')
+        .orderBy('download_times', 'DESC')
         .offset((gameListRequestDto.page - 1) * gameListRequestDto.limit)
         .limit(gameListRequestDto.limit)
         .getRawMany();
@@ -30,7 +17,7 @@ export const findGameList = async(gameListRequestDto: GameListRequestDto): Promi
 
 export const findOriginGameList = async (
     gameId: number
-): Promise<{ title: string; thumnail_url: string }[]> => {
+): Promise<{ title: string; thumnailUrl: string }[]> => {
     return gameRepo.createQueryBuilder('game')
         .where(qb => {
             const subQuery = qb
@@ -49,7 +36,7 @@ export const findOriginGameList = async (
 
 export const findVarientGameList = async (
     gameId: number
-): Promise<{ title: string; thumnail_url: string }[]> => {
+): Promise<{ title: string; thumnailUrl: string }[]> => {
     return gameRepo.createQueryBuilder('game')
         .where(qb => {
             const subQuery = qb
@@ -75,7 +62,7 @@ export const findGameWithTag = async(tags: string[])=>{
         .where('tag.name IN (:...tagNames)', { tags })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
-        .select(['game.title AS title', 'game.thumnail_url AS thumnail_url'])
+        .select(['game.title AS title', 'game.thumnail_url AS thumnailUrl'])
         .getRawMany();
 
     return result;
@@ -91,6 +78,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 'price',
                 'thumnailUrl',
                 'description',
+                'downloadTimes',
                 'registeredAt',
                 'updatedAt'
             ],

@@ -26,12 +26,6 @@ export class Game   {
     @Column({ nullable: true })
     description: string;
 
-    @Column({ name: 'origin_or_varient'})
-    originOrVariant: string;
-
-    @Column({ type: 'int', default: 0 })
-    popularity: number;
-
     @Column({ type: 'int', default: 0 , name: 'download_times'})
     downloadTimes: number;
 

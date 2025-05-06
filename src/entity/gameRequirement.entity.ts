@@ -9,11 +9,23 @@ export class GameRequirement {
     game_id: number;
 
     @Column()
-    type: string;
+    is_minimum: boolean;
 
-    @Column({ nullable: true })
-    spec_min_value: string;
+    @Column()
+    os: string;
 
-    @Column({ nullable: true })
-    spec_rec_value: string;
+    @Column()
+    cpu: string;
+
+    @Column()
+    gpu: string;
+
+    @Column()
+    ram: string;
+
+    @Column()
+    storage: string;
+
+    @Column()
+    network: string;
 }
