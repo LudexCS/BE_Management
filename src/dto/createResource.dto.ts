@@ -17,11 +17,11 @@ export interface CreateResourceDto {
 export function toResourceEntity(dto: CreateResourceDto): Resource {
   const resource = new Resource();
   resource.gameId = dto.gameId;
-  resource.userId = dto.userId as number;
+  if (dto.userId !== undefined) resource.userId = dto.userId;
   resource.usageTypeId = dto.usageTypeId;
   resource.allowDerivation = dto.allowDerivation;
-  resource.additionalCondition = dto.additionalCondition as string;
-  resource.description = dto.description as string;
+  if (dto.additionalCondition !== undefined) resource.additionalCondition = dto.additionalCondition;
+  if (dto.description !== undefined) resource.description = dto.description;
   resource.downloadTimes = 0;
   resource.registeredAt = new Date();
   resource.updatedAt = new Date();
