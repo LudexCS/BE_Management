@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package management;
+
+message IdRequest {
+    int64 id = 1;
+}
+
+message IdResponse {
+    bool isValid = 1;
+}
+
+service ValidationService {
+    rpc IsValidGameId(IdRequest) returns (IdResponse);
+    rpc IsValidResourceId(IdRequest) returns (IdResponse);
+}
