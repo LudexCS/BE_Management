@@ -14,7 +14,8 @@ import {createResourceControl} from "../controller/create.controller";
  *       type: object
  *       required:
  *         - gameId
- *         - usageTypeId
+ *         - sellerRatio
+ *         - creatorRatio
  *         - allowDerivation
  *       properties:
  *         gameId:
@@ -22,10 +23,13 @@ import {createResourceControl} from "../controller/create.controller";
  *           description: ID of the game this resource is linked to
  *         userId:
  *           type: number
- *           description: Optional user ID, defaults to the authenticated user
- *         usageTypeId:
+ *           description: Optional user ID; defaults to the authenticated user
+ *         sellerRatio:
  *           type: number
- *           description: ID indicating the usage/license type of the resource
+ *           description: Revenue share ratio for the seller (0~100)
+ *         creatorRatio:
+ *           type: number
+ *           description: Revenue share ratio for the original creator (0~100)
  *         allowDerivation:
  *           type: boolean
  *           description: Whether to allow derivative works
