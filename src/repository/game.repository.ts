@@ -8,7 +8,7 @@ const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
     return await gameRepo.createQueryBuilder('game')
-        .select(['game.id', 'game.title', 'game.thumnail_url']) // 최소 필드만
+        .select(['game.id', 'game.title', 'game.thumnail_url'])
         .orderBy('download_times', 'DESC')
         .offset((gameListRequestDto.page - 1) * gameListRequestDto.limit)
         .limit(gameListRequestDto.limit)
@@ -17,7 +17,6 @@ export const findGameList = async(gameListRequestDto: GameListRequestDto): Promi
 
 export const findOriginGameList = async (
     gameId: number
-): Promise<{ title: string; thumnailUrl: string }[]> => {
 ): Promise<{ gameId: number; title: string; thumnailUrl: string }[]> => {
     return gameRepo.createQueryBuilder('game')
         .where(qb => {
@@ -30,9 +29,8 @@ export const findOriginGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .select(['game.title AS title', 'game.thumnail_url AS thumnail_url'])
+        .select(['og.origin_game_id', 'game.title AS title', 'game.thumnail_url AS thumnail_url'])
         .getRawMany();
-};
 }
 
 export const findVarientGameList = async (
