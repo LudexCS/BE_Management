@@ -52,12 +52,12 @@ const router: Router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/list', async (req: Request, res: Response) => {
+router.get('/get/list', async (req: Request, res: Response) => {
     try {
         const gameList = await loadGameListControl(req);
         res.status(200).json(gameList);
     } catch (error) {
-        res.status(500).json({ message: '게임 목록 조회 중 오류 발생' });
+        res.status(404).json({ message:(error as Error).message});
     }
 });
 
@@ -91,12 +91,12 @@ router.get('/list', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/origin', async (req: Request, res: Response) => {
+router.get('/get/origin', async (req: Request, res: Response) => {
     try {
         const originGames = await showOriginGameHierarchyControl(req);
         res.status(200).json(originGames);
     } catch (error) {
-        res.status(500).json({ message: '원본 게임 조회 중 오류 발생' });
+        res.status(404).json({ message:(error as Error).message});
     }
 });
 
@@ -130,12 +130,12 @@ router.get('/origin', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/variant', async (req: Request, res: Response) => {
+router.get('/get/variant', async (req: Request, res: Response) => {
     try {
         const variantGames = await showVarientGameHierarchyControl(req);
         res.status(200).json(variantGames);
     } catch (error) {
-        res.status(500).json({ message: '파생 게임 조회 중 오류 발생' });
+        res.status(404).json({ message:(error as Error).message});
     }
 });
 
@@ -174,12 +174,12 @@ router.get('/variant', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.post('/byTags', async (req: Request, res: Response) => {
+router.post('/get/byTags', async (req: Request, res: Response) => {
     try {
         const games = await getGameByTagControl(req);
         res.status(200).json(games);
-    } catch (err) {
-        res.status(500).json({ message: '태그로 게임 불러오기 실패' });
+    } catch (error) {
+        res.status(404).json({ message:(error as Error).message});
     }
 });
 
@@ -211,12 +211,13 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/:game_id', async (req: Request, res: Response) => {
+router.get('/get/gameDetail', async (req: Request, res: Response) => {
     try {
-        const gameDetails = await getGameDetailControl(req);
+        const { gameId } = req.body;
+        const gameDetails = await getGameDetailControl(gameId);
         res.status(200).json(gameDetails);
-    } catch (err) {
-        res.status(500).json({ message: '게임 정보 불러오기 오류 발생' });
+    } catch (error) {
+        res.status(404).json({ message:(error as Error).message});
     }
 });
 

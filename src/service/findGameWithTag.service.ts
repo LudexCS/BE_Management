@@ -3,7 +3,7 @@ import {getPresignedUrl} from "./s3.service";
 
 export const findGameWithTagService = async (
     tags: string[]
-): Promise<{ title: string; thumnail_url: string }[]> => {
+): Promise<{ gameId: number, title: string; thumnail_url: string }[]> => {
     try {
         const taggedGameRows = await findGameWithTag(tags);
 

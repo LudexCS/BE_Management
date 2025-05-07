@@ -105,12 +105,13 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/:user_id', async (req: Request, res: Response) => {
+router.get('/get/tradeInfo', async (req: Request, res: Response) => {
     try {
-        const tradeHistory: TradeHistoryDto = await getTradeHistoryControl(parseInt(req.params.userId, 10));
+        const { email } = req.body;
+        const tradeHistory: TradeHistoryDto = await getTradeHistoryControl(email);
         res.status(200).json(tradeHistory);
     } catch (error) {
-        res.status(500).json({ message: '게임 거래 내역 불러오기 실패' });
+        res.status(404).json({ message:(error as Error).message});
     }
 });
 

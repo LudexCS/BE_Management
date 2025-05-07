@@ -12,7 +12,7 @@ export const loadGameListControl = async (req: Request) =>{
 }
 
 export const showOriginGameHierarchyControl = async (req: Request) =>{
-    const gameId = req.body;
+    const { gameId } = req.body;
     try{
         return await getOriginGameInfo(gameId);
     } catch(err){
@@ -21,7 +21,7 @@ export const showOriginGameHierarchyControl = async (req: Request) =>{
 }
 
 export const showVarientGameHierarchyControl = async (req: Request) =>{
-    const gameId = req.body;
+    const { gameId } = req.body;
     try{
         return await getVarientGameInfo(gameId);
     } catch(err){

@@ -18,6 +18,7 @@ export const findGameList = async(gameListRequestDto: GameListRequestDto): Promi
 export const findOriginGameList = async (
     gameId: number
 ): Promise<{ title: string; thumnailUrl: string }[]> => {
+): Promise<{ gameId: number; title: string; thumnailUrl: string }[]> => {
     return gameRepo.createQueryBuilder('game')
         .where(qb => {
             const subQuery = qb
@@ -32,11 +33,11 @@ export const findOriginGameList = async (
         .select(['game.title AS title', 'game.thumnail_url AS thumnail_url'])
         .getRawMany();
 };
-
+}
 
 export const findVarientGameList = async (
-    gameId: number
-): Promise<{ title: string; thumnailUrl: string }[]> => {
+   gameId: number
+): Promise<{ gameId: number; title: string; thumnailUrl: string }[]> => {
     return gameRepo.createQueryBuilder('game')
         .where(qb => {
             const subQuery = qb
@@ -48,9 +49,9 @@ export const findVarientGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .select(['game.title AS title', 'game.thumnail_url AS thumnail_url'])
+        .select(['og.game_id', 'game.title AS title', 'game.thumnail_url AS thumnail_url'])
         .getRawMany();
-};
+}
 
 export const findGameWithTag = async(tags: string[])=>{
     const tagCount = tags.length;
@@ -62,7 +63,7 @@ export const findGameWithTag = async(tags: string[])=>{
         .where('tag.name IN (:...tagNames)', { tags })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
-        .select(['game.title AS title', 'game.thumnail_url AS thumnailUrl'])
+        .select(['game.id', 'game.title AS title', 'game.thumnail_url AS thumnailUrl'])
         .getRawMany();
 
     return result;

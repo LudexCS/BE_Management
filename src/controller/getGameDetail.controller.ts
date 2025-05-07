@@ -1,8 +1,7 @@
 import { Request, Response} from "express";
 import { getGameDetail } from "../service/getGameDetail.service"
 
-export const getGameDetailControl = async (req: Request) =>{
-   const gameId = Number(req.params.game_id);
+export const getGameDetailControl = async (gameId: number) =>{
    try{
       return await getGameDetail(gameId);
    } catch(err){
