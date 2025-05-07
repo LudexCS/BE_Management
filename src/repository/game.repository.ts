@@ -98,3 +98,9 @@ export const findVarientGameList = async (
         .select(['game.title AS title', 'game.thumnail_url AS thumnail_url'])
         .getRawMany();
 };
+
+export const isGameExist = async (id: number): Promise<boolean> => {
+    return await gameRepo.exists({
+        where: { id: id }
+    });
+}

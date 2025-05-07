@@ -13,3 +13,9 @@ export const saveResource = async (resource: Resource) => {
         throw new Error('Failed to save resource metadata to database');
     }
 };
+
+export const isResourceExist = async (id: number): Promise<boolean> => {
+    return await ResourceRepo.exists({
+        where: { id: id }
+    });
+}
