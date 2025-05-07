@@ -129,8 +129,10 @@ const upload = multer({ dest: "uploads/" });
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
+ *                 gameId:
+ *                   type: integer
+ *                   description: ID of the newly created game
+ *                   example: 3
  *       400:
  *         description: Invalid request
  *         content:
@@ -172,8 +174,8 @@ router.post('/create', upload.fields([
         }));
 
         const email = req.user as string;
-        await createGameControl(parsedBody, email);
-        res.status(201).json({ message: "Game created" });
+        const gameId = await createGameControl(parsedBody, email);
+        res.status(201).json({ gameId });
     } catch (error) {
         if (error instanceof Error) {
             res.status(400).json({ message: error.message });

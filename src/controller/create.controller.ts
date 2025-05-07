@@ -12,7 +12,7 @@ export const createGameControl = async (createGameDto: CreateGameDto, email: str
             throw new Error("originGameIds must be provided when isOrigin is false");
         }
         createGameDto.userId = await getUserIdByEmail(email);
-        await registerGame(createGameDto);
+        return await registerGame(createGameDto);
     } catch (error) {
         throw error;
     }
@@ -21,7 +21,7 @@ export const createGameControl = async (createGameDto: CreateGameDto, email: str
 export const createResourceControl = async (createResourceDto: CreateResourceDto, email: string) => {
     try {
         createResourceDto.userId = await getUserIdByEmail(email);
-        await registerResource(createResourceDto);
+        return await registerResource(createResourceDto);
     } catch (error) {
         throw error;
     }

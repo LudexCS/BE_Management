@@ -77,8 +77,10 @@ const upload = multer({ dest: "uploads/" });
  *             schema:
  *               type: object
  *               properties:
- *                 message:
- *                   type: string
+ *                 resourceId:
+ *                   type: integer
+ *                   description: ID of the newly registered resource
+ *                   example: 42
  *       400:
  *         description: Invalid request
  *         content:
@@ -114,8 +116,8 @@ router.post('/create', upload.fields([
         }));
 
         const email = req.user as string;
-        await createResourceControl(parsedBody, email);
-        res.status(201).json({ message: "Resource registered successfully" });
+        const resourceId = await createResourceControl(parsedBody, email);
+        res.status(201).json({ resourceId });
     } catch (error) {
         if (error instanceof Error) {
             res.status(400).json({ message: error.message });

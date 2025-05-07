@@ -40,7 +40,7 @@ export const registerGame = async (createGameDto: CreateGameDto) => {
 
         const originGames = toOriginGameEntities(createGameDto, gameId);
         await Promise.all(originGames.map(saveOriginGame));
-
+        return gameId;
     } catch (error) {
         throw error;
     }
@@ -59,7 +59,7 @@ export const registerResource = async (createResourceDto: CreateResourceDto) => 
         }
         const resourceImageUrls = toResourceImageUrlEntities(imageUrls, resourceId);
         await Promise.all(resourceImageUrls.map(saveResourceImageUrl));
-
+        return resourceId;
     } catch (error) {
         throw error;
     }
