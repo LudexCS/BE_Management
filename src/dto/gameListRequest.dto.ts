@@ -11,7 +11,4 @@ export class GameListRequestDto {
     @IsInt()
     @Min(1)
     limit: number;
-
-    @IsIn(['popularity', 'latest', 'download_times'])
-    sort: 'popularity' | 'latest' | 'download_times';
 }
