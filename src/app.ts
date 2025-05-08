@@ -6,6 +6,8 @@ import getGameRoute from './route/showGameList.route';
 import gameRoute from './route/game.route';
 import resourceRoute from './route/resource.route';
 import jwtGuard from './middleware/jwt.guard';
+import GameDataRoute from "./route/gameData.route";
+import TradeInfoRoute from "./route/tradeInfo.route";
 
 const app : Express = express();
 app.use(express.json());
@@ -24,4 +26,6 @@ app.use('/api/protected/resource', resourceRoute);
 app.use('/api/get', getGameRoute);
 
 
+app.use('/games', GameDataRoute);
+app.use('/tradeInfo', TradeInfoRoute)
 export default app;
