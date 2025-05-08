@@ -79,18 +79,22 @@ const router = Router();
 
 /**
  * @swagger
- * /api/{user_id}/tradeInfo:
+ * /api/get/tradeInfo:
  *   get:
  *     summary: 사용자 거래 내역 조회
  *     description: 특정 사용자의 게임 및 리소스 거래 내역을 조회합니다.
  *     tags: [TradeInfo]
- *     parameters:
- *       - in: path
- *         name: user_id
- *         required: true
- *         schema:
- *           type: integer
- *         description: 거래 내역을 조회할 사용자 ID
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                email:
+ *                 type: string
+ *                 description: 거래 내역을 조회할 사용자 이메일
+ *                 example: user@example.com
  *     responses:
  *       200:
  *         description: 거래 내역 조회 성공

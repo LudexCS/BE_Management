@@ -21,7 +21,6 @@ export interface ResourceTradeDto {
     resource_id: number;
     user_id: number;
     description: string;
-    usage_type_id: string;
     seller_ratio: string;
     creater_ratio: string
     image_url: string

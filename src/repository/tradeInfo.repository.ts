@@ -74,12 +74,11 @@ export const getSoldGamesInfo = async (userId: number): Promise<GameTradeDto[]> 
 
 export const getPurchasedResourcesInfo = async (userId: number) : Promise<ResourceTradeDto[]> => {
     const rows =  await AppDataSource.query(`
-    SELECT r.id, r.user_id, r.description, r.usage_type_id, r.seller_ratio, r.creater_ratio, ru.url, g.id
+    SELECT r.id, r.user_id, r.description, r.seller_ratio, r.creater_ratio, ru.url, g.id
     FROM resource r
     JOIN resource_transaction rt ON rt.resource_id = r.id
     LEFT JOIN game g ON r.game_id = g.id
     LEFT JOIN resource_image_url ru ON r.id = ru.resource_id 
-    LEFT JOIN resource_usage_type rut ON r.usage_type_id = rut.id
     WHERE rt.buyer_id = ?
   `, [userId]);
 
@@ -87,7 +86,6 @@ export const getPurchasedResourcesInfo = async (userId: number) : Promise<Resour
         resource_id: row.resource_id,
         user_id: row.user_id,
         description: row.description,
-        usage_type_id: row.usage_type_id,
         seller_ratio: row.seller_ratio,
         creater_ratio: row.creater_ratio,
         image_url: await getPresignedUrl(row.image_url),
