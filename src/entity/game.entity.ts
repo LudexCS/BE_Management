@@ -31,7 +31,7 @@ export class Game {
     @Column({ name: 'download_times', type: 'int', default: 0 })
     downloadTimes: number;
 
-    @CreateDateColumn({ 
+    @CreateDateColumn({
         type: 'timestamp',
         name: 'registered_at',
         nullable: false,
@@ -39,7 +39,7 @@ export class Game {
     })
     registeredAt: Date;
 
-    @UpdateDateColumn({ 
+    @UpdateDateColumn({
         type: 'timestamp',
         name: 'updated_at',
         nullable: false,
