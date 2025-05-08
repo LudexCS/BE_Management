@@ -15,7 +15,7 @@ export const uploadGameImageToS3 = async (image: {path: string; mimetype: string
         ContentType: image.mimetype
     }));
 
-    return `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+    return key;
 };
 
 export const uploadResourceImageToS3 = async ( image: { path: string; mimetype: string }, resourceId: number): Promise<string> => {
@@ -29,7 +29,7 @@ export const uploadResourceImageToS3 = async ( image: { path: string; mimetype: 
         ContentType: image.mimetype
     }));
 
-    return `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+    return key;
 };
 
 export const getPresignedUrl = async (key: string, type: "get" | "put" = "get", expiresInSec = 60): Promise<string> => {
