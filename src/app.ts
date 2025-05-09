@@ -2,7 +2,6 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import { specs, swaggerUiOptions } from './config/swagger.config';
-import getGameRoute from './route/showGameList.route';
 import gameRoute from './route/game.route';
 import resourceRoute from './route/resource.route';
 import jwtGuard from './middleware/jwt.guard';
