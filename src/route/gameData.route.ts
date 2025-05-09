@@ -72,7 +72,7 @@ const router: Router = Router();
 
 /**
  * @swagger
- * /api/games/list:
+ * /api/get/list:
  *   get:
  *     summary: 게임 목록 조회
  *     description: 페이지네이션 및 정렬 기준에 따라 게임 목록을 조회합니다.
@@ -117,7 +117,7 @@ router.get('/get/list', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/games/origin:
+ * /api/get/origin:
  *   get:
  *     summary: 원본 게임 목록 조회
  *     description: 파생 게임의 원본 게임 목록을 반환합니다.
@@ -156,7 +156,7 @@ router.get('/get/origin', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/games/variant:
+ * /api/get/variant:
  *   get:
  *     summary: 파생 게임 목록 조회
  *     description: 특정 원본 게임의 파생 게임 목록을 조회합니다.
@@ -195,7 +195,7 @@ router.get('/get/variant', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/games/byTags:
+ * /api/get/byTags:
  *   post:
  *     summary: 태그 기반 게임 검색
  *     description: 태그 배열을 기반으로 해당 조건을 만족하는 게임들을 조회합니다.
@@ -239,7 +239,7 @@ router.post('/get/byTags', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/games/detail:
+ * /api/get/gameDetail:
  *   get:
  *     summary: 특정 게임 상세 정보 조회
  *     description: 게임 ID를 통해 게임 상세 정보를 조회합니다.
