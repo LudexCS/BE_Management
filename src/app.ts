@@ -25,5 +25,5 @@ app.use('/api/protected/resource', resourceRoute);
 app.use('/api/get', getGameRoute);
 
 
-app.use('/protected/get/tradeInfo', tradeInfoRoute)
+app.use('/api/protected/get/', tradeInfoRoute)
 export default app;
