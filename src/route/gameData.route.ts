@@ -41,6 +41,8 @@ import { getGameDetailControl } from "../controller/getGameDetail.controller";
  *           format: uri
  *         description:
  *           type: string
+ *         item_id:
+ *           type: bigint
  *         registeredAt:
  *           type: string
  *           format: date-time
