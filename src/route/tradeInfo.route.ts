@@ -82,7 +82,7 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           description: 응답 메시지
  */
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @swagger
