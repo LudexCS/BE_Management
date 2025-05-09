@@ -6,6 +6,67 @@ import {
 } from "../controller/showGameList.controller";
 import { getGameByTagControl } from "../controller/getGameByTag.controller";
 import { getGameDetailControl } from "../controller/getGameDetail.controller";
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     GameRequirementDto:
+ *       type: object
+ *       properties:
+ *         os:
+ *           type: string
+ *         cpu:
+ *           type: string
+ *         ram:
+ *           type: string
+ *         gpu:
+ *           type: string
+ *         storage:
+ *           type: string
+
+ *     GameDetailDto:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         title:
+ *           type: string
+ *         userId:
+ *           type: integer
+ *         price:
+ *           type: number
+ *           format: float
+ *         thumbnailUrl:
+ *           type: string
+ *           format: uri
+ *         description:
+ *           type: string
+ *         registeredAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *         imageUrls:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uri
+ *         requirements:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/GameRequirementDto'
+
+ *     MessageResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ */
 
 const router: Router = Router();
 
@@ -29,13 +90,6 @@ const router: Router = Router();
  *         schema:
  *           type: integer
  *         description: 페이지당 항목 수
- *       - in: query
- *         name: sort
- *         required: true
- *         schema:
- *           type: string
- *           enum: [popularity, latest, download_times]
- *         description: 정렬 기준
  *     responses:
  *       200:
  *         description: 게임 목록 조회 성공
@@ -57,7 +111,7 @@ router.get('/get/list', async (req: Request, res: Response) => {
         const gameList = await loadGameListControl(req);
         res.status(200).json(gameList);
     } catch (error) {
-        res.status(404).json({ message:(error as Error).message});
+        res.status(500).json({ message: (error as Error).message });
     }
 });
 
@@ -96,7 +150,7 @@ router.get('/get/origin', async (req: Request, res: Response) => {
         const originGames = await showOriginGameHierarchyControl(req);
         res.status(200).json(originGames);
     } catch (error) {
-        res.status(404).json({ message:(error as Error).message});
+        res.status(500).json({ message: (error as Error).message });
     }
 });
 
@@ -135,7 +189,7 @@ router.get('/get/variant', async (req: Request, res: Response) => {
         const variantGames = await showVarientGameHierarchyControl(req);
         res.status(200).json(variantGames);
     } catch (error) {
-        res.status(404).json({ message:(error as Error).message});
+        res.status(500).json({ message: (error as Error).message });
     }
 });
 
@@ -179,20 +233,20 @@ router.post('/get/byTags', async (req: Request, res: Response) => {
         const games = await getGameByTagControl(req);
         res.status(200).json(games);
     } catch (error) {
-        res.status(404).json({ message:(error as Error).message});
+        res.status(500).json({ message: (error as Error).message });
     }
 });
 
 /**
  * @swagger
- * /api/game/{game_id}:
+ * /api/games/detail:
  *   get:
  *     summary: 특정 게임 상세 정보 조회
  *     description: 게임 ID를 통해 게임 상세 정보를 조회합니다.
  *     tags: [Game]
  *     parameters:
- *       - in: path
- *         name: game_id
+ *       - in: query
+ *         name: gameId
  *         required: true
  *         schema:
  *           type: integer
@@ -216,7 +270,7 @@ router.get('/get/gameDetail', async (req: Request, res: Response) => {
         const gameDetails = await getGameDetailControl(req);
         res.status(200).json(gameDetails);
     } catch (error) {
-        res.status(404).json({ message:(error as Error).message});
+        res.status(500).json({ message: (error as Error).message });
     }
 });
 
