@@ -2,12 +2,11 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import { specs, swaggerUiOptions } from './config/swagger.config';
-import getGameRoute from './route/showGameList.route';
+import getGameRoute from './route/gameData.route';
 import gameRoute from './route/game.route';
 import resourceRoute from './route/resource.route';
 import jwtGuard from './middleware/jwt.guard';
-import GameDataRoute from "./route/gameData.route";
-import TradeInfoRoute from "./route/tradeInfo.route";
+import tradeInfoRoute from "./route/tradeInfo.route";
 
 const app : Express = express();
 app.use(express.json());
@@ -26,6 +25,5 @@ app.use('/api/protected/resource', resourceRoute);
 app.use('/api/get', getGameRoute);
 
 
-app.use('/games', GameDataRoute);
-app.use('/tradeInfo', TradeInfoRoute)
+app.use('/protected/get/tradeInfo', tradeInfoRoute)
 export default app;

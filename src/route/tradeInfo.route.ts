@@ -19,7 +19,7 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: string
  *         description:
  *           type: string
- *         thumnail_url:
+ *         thumbnail_url:
  *           type: string
  *         requirement:
  *           type: array
@@ -84,17 +84,8 @@ const router = Router();
  *     summary: 사용자 거래 내역 조회
  *     description: 특정 사용자의 게임 및 리소스 거래 내역을 조회합니다.
  *     tags: [TradeInfo]
- *      requestBody:
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                email:
- *                 type: string
- *                 description: 거래 내역을 조회할 사용자 이메일
- *                 example: user@example.com
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: 거래 내역 조회 성공
@@ -109,9 +100,9 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/get/tradeInfo', async (req: Request, res: Response) => {
+router.get('/protected/get/tradeInfo', async (req: Request, res: Response) => {
     try {
-        const { email } = req.body;
+        const email = req.user as string;
         const tradeHistory: TradeHistoryDto = await getTradeHistoryControl(email);
         res.status(200).json(tradeHistory);
     } catch (error) {

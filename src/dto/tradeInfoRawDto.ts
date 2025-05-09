@@ -13,7 +13,7 @@ export interface GameTradeDto {
     title: string;
     price: string;
     description: string;
-    thumnail_url: string;
+    thumbnail_url: string;
     requirement: RequirementDto[];
 }
 
@@ -35,7 +35,7 @@ export interface TradeInfoRawDto {
     title: string;
     price: string;
     description: string;
-    thumnail_url: string;
+    thumbnail_url: string;
     is_minimum: boolean | null;
     os: string | null;
     cpu: string | null;

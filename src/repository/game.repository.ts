@@ -43,7 +43,7 @@ export const updateGameFields = async (
 
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
     return await gameRepo.createQueryBuilder('game')
-        .select(['game.id', 'game.title', 'game.thumnail_url'])
+        .select(['game.id', 'game.title', 'game.thumbnail_url'])
         .orderBy('download_times', 'DESC')
         .offset((gameListRequestDto.page - 1) * gameListRequestDto.limit)
         .limit(gameListRequestDto.limit)
@@ -52,7 +52,7 @@ export const findGameList = async(gameListRequestDto: GameListRequestDto): Promi
 
 export const findOriginGameList = async (
     gameId: number
-): Promise<{ gameId: number; title: string; thumnailUrl: string }[]> => {
+): Promise<{ gameId: number; title: string; thumbnailUrl: string }[]> => {
     return gameRepo.createQueryBuilder('game')
         .where(qb => {
             const subQuery = qb
@@ -64,13 +64,13 @@ export const findOriginGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .select(['og.origin_game_id', 'game.title AS title', 'game.thumnail_url AS thumnail_url'])
+        .select(['og.origin_game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url'])
         .getRawMany();
 };
 
 export const findVarientGameList = async (
    gameId: number
-): Promise<{ gameId: number; title: string; thumnailUrl: string }[]> => {
+): Promise<{ gameId: number; title: string; thumbnailUrl: string }[]> => {
     return gameRepo.createQueryBuilder('game')
         .where(qb => {
             const subQuery = qb
@@ -82,7 +82,7 @@ export const findVarientGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .select(['og.game_id', 'game.title AS title', 'game.thumnail_url AS thumnail_url'])
+        .select(['og.game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url'])
         .getRawMany();
 };
 
@@ -90,7 +90,6 @@ export const isGameExist = async (id: number): Promise<boolean> => {
     return await gameRepo.exists({
         where: { id: id }
     });
-}
 }
 
 export const findGameWithTag = async(tags: string[])=>{
@@ -103,7 +102,7 @@ export const findGameWithTag = async(tags: string[])=>{
         .where('tag.name IN (:...tagNames)', { tags })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
-        .select(['game.id', 'game.title AS title', 'game.thumnail_url AS thumnailUrl'])
+        .select(['game.id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl'])
         .getRawMany();
 
     return result;

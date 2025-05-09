@@ -5,7 +5,7 @@ export interface GameDetailDto {
     title: string;
     userId: number;
     price: number;
-    thumnailUrl: string;
+    thumbnailUrl: string;
     description: string;
     registeredAt: Date;
     updatedAt: Date;

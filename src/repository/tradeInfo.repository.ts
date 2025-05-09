@@ -23,7 +23,7 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
         if (existing) {
             if (requirement) existing.requirement.push(requirement);
         } else {
-            const presignedUrl = await getPresignedUrl(row.thumnail_url);
+            const presignedUrl = await getPresignedUrl(row.thumbnail_url);
 
             gameMap.set(row.id, {
                 game_id: row.id,
@@ -31,7 +31,7 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
                 title: row.title,
                 price: row.price,
                 description: row.description,
-                thumnail_url: presignedUrl,
+                thumbnail_url: presignedUrl,
                 requirement: requirement ? [requirement] : []
             });
         }
@@ -42,7 +42,7 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
 
 export const getPurchasedGameRowsWithRequirements = async (userId: number): Promise<TradeInfoRawDto[]> => {
     return await AppDataSource.query(`
-    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumnail_url,
+    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumbnail_url,
            gr.is_minimum, gr.os, gr.cpu, gr.gpu, gr.ram, gr.storage
     FROM purchased_game pg
     JOIN game g ON pg.game_id = g.id
@@ -58,7 +58,7 @@ export const getPurchasedGamesInfo = async (userId: number): Promise<GameTradeDt
 
 export const getSoldGameRowsWithRequirements = async (userId: number): Promise<TradeInfoRawDto[]> => {
     return await AppDataSource.query(`
-    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumnail_url,
+    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumbnail_url,
            gr.is_minimum, gr.os, gr.cpu, gr.gpu, gr.ram, gr.storage
     FROM game g
     LEFT JOIN game_requirement gr ON gr.game_id = g.id
