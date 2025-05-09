@@ -5,6 +5,11 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  *   schemas:
  *     GameTradeDto:
  *       type: object
@@ -79,7 +84,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/get/tradeInfo:
+ * /api/protected/get/tradeInfo:
  *   get:
  *     summary: 사용자 거래 내역 조회
  *     description: 특정 사용자의 게임 및 리소스 거래 내역을 조회합니다.
@@ -100,7 +105,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/protected/get/tradeInfo', async (req: Request, res: Response) => {
+router.get('/tradeInfo', async (req: Request, res: Response) => {
     try {
         const email = req.user as string;
         const tradeHistory: TradeHistoryDto = await getTradeHistoryControl(email);
