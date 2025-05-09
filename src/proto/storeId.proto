@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package storeweb3id;
+
+message storeIdRequest {
+    int32 gameId = 1;
+    string itemId = 2;
+    repeated string sharerIds = 3;
+}
+
+message BoolResult {
+    bool success = 1;
+}
+
+service StoreIdService {
+    rpc storeWeb3Id(storeIdRequest) returns (BoolResult);
+}

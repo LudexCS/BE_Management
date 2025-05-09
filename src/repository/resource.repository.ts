@@ -19,3 +19,15 @@ export const isResourceExist = async (id: number): Promise<boolean> => {
         where: { id: id }
     });
 }
+
+export const updateResourceFields = async (
+    gameId: number,
+    partialUpdate: Partial<Resource>
+): Promise<void> => {
+    try {
+        await ResourceRepo.update({ gameId: gameId }, partialUpdate);
+    } catch (error) {
+        console.error("Failed to update resource fields:", error);
+        throw new Error("Failed to update resource fields in database");
+    }
+};
