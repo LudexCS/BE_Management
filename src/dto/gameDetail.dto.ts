@@ -7,6 +7,8 @@ export interface GameDetailDto {
     price: number;
     thumbnailUrl: string;
     description: string;
+    downloadTimes: number;
+    itemId: bigint;
     registeredAt: Date;
     updatedAt: Date;
     tags: string[];            // 태그 문자열 배열

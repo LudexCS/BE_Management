@@ -31,6 +31,7 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
                 title: row.title,
                 price: row.price,
                 description: row.description,
+                item_id: row.item_id,
                 thumbnail_url: presignedUrl,
                 requirement: requirement ? [requirement] : []
             });
@@ -42,7 +43,7 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
 
 export const getPurchasedGameRowsWithRequirements = async (userId: number): Promise<TradeInfoRawDto[]> => {
     return await AppDataSource.query(`
-    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumbnail_url,
+    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumbnail_url, g.item_id,
            gr.is_minimum, gr.os, gr.cpu, gr.gpu, gr.ram, gr.storage
     FROM purchased_game pg
     JOIN game g ON pg.game_id = g.id
@@ -58,7 +59,7 @@ export const getPurchasedGamesInfo = async (userId: number): Promise<GameTradeDt
 
 export const getSoldGameRowsWithRequirements = async (userId: number): Promise<TradeInfoRawDto[]> => {
     return await AppDataSource.query(`
-    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumbnail_url,
+    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumbnail_url, g.item_id
            gr.is_minimum, gr.os, gr.cpu, gr.gpu, gr.ram, gr.storage
     FROM game g
     LEFT JOIN game_requirement gr ON gr.game_id = g.id
@@ -74,7 +75,7 @@ export const getSoldGamesInfo = async (userId: number): Promise<GameTradeDto[]> 
 
 export const getPurchasedResourcesInfo = async (userId: number) : Promise<ResourceTradeDto[]> => {
     const rows =  await AppDataSource.query(`
-    SELECT r.id, r.user_id, r.description, r.seller_ratio, r.creater_ratio, ru.url, g.id
+    SELECT r.id, r.user_id, r.description, r.sharer_id, r.seller_ratio, r.creater_ratio, ru.url, g.id
     FROM resource r
     JOIN resource_transaction rt ON rt.resource_id = r.id
     LEFT JOIN game g ON r.game_id = g.id
@@ -86,6 +87,7 @@ export const getPurchasedResourcesInfo = async (userId: number) : Promise<Resour
         resource_id: row.resource_id,
         user_id: row.user_id,
         description: row.description,
+        sharer_id: row.sharer_id,
         seller_ratio: row.seller_ratio,
         creater_ratio: row.creater_ratio,
         image_url: await getPresignedUrl(row.image_url),
