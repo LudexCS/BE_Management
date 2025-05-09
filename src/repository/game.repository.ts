@@ -2,8 +2,7 @@ import AppDataSource from "../config/mysql.config";
 import { Game } from "../entity/game.entity"
 import { Repository } from "typeorm";
 import { GameListRequestDto} from "../dto/gameListRequest.dto";
-import {GameTempDetailDto} from "../dto/gameTempDetail.dto";
-
+import { GameTempDetailDto } from "../dto/gameTempDetail.dto";
 const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
 /**
@@ -43,7 +42,7 @@ export const updateGameFields = async (
 
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
     return await gameRepo.createQueryBuilder('game')
-        .select(['game.id', 'game.title', 'game.thumbnail_url'])
+        .select(['game.id AS game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url', 'game.item_id AS item_id'])
         .orderBy('download_times', 'DESC')
         .offset((gameListRequestDto.page - 1) * gameListRequestDto.limit)
         .limit(gameListRequestDto.limit)
@@ -64,7 +63,7 @@ export const findOriginGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .select(['og.origin_game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url'])
+        .select(['og.origin_game_id AS origin_game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url', 'game.item_id AS item_id'])
         .getRawMany();
 };
 
@@ -82,7 +81,7 @@ export const findVarientGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .select(['og.game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url'])
+        .select(['og.game_id AS variant_game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url', 'game.item_id AS item_id'])
         .getRawMany();
 };
 
@@ -102,7 +101,7 @@ export const findGameWithTag = async(tags: string[])=>{
         .where('tag.name IN (:...tagNames)', { tags })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
-        .select(['game.id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl'])
+        .select(['game.id AS game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url', 'game.item_id AS item_id'])
         .getRawMany();
 
     return result;
@@ -119,6 +118,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 'thumbnailUrl',
                 'description',
                 'downloadTimes',
+                'itemId',
                 'registeredAt',
                 'updatedAt'
             ],
