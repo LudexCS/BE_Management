@@ -11,7 +11,7 @@ export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
         return await Promise.all(
             gameListRows.map(async (game) => ({
             ...game,
-            thumnail_url: await getPresignedUrl(game.thumnailUrl)
+            thumbnail_url: await getPresignedUrl(game.thumbnailUrl)
         }))
         );
     } catch(err){
@@ -25,7 +25,7 @@ export const getOriginGameInfo = async(gameId: number) => {
         return await Promise.all(
             originGameListRows.map(async (game) => ({
                 ...game,
-                thumnail_url: await getPresignedUrl(game.thumnailUrl)
+                thumbnail_url: await getPresignedUrl(game.thumbnailUrl)
             }))
         )
     } catch(err){
@@ -40,7 +40,7 @@ export const getVariantGameInfo = async(gameId: number) => {
         return await Promise.all(
             varientGameRows.map(async (game) => ({
                 ...game,
-                thumnail_url: await getPresignedUrl(game.thumnailUrl)
+                thumbnail_url: await getPresignedUrl(game.thumbnailUrl)
             }))
         );
     } catch(err){

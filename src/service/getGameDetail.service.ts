@@ -13,7 +13,7 @@ export const getGameDetail = async(gameId: number) =>{
         const imageKeys = await findImageURLwithGameId(gameId);
         const requirements = await findGameRequirementWithGameId(gameId);
 
-        const presignedThumbnailUrl = await getPresignedUrl(gameDetails.thumnailUrl);
+        const presignedThumbnailUrl = await getPresignedUrl(gameDetails.thumbnailUrl);
 
         const presignedImageUrls = await Promise.all(
             imageKeys.map(key => getPresignedUrl(key))
@@ -24,7 +24,7 @@ export const getGameDetail = async(gameId: number) =>{
             title: gameDetails.title,
             userId: gameDetails.userId,
             price: gameDetails.price,
-            thumnailUrl: presignedThumbnailUrl,
+            thumbnailUrl: presignedThumbnailUrl,
             description: gameDetails.description,
             registeredAt: gameDetails.registeredAt,
             updatedAt: gameDetails.updatedAt,

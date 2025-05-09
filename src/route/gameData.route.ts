@@ -213,8 +213,7 @@ router.post('/get/byTags', async (req: Request, res: Response) => {
  */
 router.get('/get/gameDetail', async (req: Request, res: Response) => {
     try {
-        const { gameId } = req.body;
-        const gameDetails = await getGameDetailControl(gameId);
+        const gameDetails = await getGameDetailControl(req);
         res.status(200).json(gameDetails);
     } catch (error) {
         res.status(404).json({ message:(error as Error).message});

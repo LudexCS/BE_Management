@@ -10,17 +10,20 @@ export const saveGameTag = async (gameTag: GameTag) => {
     } catch (error) {
         console.error('Failed to save game tag:', error);
         throw new Error('Failed to save game tag to database');
+    }
+}
 
 export const findTagWithGameId = async(gameId: number): Promise<string[]> =>{
     try{
         const tagRows = await gameTagRepo
             .createQueryBuilder('game_tag')
-            .leftJoinAndSelect('game_tag.tag', 'tag')
+            .leftJoin('tag', 'tag', 'tag.id = game_tag.tag_id')
+            .select('tag.name', 'name')
             .where('game_tag.game_id = :gameId', { gameId })
             .orderBy('game_tag.priority', 'ASC')
-            .getMany();
+            .getRawMany();
 
-        const tags = tagRows.map(gt => gt.tag.name);
+        const tags = tagRows.map(tag => tag.name);
         return tags;
     } catch(err){
         throw err;
