@@ -106,7 +106,7 @@ const router: Router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/get/list', async (req: Request, res: Response) => {
+router.get('/list', async (req: Request, res: Response) => {
     try {
         const gameList = await loadGameListControl(req);
         res.status(200).json(gameList);
@@ -145,7 +145,7 @@ router.get('/get/list', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/get/origin', async (req: Request, res: Response) => {
+router.get('/origin', async (req: Request, res: Response) => {
     try {
         const originGames = await showOriginGameHierarchyControl(req);
         res.status(200).json(originGames);
@@ -184,7 +184,7 @@ router.get('/get/origin', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/get/variant', async (req: Request, res: Response) => {
+router.get('/variant', async (req: Request, res: Response) => {
     try {
         const variantGames = await showVarientGameHierarchyControl(req);
         res.status(200).json(variantGames);
@@ -228,7 +228,7 @@ router.get('/get/variant', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.post('/get/byTags', async (req: Request, res: Response) => {
+router.post('/byTags', async (req: Request, res: Response) => {
     try {
         const games = await getGameByTagControl(req);
         res.status(200).json(games);
@@ -265,7 +265,7 @@ router.post('/get/byTags', async (req: Request, res: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/get/gameDetail', async (req: Request, res: Response) => {
+router.get('/gameDetail', async (req: Request, res: Response) => {
     try {
         const gameDetails = await getGameDetailControl(req);
         res.status(200).json(gameDetails);
