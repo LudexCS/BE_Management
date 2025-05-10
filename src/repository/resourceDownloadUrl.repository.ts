@@ -7,7 +7,7 @@ const resourceDownloadUrlRepo: Repository<ResourceDownloadUrl> = AppDataSource.g
 
 export const findResourceDownloadUrlByResourceId = async (resourceId: number) => {
     const downloadUrls = await resourceDownloadUrlRepo.find({
-        where: { resourceId}
+        where: { resourceId }
     });
     const result = await Promise.all(
         downloadUrls.map(downloadUrl => getPresignedUrl(downloadUrl.url))
