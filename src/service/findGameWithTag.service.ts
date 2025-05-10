@@ -1,5 +1,7 @@
 import { findGameWithTag } from '../repository/game.repository'
 import {getPresignedUrl} from "./s3.service";
+import {GamesByTagDto} from "../dto/gamesByTag.dto";
+import {findTagByGameId} from "../repository/gameTag.repository";
 
 export const findGameWithTagService = async (
     tags: string[]
@@ -9,7 +11,7 @@ export const findGameWithTagService = async (
 
         const games: GamesByTagDto[] = await Promise.all(
             taggedGameRows.map(async (game) => {
-                const allTags = await findTagsByGameId(game.id);
+                const allTags = await findTagByGameId(game.id);
                 return {
                     gameId: game.id,
                     title: game.title,
