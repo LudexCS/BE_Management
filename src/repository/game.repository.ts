@@ -42,7 +42,7 @@ export const updateGameFields = async (
 
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
     return await gameRepo.createQueryBuilder('game')
-        .select(['game.id AS game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url', 'game.item_id AS item_id'])
+        .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId'])
         .orderBy('download_times', 'DESC')
         .offset((gameListRequestDto.page - 1) * gameListRequestDto.limit)
         .limit(gameListRequestDto.limit)
