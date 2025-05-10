@@ -1,7 +1,6 @@
 import {Request, Response, Router} from "express";
 import { getTradeHistoryControl } from "../controller/tradeInfo.controller";
 import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
-import jwtGuard from '../middleware/jwt.guard';
 
 /**
  * @swagger
@@ -141,7 +140,7 @@ const router: Router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/tradeInfo', jwtGuard, async (req: Request, res: Response) => {
+router.get('/tradeInfo', async (req: Request, res: Response) => {
     try {
         const email = req.user as string;
         const tradeHistory: TradeHistoryDto = await getTradeHistoryControl(email);
