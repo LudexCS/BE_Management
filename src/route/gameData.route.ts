@@ -204,6 +204,7 @@ router.get('/variant', async (req: Request, res: Response) => {
     }
 });
 
+
 /**
  * @swagger
  * /api/get/byTags:
@@ -217,12 +218,14 @@ router.get('/variant', async (req: Request, res: Response) => {
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - tags
  *             properties:
  *               tags:
  *                 type: array
  *                 items:
  *                   type: string
- *                 description: 검색할 태그 목록
+ *                 example: ["action", "rpg"]
  *     responses:
  *       200:
  *         description: 조건에 맞는 게임 목록 조회 성공
@@ -232,6 +235,12 @@ router.get('/variant', async (req: Request, res: Response) => {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/GameDetailDto'
+ *       400:
+ *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
  *       500:
  *         description: 서버 오류
  *         content:
@@ -241,7 +250,13 @@ router.get('/variant', async (req: Request, res: Response) => {
  */
 router.post('/byTags', async (req: Request, res: Response) => {
     try {
-        const games = await getGameByTagControl(req.body.tags);
+        const { tags } = req.body;
+
+        if (!Array.isArray(tags)) {
+            res.status(400).json({ message: 'tags는 문자열 배열이어야 합니다.' });
+        }
+
+        const games = await getGameByTagControl(tags);
         res.status(200).json(games);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
