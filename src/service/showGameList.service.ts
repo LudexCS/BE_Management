@@ -8,7 +8,7 @@ export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
     const offset = (page - 1) * limit;
     try{
         const gameListRows =  await findGameList(gameListRequestDto);
-        console.log("thumbnailUrl:", gameListRows[0].thumbnailUrl);
+
         return await Promise.all(
             gameListRows.map(async (game) => ({
                 game_id: game.id,
