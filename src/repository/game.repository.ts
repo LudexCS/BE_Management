@@ -108,7 +108,7 @@ export const findGameWithTag = async(tags: string[])=>{
         .createQueryBuilder('game')
         .innerJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .innerJoin('tag', 'tag', 'tag.id = gt.tag_id')
-        .where('tag.name IN (:...tagNames)', { tags })
+        .where('tag.name IN (:...tagNames)', { tagNames: tags })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
         .select(['game.id AS game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url', 'game.item_id AS item_id'])
