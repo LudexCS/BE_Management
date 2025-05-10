@@ -16,9 +16,8 @@ const jwtGuard = async (req: Request, res: Response, next: NextFunction): Promis
         res.status(401).json({ message: 'Missing or invalid Authorization header' });
         return;
     }
-    const token = jwtHeader.replace('Bearer ', '');
     try {
-        const email = await authAccount(token);
+        const email = await authAccount(jwtHeader);
         req.user = email;
 
         next();
