@@ -59,7 +59,7 @@ export const getPurchasedGamesInfo = async (userId: number): Promise<GameTradeDt
 
 export const getSoldGameRowsWithRequirements = async (userId: number): Promise<TradeInfoRawDto[]> => {
     return await AppDataSource.query(`
-    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumbnail_url, g.item_id
+    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumbnail_url, g.item_id,
            gr.is_minimum, gr.os, gr.cpu, gr.gpu, gr.ram, gr.storage
     FROM game g
     LEFT JOIN game_requirement gr ON gr.game_id = g.id
@@ -75,7 +75,7 @@ export const getSoldGamesInfo = async (userId: number): Promise<GameTradeDto[]> 
 
 export const getPurchasedResourcesInfo = async (userId: number) : Promise<ResourceTradeDto[]> => {
     const rows =  await AppDataSource.query(`
-    SELECT r.id, r.user_id, r.description, r.sharer_id, r.seller_ratio, r.creator_ratio, ru.url, g.id
+    SELECT r.id AS resource_id, r.user_id, r.description, r.sharer_id, r.seller_ratio, r.creator_ratio, ru.url, g.id
     FROM resource r
     JOIN resource_transaction rt ON rt.resource_id = r.id
     LEFT JOIN game g ON r.game_id = g.id
