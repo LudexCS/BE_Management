@@ -334,7 +334,7 @@ router.get('/gameDetail', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /resourceDetail:
+ * api/get/resourceDetail:
  *   get:
  *     summary: 게임 ID 기반 리소스 상세 조회
  *     description: 특정 게임 ID에 해당하는 리소스의 상세 정보를 반환합니다.
