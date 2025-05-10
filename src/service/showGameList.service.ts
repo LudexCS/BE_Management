@@ -8,10 +8,14 @@ export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
     const offset = (page - 1) * limit;
     try{
         const gameListRows =  await findGameList(gameListRequestDto);
+        console.log("thumbnailUrl:", gameListRows[0].thumbnailUrl);
         return await Promise.all(
             gameListRows.map(async (game) => ({
-            ...game,
-            thumbnail_url: await getPresignedUrl(game.thumbnailUrl)
+                game_id: game.id,
+                title: game.title,
+                thumbnail_url: await getPresignedUrl(game.thumbnailUrl),
+                item_id: game.itemId
+
         }))
         );
     } catch(err){
@@ -24,7 +28,8 @@ export const getOriginGameInfo = async(gameId: number) => {
         const originGameListRows = await findOriginGameList(gameId);
         return await Promise.all(
             originGameListRows.map(async (game) => ({
-                ...game,
+                gameId: game.gameId,
+                title: game.title,
                 thumbnail_url: await getPresignedUrl(game.thumbnailUrl)
             }))
         )
@@ -39,7 +44,8 @@ export const getVariantGameInfo = async(gameId: number) => {
 
         return await Promise.all(
             varientGameRows.map(async (game) => ({
-                ...game,
+                gameId: game.gameId,
+                title: game.title,
                 thumbnail_url: await getPresignedUrl(game.thumbnailUrl)
             }))
         );

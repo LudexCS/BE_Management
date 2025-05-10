@@ -241,7 +241,9 @@ router.get('/variant', async (req: Request, res: Response) => {
  */
 router.post('/byTags', async (req: Request, res: Response) => {
     try {
-        const { tags } = req.body;
+        console.log("🔥 req.headers.content-type:", req.headers['content-type']);
+        console.log("🔥 req.body:", req.body);
+        const { tags } = req.body || {} ;
         if (!Array.isArray(tags)) {
             res.status(400).json({ message: 'tags 배열이 필요합니다.' });
         }
