@@ -10,29 +10,8 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
- *   schemas:
- *     GameTradeDto:
- *       type: object
- *       properties:
- *         game_id:
- *           type: number
- *         user_id:
- *           type: number
- *         title:
- *           type: string
- *         price:
- *           type: string
- *         description:
- *           type: string
- *         thumbnail_url:
- *           type: string
- *         item_id:
- *           type: bigint
- *         requirement:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/GameRequirementDto'
  *
+ *   schemas:
  *     GameRequirementDto:
  *       type: object
  *       properties:
@@ -64,6 +43,28 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           nullable: true
  *           description: 네트워크 요구사항
  *
+ *     GameTradeDto:
+ *       type: object
+ *       properties:
+ *         game_id:
+ *           type: number
+ *         user_id:
+ *           type: number
+ *         title:
+ *           type: string
+ *         price:
+ *           type: string
+ *         description:
+ *           type: string
+ *         thumbnail_url:
+ *           type: string
+ *         item_id:
+ *           type: integer
+ *         requirement:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/GameRequirementDto'
+ *
  *     ResourceTradeDto:
  *       type: object
  *       properties:
@@ -83,7 +84,7 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: string
  *         game_id:
  *           type: number
-
+ *
  *     TradeHistoryDto:
  *       type: object
  *       properties:
@@ -105,6 +106,7 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/GameTradeDto'
+ *
  *     MessageResponse:
  *       type: object
  *       properties:
