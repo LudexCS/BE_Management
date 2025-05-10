@@ -14,6 +14,7 @@ export interface GameTradeDto {
     price: string;
     description: string;
     thumbnail_url: string;
+    item_id: bigint;
     requirement: RequirementDto[];
 }
 
@@ -21,6 +22,7 @@ export interface ResourceTradeDto {
     resource_id: number;
     user_id: number;
     description: string;
+    sharer_id: number;
     seller_ratio: string;
     creater_ratio: string
     image_url: string
@@ -36,6 +38,7 @@ export interface TradeInfoRawDto {
     price: string;
     description: string;
     thumbnail_url: string;
+    item_id: bigint;
     is_minimum: boolean | null;
     os: string | null;
     cpu: string | null;

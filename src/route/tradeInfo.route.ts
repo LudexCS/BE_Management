@@ -26,6 +26,8 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: string
  *         thumbnail_url:
  *           type: string
+ *         item_id:
+ *           type: bigint
  *         requirement:
  *           type: array
  *           items:
@@ -40,8 +42,8 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: number
  *         description:
  *           type: string
- *         usage_type_id:
- *           type: string
+ *         sharer_id:
+ *           type: number
  *         seller_ratio:
  *           type: string
  *         creater_ratio:
@@ -80,7 +82,7 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           description: 응답 메시지
  */
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @swagger

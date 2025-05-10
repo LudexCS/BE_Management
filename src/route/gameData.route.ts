@@ -6,6 +6,7 @@ import {
 } from "../controller/showGameList.controller";
 import { getGameByTagControl } from "../controller/getGameByTag.controller";
 import { getGameDetailControl } from "../controller/getGameDetail.controller";
+import {GameListRequestDto} from "../dto/gameListRequest.dto";
 /**
  * @swagger
  * components:
@@ -41,6 +42,8 @@ import { getGameDetailControl } from "../controller/getGameDetail.controller";
  *           format: uri
  *         description:
  *           type: string
+ *         item_id:
+ *           type: bigint
  *         registeredAt:
  *           type: string
  *           format: date-time
@@ -108,7 +111,13 @@ const router: Router = Router();
  */
 router.get('/list', async (req: Request, res: Response) => {
     try {
-        const gameList = await loadGameListControl(req);
+        const { page, limit } = req.query;
+
+        const gameListRequestDto: GameListRequestDto = {
+            page: Number(page),
+            limit: Number(limit),
+        };
+        const gameList = await loadGameListControl(gameListRequestDto);
         res.status(200).json(gameList);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -147,7 +156,8 @@ router.get('/list', async (req: Request, res: Response) => {
  */
 router.get('/origin', async (req: Request, res: Response) => {
     try {
-        const originGames = await showOriginGameHierarchyControl(req);
+        const gameId = Number(req.query.gameId);
+        const originGames = await showOriginGameHierarchyControl(gameId);
         res.status(200).json(originGames);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -186,12 +196,14 @@ router.get('/origin', async (req: Request, res: Response) => {
  */
 router.get('/variant', async (req: Request, res: Response) => {
     try {
-        const variantGames = await showVarientGameHierarchyControl(req);
+        const gameId = Number(req.query.gameId);
+        const variantGames = await showVarientGameHierarchyControl(gameId);
         res.status(200).json(variantGames);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
     }
 });
+
 
 /**
  * @swagger
@@ -206,12 +218,14 @@ router.get('/variant', async (req: Request, res: Response) => {
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - tags
  *             properties:
  *               tags:
  *                 type: array
  *                 items:
  *                   type: string
- *                 description: 검색할 태그 목록
+ *                 example: ["action", "rpg"]
  *     responses:
  *       200:
  *         description: 조건에 맞는 게임 목록 조회 성공
@@ -221,6 +235,12 @@ router.get('/variant', async (req: Request, res: Response) => {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/GameDetailDto'
+ *       400:
+ *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
  *       500:
  *         description: 서버 오류
  *         content:
@@ -230,7 +250,13 @@ router.get('/variant', async (req: Request, res: Response) => {
  */
 router.post('/byTags', async (req: Request, res: Response) => {
     try {
-        const games = await getGameByTagControl(req);
+        const { tags } = req.body;
+
+        if (!Array.isArray(tags)) {
+            res.status(400).json({ message: 'tags는 문자열 배열이어야 합니다.' });
+        }
+
+        const games = await getGameByTagControl(tags);
         res.status(200).json(games);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -267,7 +293,8 @@ router.post('/byTags', async (req: Request, res: Response) => {
  */
 router.get('/gameDetail', async (req: Request, res: Response) => {
     try {
-        const gameDetails = await getGameDetailControl(req);
+        const gameId = Number(req.query.gameId);
+        const gameDetails = await getGameDetailControl(gameId);
         res.status(200).json(gameDetails);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });

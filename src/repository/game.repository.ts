@@ -2,8 +2,7 @@ import AppDataSource from "../config/mysql.config";
 import { Game } from "../entity/game.entity"
 import { Repository } from "typeorm";
 import { GameListRequestDto} from "../dto/gameListRequest.dto";
-import {GameTempDetailDto} from "../dto/gameTempDetail.dto";
-
+import { GameTempDetailDto } from "../dto/gameTempDetail.dto";
 const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
 /**
@@ -43,7 +42,7 @@ export const updateGameFields = async (
 
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
     return await gameRepo.createQueryBuilder('game')
-        .select(['game.id', 'game.title', 'game.thumbnail_url'])
+        .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId'])
         .orderBy('download_times', 'DESC')
         .offset((gameListRequestDto.page - 1) * gameListRequestDto.limit)
         .limit(gameListRequestDto.limit)
@@ -53,7 +52,8 @@ export const findGameList = async(gameListRequestDto: GameListRequestDto): Promi
 export const findOriginGameList = async (
     gameId: number
 ): Promise<{ gameId: number; title: string; thumbnailUrl: string }[]> => {
-    return gameRepo.createQueryBuilder('game')
+    return gameRepo
+        .createQueryBuilder('game')
         .where(qb => {
             const subQuery = qb
                 .subQuery()
@@ -64,25 +64,34 @@ export const findOriginGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .select(['og.origin_game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url'])
+        .select([
+            'game.id AS gameId',
+            'game.title AS title',
+            'game.thumbnail_url AS thumbnailUrl'
+        ])
         .getRawMany();
 };
 
 export const findVarientGameList = async (
-   gameId: number
+    gameId: number
 ): Promise<{ gameId: number; title: string; thumbnailUrl: string }[]> => {
-    return gameRepo.createQueryBuilder('game')
+    return gameRepo
+        .createQueryBuilder('game')
         .where(qb => {
             const subQuery = qb
                 .subQuery()
                 .select('og.game_id')
                 .from('origin_game', 'og')
-                .where('og.origin_id = :gameId')
+                .where('og.origin_game_id = :gameId')
                 .getQuery();
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .select(['og.game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url'])
+        .select([
+            'game.id AS gameId',
+            'game.title AS title',
+            'game.thumbnail_url AS thumbnailUrl'
+        ])
         .getRawMany();
 };
 
@@ -99,10 +108,10 @@ export const findGameWithTag = async(tags: string[])=>{
         .createQueryBuilder('game')
         .innerJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .innerJoin('tag', 'tag', 'tag.id = gt.tag_id')
-        .where('tag.name IN (:...tagNames)', { tags })
+        .where('tag.name IN (:...tagNames)', { tagNames: tags })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
-        .select(['game.id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl'])
+        .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId'])
         .getRawMany();
 
     return result;
@@ -119,6 +128,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 'thumbnailUrl',
                 'description',
                 'downloadTimes',
+                'itemId',
                 'registeredAt',
                 'updatedAt'
             ],
