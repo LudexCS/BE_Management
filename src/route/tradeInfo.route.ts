@@ -5,12 +5,6 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
 /**
  * @swagger
  * components:
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- *
  *   schemas:
  *     GameRequirementDto:
  *       type: object
@@ -42,7 +36,6 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: string
  *           nullable: true
  *           description: 네트워크 요구사항
- *
  *     GameTradeDto:
  *       type: object
  *       properties:
@@ -64,7 +57,6 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/GameRequirementDto'
- *
  *     ResourceTradeDto:
  *       type: object
  *       properties:
@@ -84,7 +76,6 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: string
  *         game_id:
  *           type: number
- *
  *     TradeHistoryDto:
  *       type: object
  *       properties:
@@ -106,7 +97,6 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/GameTradeDto'
- *
  *     MessageResponse:
  *       type: object
  *       properties:
