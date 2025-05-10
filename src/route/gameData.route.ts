@@ -111,7 +111,12 @@ const router: Router = Router();
  */
 router.get('/list', async (req: Request, res: Response) => {
     try {
-        const gameListRequestDto = req.body as GameListRequestDto;
+        const { page, limit } = req.query;
+
+        const gameListRequestDto: GameListRequestDto = {
+            page: Number(page),
+            limit: Number(limit),
+        };
         const gameList = await loadGameListControl(gameListRequestDto);
         res.status(200).json(gameList);
     } catch (error) {

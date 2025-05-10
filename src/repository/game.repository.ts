@@ -52,7 +52,8 @@ export const findGameList = async(gameListRequestDto: GameListRequestDto): Promi
 export const findOriginGameList = async (
     gameId: number
 ): Promise<{ gameId: number; title: string; thumbnailUrl: string }[]> => {
-    return gameRepo.createQueryBuilder('game')
+    return gameRepo
+        .createQueryBuilder('game')
         .where(qb => {
             const subQuery = qb
                 .subQuery()
@@ -63,25 +64,34 @@ export const findOriginGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .select(['og.origin_game_id AS origin_game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url', 'game.item_id AS item_id'])
+        .select([
+            'game.id AS gameId',
+            'game.title AS title',
+            'game.thumbnail_url AS thumbnailUrl'
+        ])
         .getRawMany();
 };
 
 export const findVarientGameList = async (
-   gameId: number
+    gameId: number
 ): Promise<{ gameId: number; title: string; thumbnailUrl: string }[]> => {
-    return gameRepo.createQueryBuilder('game')
+    return gameRepo
+        .createQueryBuilder('game')
         .where(qb => {
             const subQuery = qb
                 .subQuery()
                 .select('og.game_id')
                 .from('origin_game', 'og')
-                .where('og.origin_id = :gameId')
+                .where('og.origin_game_id = :gameId')
                 .getQuery();
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .select(['og.game_id AS variant_game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url', 'game.item_id AS item_id'])
+        .select([
+            'game.id AS gameId',
+            'game.title AS title',
+            'game.thumbnail_url AS thumbnailUrl'
+        ])
         .getRawMany();
 };
 
