@@ -1,4 +1,3 @@
-import { Request, Response} from "express";
 import { getGameDetail } from "../service/getGameDetail.service"
 
 export const getGameDetailControl = async (gameId: number) =>{
