@@ -111,7 +111,8 @@ export const findGameWithTag = async(tags: string[])=>{
         .where('tag.name IN (:...tagNames)', { tagNames: tags })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
-        .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId'])
+        .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId',
+            'game.price AS price','game.description AS description'])
         .getRawMany();
 
     return result;
@@ -119,21 +120,25 @@ export const findGameWithTag = async(tags: string[])=>{
 
 export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempDetailDto> =>{
     try{
-        const gameDetails = await gameRepo.findOne({
-            select: [
-                'id',
-                'title',
-                'userId',
-                'price',
-                'thumbnailUrl',
-                'description',
-                'downloadTimes',
-                'itemId',
-                'registeredAt',
-                'updatedAt'
-            ],
-            where: { id: gameId },
-        });
+        const gameDetails = await gameRepo
+            .createQueryBuilder("game")
+            .innerJoin("account", "account", "account.id = game.userId")
+            .select([
+                "game.id AS id",
+                "game.title AS title",
+                "game.userId AS userId",
+                "account.name AS userName",
+                "game.price AS price",
+                "game.thumbnailUrl AS thumbnailUrl",
+                "game.description AS description",
+                "game.downloadTimes AS downloadTimes",
+                "game.itemId AS itemId",
+                "game.registeredAt AS registeredAt",
+                "game.updatedAt AS updatedAt"
+            ])
+            .where("game.id = :gameId", { gameId })
+            .getRawOne();
+
         if(!gameDetails){
             throw new Error("게임 찾기 실패");
         }
