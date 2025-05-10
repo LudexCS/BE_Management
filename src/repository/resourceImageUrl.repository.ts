@@ -15,7 +15,7 @@ export const saveResourceImageUrl = async (resourceImageUrl: ResourceImageUrl): 
 };
 
 export const findResourceImageUrlByResourceId = async (resourceId: number) => {
-    const imageUrls = ResourceImageUrlRepo.find({
+    const imageUrls = await ResourceImageUrlRepo.find({
         where: { resourceId}
     });
     const result = await Promise.all(
