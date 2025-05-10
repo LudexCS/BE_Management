@@ -10,7 +10,7 @@ export const findResourceDownloadUrlByResourceId = async (resourceId: number) =>
         where: { resourceId }
     });
     const result = await Promise.all(
-        downloadUrls.map(downloadUrl => getPresignedUrl(downloadUrl.url))
+        downloadUrls.map(downloadUrl => getPresignedUrl(downloadUrl.key))
     );
     return await result;
 }

@@ -13,5 +13,5 @@ export class ResourceDownloadUrl {
     resourceId: number;
 
     @Column({type: 'varchar', length: 255})
-    url: string;
+    key: string;
 }
