@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package ResourceInfo;
+
+message resourceRequest {
+    int64 resourceId = 1;
+}
+
+message userIdResponse {
+    int64 userId = 1;
+}
+
+service ResourceService {
+    rpc getUserIdByResource(resourceRequest) returns (userIdResponse);
+}
