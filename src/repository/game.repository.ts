@@ -127,7 +127,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 "game.id AS id",
                 "game.title AS title",
                 "game.userId AS userId",
-                "account.name AS userName",
+                "account.nickname AS userName",
                 "game.price AS price",
                 "game.thumbnailUrl AS thumbnailUrl",
                 "game.description AS description",
