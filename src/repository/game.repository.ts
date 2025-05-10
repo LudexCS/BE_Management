@@ -111,7 +111,7 @@ export const findGameWithTag = async(tags: string[])=>{
         .where('tag.name IN (:...tagNames)', { tagNames: tags })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
-        .select(['game.id AS game_id', 'game.title AS title', 'game.thumbnail_url AS thumbnail_url', 'game.item_id AS item_id'])
+        .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId'])
         .getRawMany();
 
     return result;

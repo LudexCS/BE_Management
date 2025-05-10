@@ -9,8 +9,10 @@ export const findGameWithTagService = async (
 
         return await Promise.all(
             taggedGameRows.map(async (game) => ({
-                ...game,
-                thumbnail_url: await getPresignedUrl(game.thumbnailUrl)
+                gameId: game.id,
+                title: game.title,
+                thumbnail_url: await getPresignedUrl(game.thumbnailUrl),
+                itemId: game.itemId
             }))
         );
     } catch(err){
