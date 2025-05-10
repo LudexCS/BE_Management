@@ -7,6 +7,9 @@ import {
 import { getGameByTagControl } from "../controller/getGameByTag.controller";
 import { getGameDetailControl } from "../controller/getGameDetail.controller";
 import {GameListRequestDto} from "../dto/gameListRequest.dto";
+import {getResourceDetailControl} from "../controller/getResourceDetail.controller";
+
+
 /**
  * @swagger
  * components:
@@ -14,17 +17,55 @@ import {GameListRequestDto} from "../dto/gameListRequest.dto";
  *     GameRequirementDto:
  *       type: object
  *       properties:
+ *         is_minimum:
+ *           type: boolean
+ *           description: 최소 사양 여부
  *         os:
  *           type: string
+ *           nullable: true
  *         cpu:
  *           type: string
+ *           nullable: true
  *         ram:
  *           type: string
+ *           nullable: true
  *         gpu:
  *           type: string
+ *           nullable: true
  *         storage:
  *           type: string
-
+ *           nullable: true
+ *         network:
+ *           type: string
+ *           nullable: true
+ *
+ *     GamesByTagDto:
+ *       type: object
+ *       properties:
+ *         gameId:
+ *           type: integer
+ *           example: 1
+ *         title:
+ *           type: string
+ *           example: "Space Blaster"
+ *         thumbnail_url:
+ *           type: string
+ *           example: "https://your-s3-url.com/space-blaster.jpg"
+ *         itemId:
+ *           type: string
+ *           example: "abc123"
+ *         price:
+ *           type: string
+ *           example: "9900"
+ *         description:
+ *           type: string
+ *           example: "A fast-paced space shooter game."
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: ["action", "rpg", "indie"]
+ *
  *     GameDetailDto:
  *       type: object
  *       properties:
@@ -34,6 +75,8 @@ import {GameListRequestDto} from "../dto/gameListRequest.dto";
  *           type: string
  *         userId:
  *           type: integer
+ *         userName:
+ *           type: string
  *         price:
  *           type: number
  *           format: float
@@ -43,7 +86,7 @@ import {GameListRequestDto} from "../dto/gameListRequest.dto";
  *         description:
  *           type: string
  *         item_id:
- *           type: bigint
+ *           type: integer
  *         registeredAt:
  *           type: string
  *           format: date-time
@@ -63,7 +106,49 @@ import {GameListRequestDto} from "../dto/gameListRequest.dto";
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/GameRequirementDto'
-
+ *
+ *     ResourceDetailDto:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         gameId:
+ *           type: integer
+ *         userId:
+ *           type: integer
+ *         sellerRatio:
+ *           type: integer
+ *         creatorRatio:
+ *           type: integer
+ *         allowDerivation:
+ *           type: boolean
+ *         additionalCondition:
+ *           type: string
+ *           nullable: true
+ *         description:
+ *           type: string
+ *           nullable: true
+ *         downloadTimes:
+ *           type: integer
+ *         sharerId:
+ *           type: integer
+ *         registeredAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *         imageUrls:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uri
+ *         downloadUrls:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uri
+ *
  *     MessageResponse:
  *       type: object
  *       properties:
@@ -210,7 +295,7 @@ router.get('/variant', async (req: Request, res: Response) => {
  * /api/get/byTags:
  *   post:
  *     summary: 태그 기반 게임 검색
- *     description: 태그 배열을 기반으로 해당 조건을 만족하는 게임들을 조회합니다.
+ *     description: 입력한 태그들을 모두 포함하는 게임들을 조회하고, 각 게임의 전체 태그 목록도 함께 반환합니다.
  *     tags: [GameList]
  *     requestBody:
  *       required: true
@@ -234,7 +319,7 @@ router.get('/variant', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameDetailDto'
+ *                 $ref: '#/components/schemas/GamesByTagDto'
  *       400:
  *         description: 잘못된 요청
  *         content:
@@ -300,5 +385,50 @@ router.get('/gameDetail', async (req: Request, res: Response) => {
         res.status(500).json({ message: (error as Error).message });
     }
 });
+
+
+/**
+ * @swagger
+ * /api/get/resourceDetail:
+ *   get:
+ *     summary: 게임 ID 기반 리소스 상세 조회
+ *     description: 특정 게임 ID에 해당하는 리소스의 상세 정보를 반환합니다.
+ *     tags: [Resource]
+ *     parameters:
+ *       - in: query
+ *         name: gameId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: 리소스를 조회할 게임 ID
+ *     responses:
+ *       200:
+ *         description: 리소스 상세 정보 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ResourceDetailDto'
+ *       400:
+ *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
+ */
+router.get('/resourceDetail', async (req: Request, res: Response) => {
+    try{
+        const gameId = Number(req.query.gameId);
+        const resourceDetails = await getResourceDetailControl(gameId);
+        res.status(200).json(resourceDetails);
+    }catch(error){
+        res.status(500).json({ message: (error as Error).message });
+    }
+})
 
 export default router;

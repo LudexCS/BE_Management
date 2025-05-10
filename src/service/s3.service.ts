@@ -33,10 +33,7 @@ export const uploadResourceImageToS3 = async ( image: { path: string; mimetype: 
 };
 
 export const getPresignedUrl = async (key: string, type: "get" | "put" = "get", expiresInSec = 60): Promise<string> => {
-    const command =
-        type === "get"
-            ? new GetObjectCommand({ Bucket: "your-bucket-name", Key: key })
-            : new PutObjectCommand({ Bucket: "your-bucket-name", Key: key });
+    const command = new GetObjectCommand({ Bucket: "process.env.AWS_S3_BUCKET", Key: key });
 
     const url = await getSignedUrl(S3, command, { expiresIn: expiresInSec });
     return url;

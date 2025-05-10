@@ -1,5 +1,7 @@
 import { findGameWithTag } from '../repository/game.repository'
 import {getPresignedUrl} from "./s3.service";
+import {GamesByTagDto} from "../dto/gamesByTag.dto";
+import {findTagByGameId} from "../repository/gameTag.repository";
 
 export const findGameWithTagService = async (
     tags: string[]
@@ -7,14 +9,21 @@ export const findGameWithTagService = async (
     try {
         const taggedGameRows = await findGameWithTag(tags);
 
-        return await Promise.all(
-            taggedGameRows.map(async (game) => ({
-                gameId: game.id,
-                title: game.title,
-                thumbnail_url: await getPresignedUrl(game.thumbnailUrl),
-                itemId: game.itemId
-            }))
+        const games: GamesByTagDto[] = await Promise.all(
+            taggedGameRows.map(async (game) => {
+                const allTags = await findTagByGameId(game.id);
+                return {
+                    gameId: game.id,
+                    title: game.title,
+                    thumbnail_url: await getPresignedUrl(game.thumbnailUrl),
+                    itemId: game.itemId,
+                    price: game.price,
+                    description: game.description,
+                    tags: allTags,
+                };
+            })
         );
+        return games;
     } catch(err){
         throw err;
     }

@@ -1,6 +1,7 @@
 import {Request, Response, Router} from "express";
 import { getTradeHistoryControl } from "../controller/tradeInfo.controller";
 import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
+import jwtGuard from '../middleware/jwt.guard';
 
 /**
  * @swagger
@@ -10,7 +11,39 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
+ *
  *   schemas:
+ *     GameRequirementDto:
+ *       type: object
+ *       properties:
+ *         is_minimum:
+ *           type: boolean
+ *           description: 최소 사양 여부 (true면 최소, false면 권장)
+ *         os:
+ *           type: string
+ *           nullable: true
+ *           description: 운영체제
+ *         cpu:
+ *           type: string
+ *           nullable: true
+ *           description: 프로세서
+ *         gpu:
+ *           type: string
+ *           nullable: true
+ *           description: 그래픽 카드
+ *         ram:
+ *           type: string
+ *           nullable: true
+ *           description: 메모리
+ *         storage:
+ *           type: string
+ *           nullable: true
+ *           description: 저장 공간
+ *         network:
+ *           type: string
+ *           nullable: true
+ *           description: 네트워크 요구사항
+ *
  *     GameTradeDto:
  *       type: object
  *       properties:
@@ -27,12 +60,12 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *         thumbnail_url:
  *           type: string
  *         item_id:
- *           type: bigint
+ *           type: integer
  *         requirement:
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/GameRequirementDto'
-
+ *
  *     ResourceTradeDto:
  *       type: object
  *       properties:
@@ -52,7 +85,7 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: string
  *         game_id:
  *           type: number
-
+ *
  *     TradeHistoryDto:
  *       type: object
  *       properties:
@@ -74,6 +107,7 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/GameTradeDto'
+ *
  *     MessageResponse:
  *       type: object
  *       properties:
@@ -107,7 +141,7 @@ const router: Router = Router();
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  */
-router.get('/tradeInfo', async (req: Request, res: Response) => {
+router.get('/tradeInfo', jwtGuard, async (req: Request, res: Response) => {
     try {
         const email = req.user as string;
         const tradeHistory: TradeHistoryDto = await getTradeHistoryControl(email);

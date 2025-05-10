@@ -13,7 +13,7 @@ export const saveGameTag = async (gameTag: GameTag) => {
     }
 }
 
-export const findTagWithGameId = async(gameId: number): Promise<string[]> =>{
+export const findTagByGameId = async(gameId: number): Promise<string[]> =>{
     try{
         const tagRows = await gameTagRepo
             .createQueryBuilder('game_tag')
