@@ -1,4 +1,4 @@
-import {ResourceDownloadUrl} from "../entity/resourceImageUrl.entity";
+import {ResourceDownloadUrl} from "../entity/resourceDownloadUrl.entity";
 import {Repository} from "typeorm";
 import AppDataSource from "../config/mysql.config";
 import { getPresignedUrl } from "../service/s3.service";
@@ -6,7 +6,7 @@ import { getPresignedUrl } from "../service/s3.service";
 const resourceDownloadUrlRepo: Repository<ResourceDownloadUrl> = AppDataSource.getRepository(ResourceDownloadUrl);
 
 export const findResourceDownloadUrlByResourceId = async (resourceId: number) => {
-    const downloadUrls = resourceDownloadUrlRepo.find({
+    const downloadUrls = await resourceDownloadUrlRepo.find({
         where: { resourceId}
     });
     const result = await Promise.all(

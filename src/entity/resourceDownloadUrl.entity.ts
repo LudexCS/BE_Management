@@ -4,8 +4,8 @@ import {
     Column
 } from 'typeorm';
 
-@Entity('resource_image_url')
-export class ResourceImageUrl {
+@Entity('resource_download_url')
+export class ResourceDownloadUrl {
     @PrimaryGeneratedColumn()
     id: number;
 
