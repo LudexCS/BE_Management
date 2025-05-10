@@ -93,7 +93,48 @@ import {getResourceDetailControl} from "../controller/getResourceDetail.controll
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/GameRequirementDto'
-
+ *
+ *    ResourceDetailDto:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         gameId:
+ *           type: integer
+ *         userId:
+ *           type: integer
+ *         sellerRatio:
+ *           type: integer
+ *         creatorRatio:
+ *           type: integer
+ *         allowDerivation:
+ *           type: boolean
+ *         additionalCondition:
+ *           type: string
+ *           nullable: true
+ *         description:
+ *           type: string
+ *           nullable: true
+ *         downloadTimes:
+ *           type: integer
+ *         sharerId:
+ *           type: integer
+ *         registeredAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *         imageUrls:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uri
+ *         downloadUrls:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uri
  *     MessageResponse:
  *       type: object
  *       properties:
@@ -334,7 +375,7 @@ router.get('/gameDetail', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * api/get/resourceDetail:
+ * /api/get/resourceDetail:
  *   get:
  *     summary: 게임 ID 기반 리소스 상세 조회
  *     description: 특정 게임 ID에 해당하는 리소스의 상세 정보를 반환합니다.
