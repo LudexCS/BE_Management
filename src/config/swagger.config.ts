@@ -32,7 +32,12 @@ const options = {
           description: 'JWT 액세스 토큰을 입력하세요'
         }
       }
-    }
+    },
+      security: [
+          {
+              bearerAuth: [],
+          },
+      ],
   },
   apis: ['./src/route/*.ts']
 };

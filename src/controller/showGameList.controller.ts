@@ -2,8 +2,7 @@ import { Request } from 'express';
 import { getGameList, getOriginGameInfo, getVariantGameInfo } from '../service/showGameList.service'
 import { GameListRequestDto} from "../dto/gameListRequest.dto";
 
-export const loadGameListControl = async (req: Request) =>{
-    const gameListRequestDto = req.body as GameListRequestDto;
+export const loadGameListControl = async (gameListRequestDto: GameListRequestDto) =>{
     try{
         return await getGameList(gameListRequestDto);
     } catch(err){
@@ -11,8 +10,7 @@ export const loadGameListControl = async (req: Request) =>{
     }
 }
 
-export const showOriginGameHierarchyControl = async (req: Request) =>{
-    const { gameId } = req.body;
+export const showOriginGameHierarchyControl = async (gameId: number) =>{
     try{
         return await getOriginGameInfo(gameId);
     } catch(err){
@@ -20,8 +18,7 @@ export const showOriginGameHierarchyControl = async (req: Request) =>{
     }
 }
 
-export const showVarientGameHierarchyControl = async (req: Request) =>{
-    const { gameId } = req.body;
+export const showVarientGameHierarchyControl = async (gameId: number) =>{
     try{
         return await getVariantGameInfo(gameId);
     } catch(err){
