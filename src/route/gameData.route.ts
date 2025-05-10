@@ -8,6 +8,8 @@ import { getGameByTagControl } from "../controller/getGameByTag.controller";
 import { getGameDetailControl } from "../controller/getGameDetail.controller";
 import {GameListRequestDto} from "../dto/gameListRequest.dto";
 import {getResourceDetailControl} from "../controller/getResourceDetail.controller";
+
+
 /**
  * @swagger
  * components:
@@ -15,16 +17,27 @@ import {getResourceDetailControl} from "../controller/getResourceDetail.controll
  *     GameRequirementDto:
  *       type: object
  *       properties:
+ *         is_minimum:
+ *           type: boolean
+ *           description: 최소 사양 여부
  *         os:
  *           type: string
+ *           nullable: true
  *         cpu:
  *           type: string
+ *           nullable: true
  *         ram:
  *           type: string
+ *           nullable: true
  *         gpu:
  *           type: string
+ *           nullable: true
  *         storage:
  *           type: string
+ *           nullable: true
+ *         network:
+ *           type: string
+ *           nullable: true
  *
  *     GamesByTagDto:
  *       type: object
@@ -73,7 +86,7 @@ import {getResourceDetailControl} from "../controller/getResourceDetail.controll
  *         description:
  *           type: string
  *         item_id:
- *           type: bigint
+ *           type: integer
  *         registeredAt:
  *           type: string
  *           format: date-time
@@ -94,7 +107,7 @@ import {getResourceDetailControl} from "../controller/getResourceDetail.controll
  *           items:
  *             $ref: '#/components/schemas/GameRequirementDto'
  *
- *    ResourceDetailDto:
+ *     ResourceDetailDto:
  *       type: object
  *       properties:
  *         id:
@@ -135,6 +148,7 @@ import {getResourceDetailControl} from "../controller/getResourceDetail.controll
  *           items:
  *             type: string
  *             format: uri
+ *
  *     MessageResponse:
  *       type: object
  *       properties:

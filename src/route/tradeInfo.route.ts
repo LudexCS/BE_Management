@@ -32,7 +32,38 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/GameRequirementDto'
-
+ *
+ *     GameRequirementDto:
+ *       type: object
+ *       properties:
+ *         is_minimum:
+ *           type: boolean
+ *           description: 최소 사양 여부 (true면 최소, false면 권장)
+ *         os:
+ *           type: string
+ *           nullable: true
+ *           description: 운영체제
+ *         cpu:
+ *           type: string
+ *           nullable: true
+ *           description: 프로세서
+ *         gpu:
+ *           type: string
+ *           nullable: true
+ *           description: 그래픽 카드
+ *         ram:
+ *           type: string
+ *           nullable: true
+ *           description: 메모리
+ *         storage:
+ *           type: string
+ *           nullable: true
+ *           description: 저장 공간
+ *         network:
+ *           type: string
+ *           nullable: true
+ *           description: 네트워크 요구사항
+ *
  *     ResourceTradeDto:
  *       type: object
  *       properties:
