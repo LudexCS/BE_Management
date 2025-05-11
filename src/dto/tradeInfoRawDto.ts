@@ -1,5 +1,5 @@
 export interface RequirementDto {
-    is_minimum: boolean;
+    isMinimum: boolean;
     os?: string;
     cpu?: string;
     gpu?: string;
@@ -8,38 +8,38 @@ export interface RequirementDto {
 }
 
 export interface GameTradeDto {
-    game_id: number;
-    user_id: number;
+    gameId: number;
+    userId: number;
     title: string;
     price: string;
     description: string;
-    thumbnail_url: string;
-    item_id: bigint;
+    thumbnailUrl: string;
+    itemId: bigint;
     requirement: RequirementDto[];
 }
 
 export interface ResourceTradeDto {
-    resource_id: number;
-    user_id: number;
+    resourceId: number;
+    userId: number;
     description: string;
-    sharer_id: number;
-    seller_ratio: string;
-    creater_ratio: string
-    image_url: string
-    game_id: number;
+    sharerId: number;
+    sellerRatio: string;
+    createrRatio: string
+    imageUrl: string
+    gameId: number;
 }
 
 
 
 export interface TradeInfoRawDto {
     id: number;
-    user_id: number;
+    userId: number;
     title: string;
     price: string;
     description: string;
-    thumbnail_url: string;
-    item_id: bigint;
-    is_minimum: boolean | null;
+    thumbnailUrl: string;
+    itemId: bigint;
+    isMinimum: boolean | null;
     os: string | null;
     cpu: string | null;
     gpu: string | null;

@@ -23,7 +23,7 @@ export const getGameDetail = async(gameId: number) =>{
             id: gameDetails.id,
             title: gameDetails.title,
             userId: gameDetails.userId,
-            userName: gameDetails.userName,
+            nickName: gameDetails.userName,
             price: gameDetails.price,
             thumbnailUrl: presignedThumbnailUrl,
             description: gameDetails.description,

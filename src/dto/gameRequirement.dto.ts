@@ -1,5 +1,5 @@
 export interface GameRequirementDto {
-    is_minimum: boolean;
+    isMinimum: boolean;
     os?: string;
     cpu?: string;
     gpu?: string;

@@ -9,7 +9,7 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *     GameRequirementDto:
  *       type: object
  *       properties:
- *         is_minimum:
+ *         isMinimum:
  *           type: boolean
  *           description: 최소 사양 여부 (true면 최소, false면 권장)
  *         os:
@@ -39,9 +39,9 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *     GameTradeDto:
  *       type: object
  *       properties:
- *         game_id:
+ *         gameId:
  *           type: number
- *         user_id:
+ *         userId:
  *           type: number
  *         title:
  *           type: string
@@ -49,9 +49,9 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: string
  *         description:
  *           type: string
- *         thumbnail_url:
+ *         thumbnailUrl:
  *           type: string
- *         item_id:
+ *         itemId:
  *           type: integer
  *         requirement:
  *           type: array
@@ -60,21 +60,21 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *     ResourceTradeDto:
  *       type: object
  *       properties:
- *         resource_id:
+ *         resourceId:
  *           type: number
- *         user_id:
+ *         userId:
  *           type: number
  *         description:
  *           type: string
- *         sharer_id:
+ *         sharerId:
  *           type: number
- *         seller_ratio:
+ *         sellerRatio:
  *           type: string
- *         creater_ratio:
+ *         createrRatio:
  *           type: string
- *         image_url:
+ *         imageUrl:
  *           type: string
- *         game_id:
+ *         gameId:
  *           type: number
  *     TradeHistoryDto:
  *       type: object
