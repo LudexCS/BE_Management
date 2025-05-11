@@ -11,10 +11,10 @@ export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
 
         return await Promise.all(
             gameListRows.map(async (game) => ({
-                game_id: game.id,
+                gameId: game.id,
                 title: game.title,
-                thumbnail_url: await getPresignedUrl(game.thumbnailUrl),
-                item_id: game.itemId
+                thumbnailUrl: await getPresignedUrl(game.thumbnailUrl),
+                itemId: game.itemId
 
         }))
         );
