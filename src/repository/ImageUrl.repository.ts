@@ -9,7 +9,7 @@ export const findImageURLwithGameId = async(gameId: number): Promise<string[]> =
     try{
         const imageRows = await ImageUrlRepo.find({
             select: [ 'url' ],
-            where: { game_id: gameId },
+            where: { gameId: gameId },
         });
 
         const imageURLs = imageRows.map(img => img.url);
