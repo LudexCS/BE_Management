@@ -54,6 +54,7 @@ export const getPurchasedGameRowsWithRequirements = async (userId: number): Prom
 
 export const getPurchasedGamesInfo = async (userId: number): Promise<GameTradeDto[]> => {
     const rows = await getPurchasedGameRowsWithRequirements(userId);
+    console.log("Purchased game rows: " + rows[0].thumbnailUrl);
     return await groupGameRowsWithRequirements(rows);
 };
 
@@ -69,6 +70,7 @@ export const getSoldGameRowsWithRequirements = async (userId: number): Promise<T
 
 export const getSoldGamesInfo = async (userId: number): Promise<GameTradeDto[]> => {
     const rows = await getSoldGameRowsWithRequirements(userId);
+    console.log("Sold game rows: " + rows[0].thumbnailUrl);
     return await groupGameRowsWithRequirements(rows);
 };
 
@@ -90,6 +92,8 @@ export const getPurchasedResourcesInfo = async (userId: number): Promise<Resourc
                  LEFT JOIN resource_image_url ru ON r.id = ru.resource_id
         WHERE rt.buyer_id = ?
     `, [userId]);
+
+    console.log("Resource rows: " + rows[0].imageUrl);
 
     return await Promise.all((rows as ResourceTradeDto[]).map(async (row) => ({
         resourceId: row.resourceId,
