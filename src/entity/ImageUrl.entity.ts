@@ -6,7 +6,7 @@ export class ImageUrl {
     id: number;
 
     @Column()
-    game_id: number;
+    gameId: number;
 
     @Column()
     url: string;
