@@ -5,7 +5,7 @@ import {findTagByGameId} from "../repository/gameTag.repository";
 
 export const findGameWithTagService = async (
     tags: string[]
-): Promise<{ gameId: number, title: string; thumbnail_url: string }[]> => {
+): Promise<GamesByTagDto[]> => {
     try {
         const taggedGameRows = await findGameWithTag(tags);
 
