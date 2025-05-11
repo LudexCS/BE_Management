@@ -33,8 +33,12 @@ export const uploadResourceImageToS3 = async ( image: { path: string; mimetype: 
 };
 
 export const getPresignedUrl = async (key: string, type: "get" | "put" = "get", expiresInSec = 60): Promise<string> => {
-    const command = new GetObjectCommand({ Bucket: process.env.AWS_S3_BUCKET, Key: key });
+    try {
+        const command = new GetObjectCommand({ Bucket: process.env.AWS_S3_BUCKET, Key: key });
 
-    const url = await getSignedUrl(S3, command, { expiresIn: expiresInSec });
-    return url;
+        const url = await getSignedUrl(S3, command, { expiresIn: expiresInSec });
+        return url;
+    } catch (error) {
+        throw new Error("Failed to get presigned url: "+ (error as Error).message + " for key: " + key);
+    }
 };
