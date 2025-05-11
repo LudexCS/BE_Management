@@ -15,7 +15,7 @@ export const findGameWithTagService = async (
                 return {
                     gameId: game.id,
                     title: game.title,
-                    thumbnail_url: await getPresignedUrl(game.thumbnailUrl),
+                    thumbnailUrl: await getPresignedUrl(game.thumbnailUrl),
                     itemId: game.itemId,
                     price: game.price,
                     description: game.description,
