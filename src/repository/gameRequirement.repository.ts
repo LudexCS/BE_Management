@@ -22,7 +22,7 @@ export const findGameRequirementWithGameId = async (gameId: number): Promise<Gam
 
 
     const requirements: GameRequirementDto[] = rows.map(row => ({
-        is_minimum: row.isMinimum,
+        isMinimum: row.isMinimum,
         os: row.os ?? undefined,
         cpu: row.cpu ?? undefined,
         gpu: row.gpu ?? undefined,

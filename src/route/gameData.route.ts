@@ -17,7 +17,7 @@ import {getResourceDetailControl} from "../controller/getResourceDetail.controll
  *     GameRequirementDto:
  *       type: object
  *       properties:
- *         is_minimum:
+ *         isMinimum:
  *           type: boolean
  *           description: 최소 사양 여부
  *         os:
@@ -48,7 +48,7 @@ import {getResourceDetailControl} from "../controller/getResourceDetail.controll
  *         title:
  *           type: string
  *           example: "Space Blaster"
- *         thumbnail_url:
+ *         thumbnailUrl:
  *           type: string
  *           example: "https://your-s3-url.com/space-blaster.jpg"
  *         itemId:
@@ -85,7 +85,7 @@ import {getResourceDetailControl} from "../controller/getResourceDetail.controll
  *           format: uri
  *         description:
  *           type: string
- *         item_id:
+ *         itemId:
  *           type: integer
  *         registeredAt:
  *           type: string
