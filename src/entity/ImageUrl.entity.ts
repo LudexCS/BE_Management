@@ -5,7 +5,7 @@ export class ImageUrl {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ name: 'game_id '})
     gameId: number;
 
     @Column()
