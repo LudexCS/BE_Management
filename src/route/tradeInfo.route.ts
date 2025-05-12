@@ -53,6 +53,8 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: string
  *         itemId:
  *           type: integer
+ *         purchasedId:
+ *           type: string
  *         requirement:
  *           type: array
  *           items:
