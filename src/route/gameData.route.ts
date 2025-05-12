@@ -351,7 +351,7 @@ router.post('/byTags', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/game/search:
+ * /api/get/search:
  *   post:
  *     summary: 키워드 기반 게임 검색
  *     description: 입력된 키워드에 따라 게임 리스트를 반환
@@ -367,7 +367,7 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *             properties:
  *               keyword:
  *                 type: string
- *                 example: "자동사냥 RPG"
+ *                 example: "action"
  *     responses:
  *       200:
  *         description: 조건에 맞는 게임 목록 조회 성공
