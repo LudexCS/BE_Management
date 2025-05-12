@@ -31,6 +31,7 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
                 description: row.description,
                 itemId: row.itemId,
                 thumbnailUrl: row.thumbnailUrl ? row.thumbnailUrl : "",
+                purchasedId: row.purchasedId,
                 requirement: requirement ? [requirement] : []
             });
         }
@@ -54,7 +55,8 @@ export const getPurchasedGameRowsWithRequirements = async (userId: number): Prom
             gr.cpu AS cpu,
             gr.gpu AS gpu,
             gr.ram AS ram,
-            gr.storage AS storage
+            gr.storage AS storage,
+            pg.purchased_id AS purchasedId
         FROM purchased_game pg
                  JOIN game g ON pg.game_id = g.id
                  LEFT JOIN game_requirement gr ON gr.game_id = g.id
