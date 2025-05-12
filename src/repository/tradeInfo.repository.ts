@@ -110,8 +110,10 @@ export const getPurchasedResourcesInfo = async (userId: number): Promise<Resourc
             r.sharer_id AS sharerId,
             r.seller_ratio AS sellerRatio,
             r.creator_ratio AS createrRatio,
+            r.allow_derivation AS allowDerivation,
             ru.url AS imageUrl,
-            g.id AS gameId
+            g.id AS gameId,
+            g.title AS title,
         FROM resource r
                  JOIN resource_transaction rt ON rt.resource_id = r.id
                  LEFT JOIN game g ON r.game_id = g.id
@@ -128,7 +130,9 @@ export const getPurchasedResourcesInfo = async (userId: number): Promise<Resourc
         sharerId: row.sharerId,
         sellerRatio: row.sellerRatio,
         createrRatio: row.createrRatio,
+        allowDerivation: row.allowDerivation,
         imageUrl: row.imageUrl ? await getPresignedUrl(row.imageUrl) : "",
         gameId: row.gameId,
+        title: row.title,
     })));
 };

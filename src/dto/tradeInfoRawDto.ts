@@ -25,8 +25,10 @@ export interface ResourceTradeDto {
     sharerId: number;
     sellerRatio: string;
     createrRatio: string;
+    allowDerivation: boolean;
     imageUrl: string | null;
     gameId: number;
+    title: string;
 }
 
 
