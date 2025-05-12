@@ -24,8 +24,8 @@ export interface ResourceTradeDto {
     description: string;
     sharerId: number;
     sellerRatio: string;
-    createrRatio: string
-    imageUrl: string
+    createrRatio: string;
+    imageUrl: string | null;
     gameId: number;
 }
 
@@ -37,7 +37,7 @@ export interface TradeInfoRawDto {
     title: string;
     price: string;
     description: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
     itemId: bigint;
     isMinimum: boolean | null;
     os: string | null;

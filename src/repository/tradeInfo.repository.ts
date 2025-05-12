@@ -7,8 +7,9 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
     const gameMap = new Map<number, GameTradeDto>();
 
     for (const row of rows) {
-        const existing = gameMap.get(row.id);
+        if(!row) continue;
 
+        const existing = gameMap.get(row.id);
         const requirement: RequirementDto | null = row.isMinimum !== null
             ? {
                 isMinimum: !!row.isMinimum,
@@ -23,7 +24,7 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
         if (existing) {
             if (requirement) existing.requirement.push(requirement);
         } else {
-            const presignedUrl = await getPresignedUrl(row.thumbnailUrl);
+            const presignedUrl = row.thumbnailUrl ? await getPresignedUrl(row.thumbnailUrl) : "";
 
             gameMap.set(row.id, {
                 gameId: row.id,
@@ -43,36 +44,59 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
 
 export const getPurchasedGameRowsWithRequirements = async (userId: number): Promise<TradeInfoRawDto[]> => {
     return await AppDataSource.query(`
-    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumbnail_url, g.item_id,
-           gr.is_minimum, gr.os, gr.cpu, gr.gpu, gr.ram, gr.storage
-    FROM purchased_game pg
-    JOIN game g ON pg.game_id = g.id
-    LEFT JOIN game_requirement gr ON gr.game_id = g.id
-    WHERE pg.user_id = ?
-  `, [userId]);
+        SELECT
+            g.id AS id,
+            g.user_id AS userId,
+            g.title AS title,
+            g.price AS price,
+            g.description AS description,
+            g.thumbnail_url AS thumbnailUrl,
+            g.item_id AS itemId,
+            gr.is_minimum AS isMinimum,
+            gr.os AS os,
+            gr.cpu AS cpu,
+            gr.gpu AS gpu,
+            gr.ram AS ram,
+            gr.storage AS storage
+        FROM purchased_game pg
+                 JOIN game g ON pg.game_id = g.id
+                 LEFT JOIN game_requirement gr ON gr.game_id = g.id
+        WHERE pg.user_id = ?
+    `, [userId]);
 };
 
 export const getPurchasedGamesInfo = async (userId: number): Promise<GameTradeDto[]> => {
     const rows = await getPurchasedGameRowsWithRequirements(userId);
-    console.log("Purchased game rows");
-    console.log("Purchased game rows: " + rows[0].thumbnailUrl);
+    if(rows.length == 0) return [];
+
     return await groupGameRowsWithRequirements(rows);
 };
 
 export const getSoldGameRowsWithRequirements = async (userId: number): Promise<TradeInfoRawDto[]> => {
     return await AppDataSource.query(`
-    SELECT g.id, g.user_id, g.title, g.price, g.description, g.thumbnail_url, g.item_id,
-           gr.is_minimum, gr.os, gr.cpu, gr.gpu, gr.ram, gr.storage
-    FROM game g
-    LEFT JOIN game_requirement gr ON gr.game_id = g.id
-    WHERE g.user_id = ?
-  `, [userId]);
+        SELECT
+            g.id AS id,
+            g.user_id AS userId,
+            g.title AS title,
+            g.price AS price,
+            g.description AS description,
+            g.thumbnail_url AS thumbnailUrl,
+            g.item_id AS itemId,
+            gr.is_minimum AS isMinimum,
+            gr.os AS os,
+            gr.cpu AS cpu,
+            gr.gpu AS gpu,
+            gr.ram AS ram,
+            gr.storage AS storage
+        FROM game g
+                 LEFT JOIN game_requirement gr ON gr.game_id = g.id
+        WHERE g.user_id = ?
+    `, [userId]);
 };
 
 export const getSoldGamesInfo = async (userId: number): Promise<GameTradeDto[]> => {
     const rows = await getSoldGameRowsWithRequirements(userId);
-    console.log("Sold game rows");
-    console.log("Sold game rows: " + rows[0].thumbnailUrl);
+    if(rows.length == 0) return [];
     return await groupGameRowsWithRequirements(rows);
 };
 
@@ -95,7 +119,7 @@ export const getPurchasedResourcesInfo = async (userId: number): Promise<Resourc
         WHERE rt.buyer_id = ?
     `, [userId]);
 
-    console.log("Resource rows: " + rows[0].imageUrl);
+    if(rows.length == 0) return [];
 
     return await Promise.all((rows as ResourceTradeDto[]).map(async (row) => ({
         resourceId: row.resourceId,

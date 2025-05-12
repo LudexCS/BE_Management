@@ -1,16 +1,16 @@
-import { findGameWithTag } from '../repository/game.repository'
-import {getPresignedUrl} from "./s3.service";
 import {GamesListDto} from "../dto/gamesListDto";
+import {searchGameByKeyword} from "../repository/game.repository";
 import {findTagByGameId} from "../repository/gameTag.repository";
+import {getPresignedUrl} from "./s3.service";
 
-export const findGameWithTagService = async (
-    tags: string[]
+export const searchGameService = async (
+    keyword: string
 ): Promise<GamesListDto[]> => {
     try {
-        const taggedGameRows = await findGameWithTag(tags);
+        const searchedGameRows = await searchGameByKeyword(keyword);
 
         const games: GamesListDto[] = await Promise.all(
-            taggedGameRows.map(async (game) => {
+            searchedGameRows.map(async (game) => {
                 const allTags = await findTagByGameId(game.id);
                 return {
                     gameId: game.id,

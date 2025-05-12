@@ -8,6 +8,7 @@ import { getGameByTagControl } from "../controller/getGameByTag.controller";
 import { getGameDetailControl } from "../controller/getGameDetail.controller";
 import {GameListRequestDto} from "../dto/gameListRequest.dto";
 import {getResourceDetailControl} from "../controller/getResourceDetail.controller";
+import {searchGameService} from "../service/searchGameList.service";
 
 
 /**
@@ -39,7 +40,7 @@ import {getResourceDetailControl} from "../controller/getResourceDetail.controll
  *           type: string
  *           nullable: true
  *
- *     GamesByTagDto:
+ *     GamesListDto:
  *       type: object
  *       properties:
  *         gameId:
@@ -319,7 +320,7 @@ router.get('/variant', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GamesByTagDto'
+ *                 $ref: '#/components/schemas/GamesListDto'
  *       400:
  *         description: 잘못된 요청
  *         content:
@@ -344,6 +345,50 @@ router.post('/byTags', async (req: Request, res: Response) => {
         const games = await getGameByTagControl(tags);
         res.status(200).json(games);
     } catch (error) {
+        res.status(500).json({ message: (error as Error).message });
+    }
+});
+
+/**
+ * @swagger
+ * /api/get/search:
+ *   post:
+ *     summary: 키워드 기반 게임 검색
+ *     description: 입력된 키워드에 따라 게임 리스트를 반환
+ *     tags: [GameList]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - keyword
+ *             properties:
+ *               keyword:
+ *                 type: string
+ *                 example: "action"
+ *     responses:
+ *       200:
+ *         description: 조건에 맞는 게임 목록 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/GamesListDto'
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
+ */
+router.post('/search', async (req: Request, res: Response) => {
+    try{
+        const games = await searchGameService(req.body.keyword as string);
+        res.status(200).json(games);
+    }catch(error){
         res.status(500).json({ message: (error as Error).message });
     }
 });

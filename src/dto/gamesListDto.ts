@@ -1,4 +1,4 @@
-export class GamesByTagDto {
+export class GamesListDto {
     gameId: number;
     title: string;
     thumbnailUrl: string;
