@@ -1,8 +1,9 @@
 import AppDataSource from "../config/mysql.config";
 import { Game } from "../entity/game.entity"
-import { Repository } from "typeorm";
+import {Brackets, Repository} from "typeorm";
 import { GameListRequestDto} from "../dto/gameListRequest.dto";
 import { GameTempDetailDto } from "../dto/gameTempDetail.dto";
+import {GamesListDto} from "../dto/gamesListDto";
 const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
 /**
@@ -127,7 +128,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 "game.id AS id",
                 "game.title AS title",
                 "game.userId AS userId",
-                "account.nickname AS userName",
+                "account.nickname AS nickName",
                 "game.price AS price",
                 "game.thumbnailUrl AS thumbnailUrl",
                 "game.description AS description",
@@ -147,3 +148,30 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
         throw err;
     }
 }
+
+export const searchGameByKeyword = async(keyword: string) => {
+    const like = `%${keyword}%`;
+
+    const result = await AppDataSource
+        .getRepository(Game)
+        .createQueryBuilder('game')
+        .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')   // JOIN game_tag
+        .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')         // JOIN tag
+        .select([
+            'game.id AS id',
+            'game.title AS title',
+            'game.thumbnail_url AS thumbnailUrl',
+            'game.item_id AS itemId',
+            'game.price AS price',
+            'game.description AS description'
+        ])
+        .where(new Brackets(qb => {
+            qb.where('game.title LIKE :like', { like })
+                .orWhere('game.description LIKE :like', { like })
+                .orWhere('tag.name LIKE :like', { like });
+        }))
+        .groupBy('game.id')
+        .getRawMany();
+
+    return result;
+};
