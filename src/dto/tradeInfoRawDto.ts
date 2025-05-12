@@ -24,8 +24,8 @@ export interface ResourceTradeDto {
     description: string;
     sharerId: number;
     sellerRatio: string;
-    createrRatio: string
-    imageUrl: string
+    createrRatio: string;
+    imageUrl: string | null;
     gameId: number;
 }
 
