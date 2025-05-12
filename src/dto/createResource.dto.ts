@@ -30,7 +30,7 @@ export function toResourceEntity(dto: CreateResourceDto): Resource {
     return resource;
 }
 
-export function toResourceImageUrlEntities(imageUrls: string[], resourceId: number): ResourceImageUrl[] {
+export function toResourceImageUrlEntities(imageUrls: { url: string, key: string }[], resourceId: number): ResourceImageUrl[] {
     if (!imageUrls || imageUrls.length === 0) {
         return [];
     }
@@ -38,7 +38,8 @@ export function toResourceImageUrlEntities(imageUrls: string[], resourceId: numb
     return imageUrls.map(url => {
         const resourceImageUrl = new ResourceImageUrl();
         resourceImageUrl.resourceId = resourceId;
-        resourceImageUrl.url = url;
+        resourceImageUrl.url = url.url;
+        resourceImageUrl.key = url.key;
         return resourceImageUrl;
     });
 }

@@ -1,6 +1,5 @@
 import { GameListRequestDto} from "../dto/gameListRequest.dto";
 import { findGameList, findOriginGameList, findVarientGameList } from '../repository/game.repository'
-import { getPresignedUrl } from "../service/s3.service";
 
 
 export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
@@ -13,7 +12,7 @@ export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
             gameListRows.map(async (game) => ({
                 gameId: game.id,
                 title: game.title,
-                thumbnailUrl: await getPresignedUrl(game.thumbnailUrl),
+                thumbnailUrl: game.thumbnailUrl,
                 itemId: game.itemId
 
         }))
@@ -30,7 +29,7 @@ export const getOriginGameInfo = async(gameId: number) => {
             originGameListRows.map(async (game) => ({
                 gameId: game.gameId,
                 title: game.title,
-                thumbnail_url: await getPresignedUrl(game.thumbnailUrl)
+                thumbnail_url: game.thumbnailUrl
             }))
         )
     } catch(err){
@@ -46,7 +45,7 @@ export const getVariantGameInfo = async(gameId: number) => {
             varientGameRows.map(async (game) => ({
                 gameId: game.gameId,
                 title: game.title,
-                thumbnail_url: await getPresignedUrl(game.thumbnailUrl)
+                thumbnail_url: game.thumbnailUrl
             }))
         );
     } catch(err){

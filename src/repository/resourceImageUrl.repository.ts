@@ -1,7 +1,6 @@
 import {ResourceImageUrl} from "../entity/resourceImageUrl.entity";
 import {Repository} from "typeorm";
 import AppDataSource from "../config/mysql.config";
-import { getPresignedUrl } from "../service/s3.service";
 
 const ResourceImageUrlRepo: Repository<ResourceImageUrl> = AppDataSource.getRepository(ResourceImageUrl);
 
@@ -18,8 +17,5 @@ export const findResourceImageUrlByResourceId = async (resourceId: number) => {
     const imageUrls = await ResourceImageUrlRepo.find({
         where: { resourceId}
     });
-    const result = await Promise.all(
-        imageUrls.map(imageUrl => getPresignedUrl(imageUrl.url))
-    );
-    return await result;
+    return imageUrls.map(imageUrl => imageUrl.url);
 }

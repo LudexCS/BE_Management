@@ -3,7 +3,6 @@ import { Game } from "../entity/game.entity"
 import {Brackets, Repository} from "typeorm";
 import { GameListRequestDto} from "../dto/gameListRequest.dto";
 import { GameTempDetailDto } from "../dto/gameTempDetail.dto";
-import {GamesListDto} from "../dto/gamesListDto";
 const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
 /**

@@ -14,4 +14,7 @@ export class GameImageUrl {
 
   @Column({ type: 'varchar', length: 255 })
   url: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  key: string;
 }

@@ -1,5 +1,4 @@
 import { findGameWithTag } from '../repository/game.repository'
-import {getPresignedUrl} from "./s3.service";
 import {GamesListDto} from "../dto/gamesListDto";
 import {findTagByGameId} from "../repository/gameTag.repository";
 
@@ -15,7 +14,7 @@ export const findGameWithTagService = async (
                 return {
                     gameId: game.id,
                     title: game.title,
-                    thumbnailUrl: await getPresignedUrl(game.thumbnailUrl),
+                    thumbnailUrl: game.thumbnailUrl,
                     itemId: game.itemId,
                     price: game.price,
                     description: game.description,

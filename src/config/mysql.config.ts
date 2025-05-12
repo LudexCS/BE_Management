@@ -7,9 +7,7 @@ import {GameRequirement} from "../entity/gameRequirement.entity";
 import {OriginGame} from "../entity/originGame.entity";
 import {Resource} from "../entity/resource.entity";
 import {ResourceImageUrl} from "../entity/resourceImageUrl.entity";
-import {ImageUrl} from "../entity/ImageUrl.entity";
 import { Account } from "../entity/account.entity";
-import {ResourceDownloadUrl} from "../entity/resourceDownloadUrl.entity";
 
 const HOST = process.env.DB_HOST || 'localhost';
 const PORT = Number(process.env.DB_PORT) || 3306;
@@ -26,7 +24,7 @@ const AppDataSource = new DataSource({
     database: DB_NAME,
     synchronize: false,
     logging: true,
-    entities: [ Game, GameTag, GameImageUrl, GameRequirement, OriginGame, Resource, ResourceImageUrl, ImageUrl, Account, ResourceDownloadUrl ],
+    entities: [ Game, GameTag, GameImageUrl, GameRequirement, OriginGame, Resource, ResourceImageUrl, Account ],
     migrations: [],
     subscribers: [],
 });

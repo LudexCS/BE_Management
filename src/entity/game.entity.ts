@@ -28,6 +28,9 @@ export class Game {
     @Column({ name: 'thumbnail_url', type: 'varchar', length: 255, nullable: false })
     thumbnailUrl: string;
 
+    @Column({ type: 'varchar', length: 255, nullable: false })
+    key: string;
+
     @Column({ type: 'varchar', length: 255, nullable: true })
     description: string;
 

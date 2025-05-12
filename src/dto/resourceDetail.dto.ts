@@ -12,5 +12,4 @@ export class ResourceDetailDto {
     registeredAt: Date;
     updatedAt: Date;
     imageUrls: string[];
-    downloadUrls: string[];
 }
