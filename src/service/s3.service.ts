@@ -13,7 +13,9 @@ export const uploadGameImageToS3 = async (image: {path: string; mimetype: string
         Body: buffer,
         ContentType: image.mimetype,
         CacheControl: "public, max-age=604800",
-        ACL: "public-read"
+        ACL: "public-read",
+        ServerSideEncryption: "aws:kms",
+        SSEKMSKeyId: process.env.AWS_PRIVATE_KEY
     }));
 
     const url = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
