@@ -2,6 +2,8 @@ import {Request, Response, Router} from "express";
 import {createGameControl} from "../controller/create.controller";
 import multer from "multer";
 import {CreateGameDto} from "../dto/createGame.dto";
+import sharp from "sharp";
+import fs from "fs/promises";
 
 /**
  * @swagger
@@ -164,14 +166,25 @@ router.post('/create', upload.fields([
         const thumbnailFile = (req.files as any)?.['thumbnail']?.[0];
         const imageFiles = (req.files as any)?.['images'] || [];
 
+        const thumbnailWebPPath = thumbnailFile.path + ".webp";
+        await sharp(thumbnailFile.path).webp().toFile(thumbnailWebPPath);
+        await fs.unlink(thumbnailFile.path);
         parsedBody.thumbnailUrl = {
-            path: thumbnailFile.path,
-            mimetype: thumbnailFile.mimetype
+          path: thumbnailWebPPath,
+          mimetype: "image/webp"
         };
-        parsedBody.imageUrls = imageFiles.map((file: Express.Multer.File) => ({
-            path: file.path,
-            mimetype: file.mimetype
-        }));
+
+        parsedBody.imageUrls = await Promise.all(
+          imageFiles.map(async (file: Express.Multer.File) => {
+            const webpPath = file.path + ".webp";
+            await sharp(file.path).webp().toFile(webpPath);
+            await fs.unlink(file.path);
+            return {
+              path: webpPath,
+              mimetype: "image/webp"
+            };
+          })
+        );
 
         const email = req.user as string;
         const gameId = await createGameControl(parsedBody, email);
