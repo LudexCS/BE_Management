@@ -167,7 +167,10 @@ router.post('/create', upload.fields([
         const imageFiles = (req.files as any)?.['images'] || [];
 
         const thumbnailWebPPath = thumbnailFile.path + ".webp";
-        await sharp(thumbnailFile.path).webp().toFile(thumbnailWebPPath);
+        await sharp(thumbnailFile.path)
+          .resize(640, 360, { fit: "cover" })
+          .webp({ quality: 80 })
+          .toFile(thumbnailWebPPath);
         await fs.unlink(thumbnailFile.path);
         parsedBody.thumbnailUrl = {
           path: thumbnailWebPPath,
@@ -177,7 +180,10 @@ router.post('/create', upload.fields([
         parsedBody.imageUrls = await Promise.all(
           imageFiles.map(async (file: Express.Multer.File) => {
             const webpPath = file.path + ".webp";
-            await sharp(file.path).webp().toFile(webpPath);
+            await sharp(file.path)
+              .resize(1280, 720, { fit: "inside" })
+              .webp({ quality: 80 })
+              .toFile(webpPath);
             await fs.unlink(file.path);
             return {
               path: webpPath,
