@@ -362,15 +362,15 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - keyword
  *             properties:
  *               keyword:
  *                 type: string
  *                 example: "자동사냥 RPG"
- *             required:
- *               - keyword
  *     responses:
  *       200:
- *        description: 조건에 맞는 게임 목록 조회 성공
+ *         description: 조건에 맞는 게임 목록 조회 성공
  *         content:
  *           application/json:
  *             schema:
@@ -378,17 +378,12 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *               items:
  *                 $ref: '#/components/schemas/GamesListDto'
  *       500:
- *         description: 서버 내부 오류
+ *         description: 서버 오류
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Internal server error
+ *               $ref: '#/components/schemas/MessageResponse'
  */
-
 router.post('/search', async (req: Request, res: Response) => {
     try{
         const games = await searchGameService(req.body.keyword as string);
