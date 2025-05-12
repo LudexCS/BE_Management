@@ -72,10 +72,14 @@ import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
  *           type: string
  *         createrRatio:
  *           type: string
+ *         allowDerivation:
+ *           type: boolean
  *         imageUrl:
  *           type: string
  *         gameId:
  *           type: number
+ *         title:
+ *           type: string
  *     TradeHistoryDto:
  *       type: object
  *       properties:
