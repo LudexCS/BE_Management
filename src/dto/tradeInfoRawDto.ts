@@ -37,7 +37,7 @@ export interface TradeInfoRawDto {
     title: string;
     price: string;
     description: string;
-    thumbnailUrl: string;
+    thumbnailUrl: string | null;
     itemId: bigint;
     isMinimum: boolean | null;
     os: string | null;

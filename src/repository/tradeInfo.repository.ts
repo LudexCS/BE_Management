@@ -7,8 +7,9 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
     const gameMap = new Map<number, GameTradeDto>();
 
     for (const row of rows) {
-        const existing = gameMap.get(row.id);
+        if(!row) continue;
 
+        const existing = gameMap.get(row.id);
         const requirement: RequirementDto | null = row.isMinimum !== null
             ? {
                 isMinimum: !!row.isMinimum,
@@ -66,8 +67,6 @@ export const getPurchasedGameRowsWithRequirements = async (userId: number): Prom
 
 export const getPurchasedGamesInfo = async (userId: number): Promise<GameTradeDto[]> => {
     const rows = await getPurchasedGameRowsWithRequirements(userId);
-    console.log("Purchased game rows");
-    console.log("Purchased game rows: " + rows[0].thumbnailUrl);
     return await groupGameRowsWithRequirements(rows);
 };
 
@@ -95,8 +94,6 @@ export const getSoldGameRowsWithRequirements = async (userId: number): Promise<T
 
 export const getSoldGamesInfo = async (userId: number): Promise<GameTradeDto[]> => {
     const rows = await getSoldGameRowsWithRequirements(userId);
-    console.log("Sold game rows");
-    console.log("Sold game rows: " + rows[0].thumbnailUrl);
     return await groupGameRowsWithRequirements(rows);
 };
 
