@@ -128,7 +128,7 @@ const router: Router = Router();
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/MessageResponse'
+ *               $ref: '#/components/schemas/Me ssageResponse'
  */
 router.get('/tradeInfo', async (req: Request, res: Response) => {
     try {
