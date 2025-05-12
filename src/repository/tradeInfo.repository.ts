@@ -1,6 +1,5 @@
 import AppDataSource from "../config/mysql.config";
 import {GameTradeDto, RequirementDto, TradeInfoRawDto, ResourceTradeDto} from "../dto/tradeInfoRawDto";
-import {getPresignedUrl} from "../service/s3.service";
 
 
 export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => {
@@ -24,8 +23,6 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
         if (existing) {
             if (requirement) existing.requirement.push(requirement);
         } else {
-            const presignedUrl = row.thumbnailUrl ? await getPresignedUrl(row.thumbnailUrl) : "";
-
             gameMap.set(row.id, {
                 gameId: row.id,
                 userId: row.userId,
@@ -33,7 +30,7 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
                 price: row.price,
                 description: row.description,
                 itemId: row.itemId,
-                thumbnailUrl: presignedUrl,
+                thumbnailUrl: row.thumbnailUrl ? row.thumbnailUrl : "",
                 requirement: requirement ? [requirement] : []
             });
         }
@@ -131,7 +128,7 @@ export const getPurchasedResourcesInfo = async (userId: number): Promise<Resourc
         sellerRatio: row.sellerRatio,
         createrRatio: row.createrRatio,
         allowDerivation: row.allowDerivation,
-        imageUrl: row.imageUrl ? await getPresignedUrl(row.imageUrl) : "",
+        imageUrl: row.imageUrl ? row.imageUrl : "",
         gameId: row.gameId,
         title: row.title,
     })));

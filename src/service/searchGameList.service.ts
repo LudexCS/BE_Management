@@ -1,7 +1,6 @@
 import {GamesListDto} from "../dto/gamesListDto";
 import {searchGameByKeyword} from "../repository/game.repository";
 import {findTagByGameId} from "../repository/gameTag.repository";
-import {getPresignedUrl} from "./s3.service";
 
 export const searchGameService = async (
     keyword: string
@@ -15,11 +14,11 @@ export const searchGameService = async (
                 return {
                     gameId: game.id,
                     title: game.title,
-                    thumbnailUrl: await getPresignedUrl(game.thumbnailUrl),
+                    thumbnailUrl: game.thumbnailUrl,
                     itemId: game.itemId,
                     price: game.price,
                     description: game.description,
-                    tags: allTags,
+                    tags: allTags
                 };
             })
         );

@@ -13,3 +13,16 @@ export const saveGameImageUrl = async (gameImageUrl: GameImageUrl): Promise<Game
     }
 };
 
+export const findImageURLwithGameId = async(gameId: number): Promise<string[]> =>{
+    try{
+        const imageRows = await gameImageUrlRepo.find({
+            select: [ 'url' ],
+            where: { gameId: gameId },
+        });
+
+        return imageRows.map(img => img.url);
+    } catch(err){
+        throw err;
+    }
+
+}

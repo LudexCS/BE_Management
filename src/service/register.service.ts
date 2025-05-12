@@ -20,13 +20,13 @@ export const registerGame = async (createGameDto: CreateGameDto) => {
     try {
         const game = toGameEntity(createGameDto);
         const gameId = await saveGame(game);
-        const thumbnailUrl = { thumbnailUrl: await uploadGameImageToS3(createGameDto.thumbnailUrl, gameId) };
-        await updateGameFields(gameId, thumbnailUrl);
+        const { url, key } = await uploadGameImageToS3(createGameDto.thumbnailUrl, gameId);
+        await updateGameFields(gameId, { thumbnailUrl: url, key: key });
 
-        let imageUrls: string[] = [];
+        let imageUrls: { url: string, key: string }[] = [];
         if (createGameDto.imageUrls && createGameDto.imageUrls.length > 0) {
             imageUrls = await Promise.all(
-                createGameDto.imageUrls.map(image => uploadGameImageToS3(image, gameId))
+                createGameDto.imageUrls.map( image => uploadGameImageToS3(image, gameId))
             );
         }
         const gameImageUrls = toGameImageUrlEntities(imageUrls, gameId);
@@ -51,7 +51,7 @@ export const registerResource = async (createResourceDto: CreateResourceDto) => 
         const resource = toResourceEntity(createResourceDto);
         const resourceId = await saveResource(resource);
 
-        let imageUrls: string[] = [];
+        let imageUrls: { url: string, key: string }[] = [];
         if (createResourceDto.imageUrls && createResourceDto.imageUrls.length > 0) {
             imageUrls = await Promise.all(
                 createResourceDto.imageUrls.map(image => uploadResourceImageToS3(image, resourceId))

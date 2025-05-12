@@ -53,7 +53,7 @@ export function toGameEntity(createGameDto: CreateGameDto): Game {
     return game;
 }
 
-export function toGameImageUrlEntities(imageUrls: string[], gameId: number): GameImageUrl[] {
+export function toGameImageUrlEntities(imageUrls: { url: string, key: string }[], gameId: number): GameImageUrl[] {
     if(!imageUrls || imageUrls.length === 0) {
         return [];
     }
@@ -61,7 +61,8 @@ export function toGameImageUrlEntities(imageUrls: string[], gameId: number): Gam
     return imageUrls.map(url => {
         const gameImageUrl = new GameImageUrl();
         gameImageUrl.gameId = gameId;
-        gameImageUrl.url = url;
+        gameImageUrl.url = url.url;
+        gameImageUrl.key = url.key;
         return gameImageUrl;
     });
 }
