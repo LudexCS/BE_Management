@@ -2,6 +2,8 @@ import {Request, Response, Router} from "express";
 import multer from "multer";
 import {CreateResourceDto} from "../dto/createResource.dto";
 import {createResourceControl} from "../controller/create.controller";
+import sharp from "sharp";
+import fs from "fs/promises";
 
 /**
  * @swagger
@@ -110,10 +112,20 @@ router.post('/create', upload.fields([
         // Inject file info into parsedBody
         const imageFiles = (req.files as any)?.['images'] || [];
 
-        parsedBody.imageUrls = imageFiles.map((file: Express.Multer.File) => ({
-            path: file.path,
-            mimetype: file.mimetype
-        }));
+        parsedBody.imageUrls = await Promise.all(
+            imageFiles.map(async (file: Express.Multer.File) => {
+                const webpPath = file.path + ".webp";
+                await sharp(file.path)
+                    .resize(1280, 720, { fit: "inside" })
+                    .webp({ quality: 80 })
+                    .toFile(webpPath);
+                await fs.unlink(file.path);
+                return {
+                    path: webpPath,
+                    mimetype: "image/webp"
+                };
+            })
+        );
 
         const email = req.user as string;
         const resourceId = await createResourceControl(parsedBody, email);
