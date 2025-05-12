@@ -168,7 +168,7 @@ router.post('/create', upload.fields([
 
         const thumbnailWebPPath = thumbnailFile.path + ".webp";
         await sharp(thumbnailFile.path)
-          .resize(640, 360, { fit: "cover" })
+          .resize(640, 480, { fit: "cover" })
           .webp({ quality: 80 })
           .toFile(thumbnailWebPPath);
         await fs.unlink(thumbnailFile.path);
