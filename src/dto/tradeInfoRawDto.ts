@@ -15,7 +15,7 @@ export interface GameTradeDto {
     description: string;
     thumbnailUrl: string;
     itemId: bigint;
-    purchasedId: string;
+    purchaseId: string;
     requirement: RequirementDto[];
 }
 
@@ -48,7 +48,7 @@ export interface TradeInfoRawDto {
     gpu: string | null;
     ram: string | null;
     storage: string | null;
-    purchasedId: string;
+    purchaseId: string;
 }
 
 export interface TradeHistoryDto {
