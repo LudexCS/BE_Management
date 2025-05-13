@@ -2,9 +2,11 @@ import { findResourceByGameId} from "../repository/resource.repository";
 import { findResourceImageUrlByResourceId} from "../repository/resourceImageUrl.repository";
 import {ResourceDetailDto} from "../dto/resourceDetail.dto";
 
-export const getResourceDetail = async (gameId: number): Promise<ResourceDetailDto> => {
+export const getResourceDetail = async (gameId: number): Promise<ResourceDetailDto | null> => {
     try{
         const resourceData = await findResourceByGameId(gameId);
+        if(!resourceData)
+            return null;
         const resourceImageUrl = await findResourceImageUrlByResourceId(gameId);
 
         return{
