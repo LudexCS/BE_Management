@@ -19,8 +19,8 @@ export class Game {
     @Column({ name: 'user_id', type: 'int', default: 0 })
     userId: number;
 
-    @Column({ name: 'item_id', type: 'bigint', default: 0 })
-    itemId: bigint;
+    @Column({ name: 'item_id', type: 'varchar', length: 255 })
+    itemId: string;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     price: number;
