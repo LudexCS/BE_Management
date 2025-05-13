@@ -8,7 +8,7 @@ export class ResourceDetailDto {
     additionalCondition: string | null;
     description: string | null;
     downloadTimes: number;
-    sharerId: bigint;
+    sharerId: string;
     registeredAt: Date;
     updatedAt: Date;
     imageUrls: string[];
