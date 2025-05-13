@@ -29,8 +29,8 @@ export class Resource {
     @Column({ name: 'download_times', type: 'int', default: () => '0' })
     downloadTimes: number;
 
-    @Column({ name: 'sharer_id', type: 'bigint', default: 0 })
-    sharerId: bigint;
+    @Column({ name: 'sharer_id', type: 'varchar', length: 255 })
+    sharerId: string;
 
     @CreateDateColumn({
         type: 'timestamp',
