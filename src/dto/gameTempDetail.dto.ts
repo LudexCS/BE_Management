@@ -7,7 +7,7 @@ export interface GameTempDetailDto {
     thumbnailUrl: string;
     description: string;
     downloadTimes: number;
-    itemId: bigint;
+    itemId: string;
     registeredAt: Date;
     updatedAt: Date;
 }

@@ -32,8 +32,8 @@ const storeIdServiceImpl: IStoreIdServiceServer = {
         const result = new BoolResult();
         try {
             const gameId = call.request.getGameid();
-            const itemId = BigInt(call.request.getItemid());
-            const sharerIds = call.request.getShareridsList().map(id => BigInt(id));
+            const itemId = call.request.getItemid();
+            const sharerIds = call.request.getShareridsList();
             const sharerId = sharerIds[0];
             console.log(`Storing Web3 ID - gameId: ${gameId}, itemId: ${itemId}, sharerId: ${sharerId}`);
 

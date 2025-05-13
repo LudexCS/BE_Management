@@ -47,8 +47,5 @@ export const findResourceByGameId = async (gameId: number) => {
     const resource = await resourceRepo.findOne({
         where: { gameId: gameId}
     });
-    if (!resource) {
-        throw new Error('Resource not found');
-    }
     return await resource;
 }
