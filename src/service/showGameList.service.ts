@@ -29,7 +29,7 @@ export const getOriginGameInfo = async(gameId: number) => {
             originGameListRows.map(async (game) => ({
                 gameId: game.gameId,
                 title: game.title,
-                thumbnail_url: game.thumbnailUrl
+                thumbnailUrl: game.thumbnailUrl
             }))
         )
     } catch(err){
