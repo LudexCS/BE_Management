@@ -5,7 +5,7 @@ import {ResourceDetailDto} from "../dto/resourceDetail.dto";
 export const getResourceDetail = async (gameId: number): Promise<ResourceDetailDto> => {
     try{
         const resourceData = await findResourceByGameId(gameId);
-        const resourceImageUrl = await findResourceImageUrlByResourceId(gameId);
+        const resourceImageUrl = await findResourceImageUrlByResourceId(resourceData.id);
 
         return{
             id: resourceData.id,
