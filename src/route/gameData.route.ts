@@ -431,7 +431,6 @@ router.get('/gameDetail', async (req: Request, res: Response) => {
     }
 });
 
-
 /**
  * @swagger
  * /api/get/resourceDetail:
@@ -452,7 +451,10 @@ router.get('/gameDetail', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ResourceDetailDto'
+ *               oneOf:
+ *                 - $ref: '#/components/schemas/ResourceDetailDto'
+ *                 - type: array
+ *                   items: {}  # 빈 배열을 의미
  *       400:
  *         description: 잘못된 요청
  *         content:
@@ -470,6 +472,8 @@ router.get('/resourceDetail', async (req: Request, res: Response) => {
     try{
         const gameId = Number(req.query.gameId);
         const resourceDetails = await getResourceDetailControl(gameId);
+        if(!resourceDetails)
+            res.status(200).json([]);
         res.status(200).json(resourceDetails);
     }catch(error){
         res.status(500).json({ message: (error as Error).message });
