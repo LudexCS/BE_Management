@@ -31,7 +31,7 @@ export class Game {
     @Column({ type: 'varchar', length: 255, nullable: false })
     key: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
+    @Column({ type: 'text', nullable: true })
     description: string;
 
     @Column({ name: 'download_times', type: 'int', default: 0 })
