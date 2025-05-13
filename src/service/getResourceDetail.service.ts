@@ -7,7 +7,7 @@ export const getResourceDetail = async (gameId: number): Promise<ResourceDetailD
         const resourceData = await findResourceByGameId(gameId);
         if(!resourceData)
             return null;
-        const resourceImageUrl = await findResourceImageUrlByResourceId(gameId);
+        const resourceImageUrl = await findResourceImageUrlByResourceId(resourceData.id);
 
         return{
             id: resourceData.id,
