@@ -3,28 +3,24 @@ import { findResourceImageUrlByResourceId} from "../repository/resourceImageUrl.
 import {ResourceDetailDto} from "../dto/resourceDetail.dto";
 
 export const getResourceDetail = async (gameId: number): Promise<ResourceDetailDto | null> => {
-    try{
-        const resourceData = await findResourceByGameId(gameId);
-        if(!resourceData)
-            return null;
-        const resourceImageUrl = await findResourceImageUrlByResourceId(resourceData.id);
+    const resourceData = await findResourceByGameId(gameId);
+    if(!resourceData)
+        return null;
+    const resourceImageUrl = await findResourceImageUrlByResourceId(resourceData.id);
 
-        return{
-            id: resourceData.id,
-            gameId: resourceData.gameId,
-            userId: resourceData.userId,
-            sellerRatio: resourceData.sellerRatio,
-            creatorRatio: resourceData.creatorRatio,
-            allowDerivation: resourceData.allowDerivation,
-            additionalCondition: resourceData.additionalCondition,
-            description: resourceData.description,
-            downloadTimes: resourceData.downloadTimes,
-            sharerId: resourceData.sharerId,
-            registeredAt: resourceData.registeredAt,
-            updatedAt: resourceData.updatedAt,
-            imageUrls: resourceImageUrl
-        }
-    }catch(err){
-        throw err;
+    return{
+        id: resourceData.id,
+        gameId: resourceData.gameId,
+        userId: resourceData.userId,
+        sellerRatio: resourceData.sellerRatio,
+        creatorRatio: resourceData.creatorRatio,
+        allowDerivation: resourceData.allowDerivation,
+        additionalCondition: resourceData.additionalCondition,
+        description: resourceData.description,
+        downloadTimes: resourceData.downloadTimes,
+        sharerId: resourceData.sharerId,
+        registeredAt: resourceData.registeredAt,
+        updatedAt: resourceData.updatedAt,
+        imageUrls: resourceImageUrl
     }
 }

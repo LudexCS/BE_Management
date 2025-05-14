@@ -17,50 +17,42 @@ import {saveResource} from "../repository/resource.repository";
 import {saveResourceImageUrl} from "../repository/resourceImageUrl.repository";
 
 export const registerGame = async (createGameDto: CreateGameDto) => {
-    try {
-        const game = toGameEntity(createGameDto);
-        const gameId = await saveGame(game);
-        const { url, key } = await uploadGameImageToS3(createGameDto.thumbnailUrl, gameId);
-        await updateGameFields(gameId, { thumbnailUrl: url, key: key });
+    const game = toGameEntity(createGameDto);
+    const gameId = await saveGame(game);
+    const { url, key } = await uploadGameImageToS3(createGameDto.thumbnailUrl, gameId);
+    await updateGameFields(gameId, { thumbnailUrl: url, key: key });
 
-        let imageUrls: { url: string, key: string }[] = [];
-        if (createGameDto.imageUrls && createGameDto.imageUrls.length > 0) {
-            imageUrls = await Promise.all(
-                createGameDto.imageUrls.map( image => uploadGameImageToS3(image, gameId))
-            );
-        }
-        const gameImageUrls = toGameImageUrlEntities(imageUrls, gameId);
-        await Promise.all(gameImageUrls.map(saveGameImageUrl));
-
-        const gameTags = toGameTagEntities(createGameDto, gameId);
-        await Promise.all(gameTags.map(saveGameTag));
-
-        const gameRequirements = toGameRequirementEntities(createGameDto, gameId);
-        await Promise.all(gameRequirements.map(saveGameRequirement));
-
-        const originGames = toOriginGameEntities(createGameDto, gameId);
-        await Promise.all(originGames.map(saveOriginGame));
-        return gameId;
-    } catch (error) {
-        throw error;
+    let imageUrls: { url: string, key: string }[] = [];
+    if (createGameDto.imageUrls && createGameDto.imageUrls.length > 0) {
+        imageUrls = await Promise.all(
+            createGameDto.imageUrls.map( image => uploadGameImageToS3(image, gameId))
+        );
     }
+    const gameImageUrls = toGameImageUrlEntities(imageUrls, gameId);
+    await Promise.all(gameImageUrls.map(saveGameImageUrl));
+
+    const gameTags = toGameTagEntities(createGameDto, gameId);
+    await Promise.all(gameTags.map(saveGameTag));
+
+    const gameRequirements = toGameRequirementEntities(createGameDto, gameId);
+    await Promise.all(gameRequirements.map(saveGameRequirement));
+
+    const originGames = toOriginGameEntities(createGameDto, gameId);
+    await Promise.all(originGames.map(saveOriginGame));
+    return gameId;
 };
 
 export const registerResource = async (createResourceDto: CreateResourceDto) => {
-    try {
-        const resource = toResourceEntity(createResourceDto);
-        const resourceId = await saveResource(resource);
+    const resource = toResourceEntity(createResourceDto);
+    const resourceId = await saveResource(resource);
 
-        let imageUrls: { url: string, key: string }[] = [];
-        if (createResourceDto.imageUrls && createResourceDto.imageUrls.length > 0) {
-            imageUrls = await Promise.all(
-                createResourceDto.imageUrls.map(image => uploadResourceImageToS3(image, resourceId))
-            );
-        }
-        const resourceImageUrls = toResourceImageUrlEntities(imageUrls, resourceId);
-        await Promise.all(resourceImageUrls.map(saveResourceImageUrl));
-        return resourceId;
-    } catch (error) {
-        throw error;
+    let imageUrls: { url: string, key: string }[] = [];
+    if (createResourceDto.imageUrls && createResourceDto.imageUrls.length > 0) {
+        imageUrls = await Promise.all(
+            createResourceDto.imageUrls.map(image => uploadResourceImageToS3(image, resourceId))
+        );
     }
+    const resourceImageUrls = toResourceImageUrlEntities(imageUrls, resourceId);
+    await Promise.all(resourceImageUrls.map(saveResourceImageUrl));
+    return resourceId;
 };
