@@ -5,50 +5,38 @@ import { findGameList, findOriginGameList, findVarientGameList } from '../reposi
 export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
     const { page, limit } = gameListRequestDto;
     const offset = (page - 1) * limit;
-    try{
-        const gameListRows =  await findGameList(gameListRequestDto);
+    const gameListRows =  await findGameList(gameListRequestDto);
 
-        return await Promise.all(
-            gameListRows.map(async (game) => ({
-                gameId: game.id,
-                title: game.title,
-                thumbnailUrl: game.thumbnailUrl,
-                itemId: game.itemId
+    return await Promise.all(
+        gameListRows.map(async (game) => ({
+            gameId: game.id,
+            title: game.title,
+            thumbnailUrl: game.thumbnailUrl,
+            itemId: game.itemId
 
-        }))
-        );
-    } catch(err){
-        throw err;
-    }
+    }))
+    );
 }
 
 export const getOriginGameInfo = async(gameId: number) => {
-    try{
-        const originGameListRows = await findOriginGameList(gameId);
-        return await Promise.all(
-            originGameListRows.map(async (game) => ({
-                gameId: game.gameId,
-                title: game.title,
-                thumbnailUrl: game.thumbnailUrl
-            }))
-        )
-    } catch(err){
-        throw err;
-    }
+    const originGameListRows = await findOriginGameList(gameId);
+    return await Promise.all(
+        originGameListRows.map(async (game) => ({
+            gameId: game.gameId,
+            title: game.title,
+            thumbnailUrl: game.thumbnailUrl
+        }))
+    )
 }
 
 export const getVariantGameInfo = async(gameId: number) => {
-    try{
-        const varientGameRows = await findVarientGameList(gameId);
+    const varientGameRows = await findVarientGameList(gameId);
 
-        return await Promise.all(
-            varientGameRows.map(async (game) => ({
-                gameId: game.gameId,
-                title: game.title,
-                thumbnailUrl: game.thumbnailUrl
-            }))
-        );
-    } catch(err){
-        throw err;
-    }
+    return await Promise.all(
+        varientGameRows.map(async (game) => ({
+            gameId: game.gameId,
+            title: game.title,
+            thumbnailUrl: game.thumbnailUrl
+        }))
+    );
 }
