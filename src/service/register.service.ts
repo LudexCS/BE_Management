@@ -6,7 +6,7 @@ import {
     toGameTagEntities,
     toOriginGameEntities
 } from "../dto/createGame.dto";
-import {saveGame, updateGameFields} from "../repository/game.repository";
+import {findTitleById, saveGame, updateGameFields} from "../repository/game.repository";
 import {saveGameImageUrl} from "../repository/gameImageUrl.repository";
 import {saveGameRequirement} from "../repository/gameRequirement.repository";
 import {saveGameTag} from "../repository/gameTag.repository";
@@ -15,6 +15,9 @@ import {uploadGameImageToS3, uploadResourceImageToS3} from "./s3.service";
 import {CreateResourceDto, toResourceEntity, toResourceImageUrlEntities} from "../dto/createResource.dto";
 import {saveResource} from "../repository/resource.repository";
 import {saveResourceImageUrl} from "../repository/resourceImageUrl.repository";
+import {Tag} from "../entity/tag.entity";
+import {saveTag} from "../repository/tag.repository";
+import {GameTag} from "../entity/gameTag.entity";
 
 export const registerGame = async (createGameDto: CreateGameDto) => {
     const game = toGameEntity(createGameDto);
@@ -31,14 +34,34 @@ export const registerGame = async (createGameDto: CreateGameDto) => {
     const gameImageUrls = toGameImageUrlEntities(imageUrls, gameId);
     await Promise.all(gameImageUrls.map(saveGameImageUrl));
 
+    const originGames = toOriginGameEntities(createGameDto, gameId);
+    await Promise.all(originGames.map(saveOriginGame));
+
+    const originGameTitles = await Promise.all(originGames.map(originGame => {
+        const gameId = originGame.originGameId;
+        return findTitleById(gameId);
+    }));
+
+    const tags = originGameTitles.map(title => {
+        const tag = new Tag();
+        tag.name = title;
+        return tag;
+    });
+    const tagIds = await Promise.all(tags.map(saveTag));
+
     const gameTags = toGameTagEntities(createGameDto, gameId);
+    tagIds.map(tagId => {
+        const gameTag = new GameTag();
+        gameTag.gameId = gameId;
+        gameTag.tagId = tagId;
+        gameTag.priority = 1;
+        gameTags.push(gameTag);
+    });
     await Promise.all(gameTags.map(saveGameTag));
 
     const gameRequirements = toGameRequirementEntities(createGameDto, gameId);
     await Promise.all(gameRequirements.map(saveGameRequirement));
 
-    const originGames = toOriginGameEntities(createGameDto, gameId);
-    await Promise.all(originGames.map(saveOriginGame));
     return gameId;
 };
 

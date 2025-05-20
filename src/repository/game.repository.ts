@@ -40,6 +40,19 @@ export const updateGameFields = async (
     }
 };
 
+export async function findTitleById(gameId: number): Promise<string> {
+    const game = await gameRepo.findOne({
+        where: { id: gameId },
+        select: ['title']
+    });
+
+    if (!game) {
+        throw new Error(`Game with ID ${gameId} not found`);
+    }
+
+    return game.title;
+}
+
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
     return await gameRepo.createQueryBuilder('game')
         .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId'])

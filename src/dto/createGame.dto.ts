@@ -3,6 +3,7 @@ import {GameImageUrl} from "../entity/gameImageUrl.entity";
 import {GameTag} from "../entity/gameTag.entity";
 import {GameRequirement} from "../entity/gameRequirement.entity";
 import {OriginGame} from "../entity/originGame.entity";
+import {Tag} from "../entity/tag.entity";
 
 interface BaseGameDto {
     title: string;
@@ -108,4 +109,15 @@ export function toOriginGameEntities(createGameDto: CreateGameDto, gameId: numbe
         originGame.originGameId = originGameId;
         return originGame;
     });
+}
+
+export function toTagEntities(originGames: OriginGame[]) {
+    if (!originGames || originGames.length === 0) {
+        return [];
+    }
+    return originGames.map(originGame => {
+        const tag = new Tag();
+        tag.name = String(originGame.originGameId);
+        return tag;
+    })
 }
