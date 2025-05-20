@@ -187,3 +187,12 @@ export const searchGameByKeyword = async(keyword: string) => {
 
     return result;
 };
+
+export const incrementDownloadTimes = async (gameId: number): Promise<void> => {
+    try {
+        await gameRepo.increment({ id: gameId }, "downloadTimes", 1);
+    } catch (error) {
+        console.error('Failed to increment download times:', error);
+        throw new Error('Failed to increment download times in database');
+    }
+};
