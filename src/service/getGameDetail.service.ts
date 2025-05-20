@@ -6,30 +6,26 @@ import {findGameRequirementWithGameId} from "../repository/gameRequirement.repos
 
 
 export const getGameDetail = async(gameId: number) =>{
-    try{
-        const gameDetails = await findGameDetailWithGameId(gameId);
-        const tags = await findTagByGameId(gameId);
-        const imageUrls = await findImageURLwithGameId(gameId);
-        const requirements = await findGameRequirementWithGameId(gameId);
+    const gameDetails = await findGameDetailWithGameId(gameId);
+    const tags = await findTagByGameId(gameId);
+    const imageUrls = await findImageURLwithGameId(gameId);
+    const requirements = await findGameRequirementWithGameId(gameId);
 
-        const gameDetailDto: GameDetailDto = {
-            id: gameDetails.id,
-            title: gameDetails.title,
-            userId: gameDetails.userId,
-            nickName: gameDetails.nickName,
-            price: gameDetails.price,
-            thumbnailUrl: gameDetails.thumbnailUrl,
-            description: gameDetails.description,
-            itemId: gameDetails.itemId,
-            downloadTimes: gameDetails.downloadTimes,
-            registeredAt: gameDetails.registeredAt,
-            updatedAt: gameDetails.updatedAt,
-            tags,
-            imageUrls: imageUrls,
-            requirements,
-        };
-        return gameDetailDto;
-    } catch(err){
-        throw err;
-    }
+    const gameDetailDto: GameDetailDto = {
+        id: gameDetails.id,
+        title: gameDetails.title,
+        userId: gameDetails.userId,
+        nickName: gameDetails.nickName,
+        price: gameDetails.price,
+        thumbnailUrl: gameDetails.thumbnailUrl,
+        description: gameDetails.description,
+        itemId: gameDetails.itemId,
+        downloadTimes: gameDetails.downloadTimes,
+        registeredAt: gameDetails.registeredAt,
+        updatedAt: gameDetails.updatedAt,
+        tags,
+        imageUrls: imageUrls,
+        requirements,
+    };
+    return gameDetailDto;
 }
