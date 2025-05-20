@@ -21,10 +21,10 @@ export class Resource {
     allowDerivation: boolean;
 
     @Column({ name: 'additional_condition', type: 'text', nullable: true })
-    additionalCondition: string;
+    additionalCondition: string | null;
 
     @Column({ type: 'text', nullable: true })
-    description: string;
+    description: string | null;
 
     @Column({ name: 'download_times', type: 'int', default: () => '0' })
     downloadTimes: number;

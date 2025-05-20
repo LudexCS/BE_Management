@@ -1,4 +1,4 @@
-import {GamesListDto} from "../dto/gamesListDto";
+import {GamesListDto} from "../dto/gamesList.dto";
 import {searchGameByKeyword} from "../repository/game.repository";
 import {findTagByGameId} from "../repository/gameTag.repository";
 
