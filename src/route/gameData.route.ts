@@ -8,7 +8,7 @@ import { getGameByTagControl } from "../controller/getGameByTag.controller";
 import { getGameDetailControl } from "../controller/getGameDetail.controller";
 import {GameListRequestDto} from "../dto/gameListRequest.dto";
 import {getResourceDetailControl} from "../controller/getResourceDetail.controller";
-import {searchGameService} from "../service/searchGameList.service";
+import {searchGameControl} from "../controller/getGameBySearch.controller";
 
 
 /**
@@ -386,7 +386,8 @@ router.post('/byTags', async (req: Request, res: Response) => {
  */
 router.post('/search', async (req: Request, res: Response) => {
     try{
-        const games = await searchGameService(req.body.keyword as string);
+        const keyword = req.body.keyword as string;
+        const games = await searchGameControl(keyword);
         res.status(200).json(games);
     }catch(error){
         res.status(500).json({ message: (error as Error).message });

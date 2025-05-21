@@ -1,8 +1,9 @@
 import AppDataSource from "../config/mysql.config";
-import { Game } from "../entity/game.entity"
+import {Game} from "../entity/game.entity"
 import {Brackets, Repository} from "typeorm";
-import { GameListRequestDto} from "../dto/gameListRequest.dto";
-import { GameTempDetailDto } from "../dto/gameTempDetail.dto";
+import {GameListRequestDto} from "../dto/gameListRequest.dto";
+import {GameTempDetailDto} from "../dto/gameTempDetail.dto";
+
 const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
 /**
@@ -40,17 +41,19 @@ export const updateGameFields = async (
     }
 };
 
-export async function findTitleById(gameId: number): Promise<string> {
+export async function findTitleById(gameId: number): Promise<Game> {
     const game = await gameRepo.findOne({
         where: { id: gameId },
-        select: ['title']
+        select: ['title', 'titleKo', 'titleChoseong']
     });
 
     if (!game) {
         throw new Error(`Game with ID ${gameId} not found`);
     }
 
-    return game.title.toLowerCase();
+    game.title = game.title.toLowerCase();
+
+    return game;
 }
 
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
@@ -164,7 +167,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
 export const searchGameByKeyword = async(keyword: string) => {
     const like = `%${keyword}%`;
 
-    const result = await AppDataSource
+    return await AppDataSource
         .getRepository(Game)
         .createQueryBuilder('game')
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')   // JOIN game_tag
@@ -178,14 +181,12 @@ export const searchGameByKeyword = async(keyword: string) => {
             'game.description AS description'
         ])
         .where(new Brackets(qb => {
-            qb.where('game.title LIKE :like', { like })
-                .orWhere('game.description LIKE :like', { like })
-                .orWhere('tag.name LIKE :like', { like });
+            qb.where('game.title LIKE :like', {like})
+                .orWhere('game.description LIKE :like', {like})
+                .orWhere('tag.name LIKE :like', {like});
         }))
         .groupBy('game.id')
         .getRawMany();
-
-    return result;
 };
 
 export const incrementDownloadTimes = async (gameId: number): Promise<void> => {

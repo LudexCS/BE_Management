@@ -42,9 +42,11 @@ export const registerGame = async (createGameDto: CreateGameDto) => {
         return findTitleById(gameId);
     }));
 
-    const tags = originGameTitles.map(title => {
+    const tags = originGameTitles.map(game => {
         const tag = new Tag();
-        tag.name = title;
+        tag.name = game.title;
+        tag.nameKo = game.titleKo;
+        tag.nameChoseong = game.titleChoseong;
         return tag;
     });
     const tagIds = await Promise.all(tags.map(saveTag));
