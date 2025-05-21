@@ -1,12 +1,14 @@
 import * as grpc from '@grpc/grpc-js';
 import { IdResponse } from '../generated/management_pb';
 import { ValidationServiceService, IValidationServiceServer } from '../generated/management_grpc_pb';
-import {isGameExist, updateGameFields} from "../repository/game.repository";
+import {incrementDownloadTimes, isGameExist, updateGameFields} from "../repository/game.repository";
 import {findUserId, isResourceExist, updateResourceFields} from "../repository/resource.repository";
 import { BoolResult } from '../generated/storeId_pb';
 import {IStoreIdServiceServer, StoreIdServiceService} from "../generated/storeId_grpc_pb";
 import {IResourceServiceServer, ResourceServiceService} from "../generated/resource_grpc_pb";
 import {userIdResponse} from "../generated/resource_pb";
+import {IPurchaseServiceServer, PurchaseServiceService} from "../generated/downloadCount_grpc_pb";
+import {IncreaseDownloadCountResponse} from "../generated/downloadCount_pb";
 
 const validationServiceImpl: IValidationServiceServer = {
     isValidGameId: async (call, callback) => {
@@ -70,12 +72,33 @@ const resourceServiceImpl: IResourceServiceServer = {
     }
 };
 
+const purchaseServiceImpl: IPurchaseServiceServer = {
+    increaseDownloadCount: async (call, callback) => {
+        const gameId = call.request.getGameid();
+        console.log(`Increasing download count - gameId: ${gameId}`);
+
+        try {
+            const response = new IncreaseDownloadCountResponse();
+            await incrementDownloadTimes(gameId);
+            response.setSuccess(true);
+            callback(null, response);
+        } catch (error) {
+            console.error("Failed to increase download count:", error);
+            callback({
+                code: grpc.status.NOT_FOUND,
+                message: error instanceof Error ? error.message : String(error),
+            }, null);
+        }
+    }
+};
+
 export async function startGrpcServer() {
     const server = new grpc.Server();
 
     server.addService(ValidationServiceService, validationServiceImpl);
     server.addService(StoreIdServiceService, storeIdServiceImpl);
     server.addService(ResourceServiceService, resourceServiceImpl);
+    server.addService(PurchaseServiceService, purchaseServiceImpl);
 
     await new Promise<void>((resolve, reject) => {
         server.bindAsync('0.0.0.0:50053', grpc.ServerCredentials.createInsecure(), (err, port) => {
