@@ -50,7 +50,7 @@ export async function findTitleById(gameId: number): Promise<string> {
         throw new Error(`Game with ID ${gameId} not found`);
     }
 
-    return game.title;
+    return game.title.toLowerCase();
 }
 
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
