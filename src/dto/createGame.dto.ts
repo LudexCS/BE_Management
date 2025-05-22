@@ -43,7 +43,7 @@ export type CreateGameDto =
     | (BaseGameDto & { isOrigin: true; originGameIds?: undefined })
     | (BaseGameDto & { isOrigin: false; originGameIds: number[] });
 
-export function toGameEntity(createGameDto: CreateGameDto): Game {
+export function toGameEntity(createGameDto: CreateGameDto, embeddingVector: number[]): Game {
     const game = new Game();
     game.title = createGameDto.title;
     if (createGameDto.titleKo !== undefined) game.titleKo = createGameDto.titleKo;
@@ -52,6 +52,7 @@ export function toGameEntity(createGameDto: CreateGameDto): Game {
     game.price = createGameDto.price;
     //game.thumbnailUrl = createGameDto.thumbnailUrl.path;
     if (createGameDto.description !== undefined) game.description = createGameDto.description;
+    game.embeddingVector = embeddingVector;
     game.downloadTimes = 0;
     game.registeredAt = new Date();
     game.updatedAt = new Date();
