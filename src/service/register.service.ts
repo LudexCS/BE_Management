@@ -18,7 +18,9 @@ import {saveResourceImageUrl} from "../repository/resourceImageUrl.repository";
 import {Tag} from "../entity/tag.entity";
 import {saveTag} from "../repository/tag.repository";
 import {GameTag} from "../entity/gameTag.entity";
-import {createEmbeddingVector, mergeWeightedNormalizedEmbeddingVectors} from "./openAI.service";
+import {createEmbeddingVector} from "./openAI.service";
+import {mergeWeightedNormalizedEmbeddingVectors} from "../util/LSH.util";
+import {upsertGameEmbedding} from "./qdrant.service";
 
 export const registerGame = async (createGameDto: CreateGameDto) => {
     let titleEmbedding: number[] = [];
@@ -35,8 +37,11 @@ export const registerGame = async (createGameDto: CreateGameDto) => {
 
     const embeddingVector = mergeWeightedNormalizedEmbeddingVectors(titleEmbedding, titleKoEmbedding, descriptionEmbedding);
 
-    const game = toGameEntity(createGameDto, embeddingVector);
+    const game = toGameEntity(createGameDto);
     const gameId = await saveGame(game);
+
+    await upsertGameEmbedding(gameId, embeddingVector);
+
     const { url, key } = await uploadGameImageToS3(createGameDto.thumbnailUrl, gameId);
     await updateGameFields(gameId, { thumbnailUrl: url, key: key });
 

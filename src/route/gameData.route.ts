@@ -8,7 +8,7 @@ import { getGameByTagControl } from "../controller/getGameByTag.controller";
 import { getGameDetailControl } from "../controller/getGameDetail.controller";
 import {GameListRequestDto} from "../dto/gameListRequest.dto";
 import {getResourceDetailControl} from "../controller/getResourceDetail.controller";
-import {searchGameControl} from "../controller/getGameBySearch.controller";
+import {searchGameControl} from "../controller/search.controller";
 
 
 /**

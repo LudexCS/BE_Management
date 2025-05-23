@@ -40,9 +40,6 @@ export class Game {
     @Column({ type: 'text', nullable: true })
     description: string;
 
-    @Column({ name: 'embedding_vector', type: 'json', nullable: true })
-    embeddingVector: number[];
-
     @Column({ name: 'download_times', type: 'int', default: 0 })
     downloadTimes: number;
 
