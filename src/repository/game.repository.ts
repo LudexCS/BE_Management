@@ -1,8 +1,9 @@
 import AppDataSource from "../config/mysql.config";
-import { Game } from "../entity/game.entity"
+import {Game} from "../entity/game.entity"
 import {Brackets, Repository} from "typeorm";
-import { GameListRequestDto} from "../dto/gameListRequest.dto";
-import { GameTempDetailDto } from "../dto/gameTempDetail.dto";
+import {GameListRequestDto} from "../dto/gameListRequest.dto";
+import {GameTempDetailDto} from "../dto/gameTempDetail.dto";
+
 const gameRepo: Repository<Game> = AppDataSource.getRepository(Game);
 
 /**
@@ -40,17 +41,19 @@ export const updateGameFields = async (
     }
 };
 
-export async function findTitleById(gameId: number): Promise<string> {
+export async function findTitleById(gameId: number): Promise<Game> {
     const game = await gameRepo.findOne({
         where: { id: gameId },
-        select: ['title']
+        select: ['title', 'titleKo', 'titleChoseong']
     });
 
     if (!game) {
         throw new Error(`Game with ID ${gameId} not found`);
     }
 
-    return game.title.toLowerCase();
+    game.title = game.title.toLowerCase();
+
+    return game;
 }
 
 export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
@@ -125,7 +128,8 @@ export const findGameWithTag = async(tags: string[])=>{
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
         .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId',
-            'game.price AS price','game.description AS description'])
+            'game.price AS price','game.description AS description', 'game.download_times AS downloadTimes'])
+        .orderBy('game.download_times', 'DESC')
         .getRawMany();
 
     return result;
@@ -161,11 +165,10 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
     }
 }
 
-export const searchGameByKeyword = async(keyword: string) => {
+export const searchGameByKeyword = async (keyword: string) => {
     const like = `%${keyword}%`;
 
-    const result = await AppDataSource
-        .getRepository(Game)
+    return await gameRepo
         .createQueryBuilder('game')
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')   // JOIN game_tag
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')         // JOIN tag
@@ -175,18 +178,22 @@ export const searchGameByKeyword = async(keyword: string) => {
             'game.thumbnail_url AS thumbnailUrl',
             'game.item_id AS itemId',
             'game.price AS price',
-            'game.description AS description'
+            'game.description AS description',
+            'game.download_times AS downloadTimes'
         ])
         .where(new Brackets(qb => {
             qb.where('game.title LIKE :like', { like })
-                .orWhere('game.description LIKE :like', { like })
-                .orWhere('tag.name LIKE :like', { like });
+              .orWhere('game.title_ko LIKE :like', { like })
+              .orWhere('game.description LIKE :like', { like })
+              .orWhere('tag.name LIKE :like', { like })
+              .orWhere('tag.name_ko LIKE :like', { like });
         }))
         .groupBy('game.id')
+        .orderBy('game.download_times', 'DESC')
         .getRawMany();
-
-    return result;
 };
+
+
 
 export const incrementDownloadTimes = async (gameId: number): Promise<void> => {
     try {
@@ -195,4 +202,50 @@ export const incrementDownloadTimes = async (gameId: number): Promise<void> => {
         console.error('Failed to increment download times:', error);
         throw new Error('Failed to increment download times in database');
     }
+};
+
+export const searchGameByChoseong = async (keyword: string) => {
+    return await gameRepo
+        .createQueryBuilder('game')
+        .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')   // JOIN game_tag
+        .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')         // JOIN tag
+        .select([
+            'game.id AS id',
+            'game.title AS title',
+            'game.thumbnail_url AS thumbnailUrl',
+            'game.item_id AS itemId',
+            'game.price AS price',
+            'game.description AS description',
+            'game.download_times AS downloadTimes'
+        ])
+        .where(new Brackets(qb => {
+            qb.where('game.title_choseong = :keyword', { keyword })
+                .orWhere('tag.name_choseong = :keyword', { keyword });
+        }))
+        .groupBy('game.id')
+        .orderBy('game.download_times', 'DESC')
+        .getRawMany();
+};
+
+
+/**
+ * Finds games by a list of game IDs.
+ * @param gameIds - Array of game IDs to search for
+ * @returns Promise<any[]> List of games matching the IDs
+ */
+export const findGamesByIds = async (gameIds: number[]) => {
+    return await gameRepo
+        .createQueryBuilder('game')
+        .select([
+            'game.id AS id',
+            'game.title AS title',
+            'game.thumbnail_url AS thumbnailUrl',
+            'game.item_id AS itemId',
+            'game.price AS price',
+            'game.description AS description',
+            'game.download_times AS downloadTimes'
+        ])
+        .where('game.id IN (:...gameIds)', { gameIds })
+        .orderBy('game.download_times', 'DESC')
+        .getRawMany();
 };

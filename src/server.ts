@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import app from './app';
 import AppDataSource from './config/mysql.config';
 import {startGrpcServer} from "./grpc/management.server";
+import {ensureGameCollection} from "./service/qdrant.service";
 
 dotenv.config();
 const PORT = 3000;
@@ -14,6 +15,8 @@ async function connectAndStart() {
             console.log('📦 DB connected');
 
             await startGrpcServer();
+
+            await ensureGameCollection()
 
             app.listen(PORT, () => {
                 console.log(`UserAccount REST API running on port ${PORT}`);
