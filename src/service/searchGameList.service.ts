@@ -72,5 +72,8 @@ export const searchGameByEmbeddingSimilarityService = async ( keyword: string ):
             };
         })
     );
+
+    console.log("Embedding Similarity Result: " + JSON.stringify(games));
+
     return games;
 };

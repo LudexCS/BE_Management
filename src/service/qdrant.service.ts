@@ -16,6 +16,8 @@ export async function ensureGameCollection() {
             }
         });
     }
+
+    console.log('Qdrant collection created');
 }
 
 export async function upsertGameEmbedding(gameId: number, embedding: number[]) {
@@ -27,6 +29,8 @@ export async function upsertGameEmbedding(gameId: number, embedding: number[]) {
       },
     ],
   });
+
+  console.log('Game embedding upserted' + JSON.stringify(embedding));
 }
 
 export async function searchSimilarGames(queryEmbedding: number[], threshold: number = 0.8) {
