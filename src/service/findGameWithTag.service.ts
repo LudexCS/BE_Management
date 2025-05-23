@@ -17,6 +17,7 @@ export const findGameWithTagService = async (
                 itemId: game.itemId,
                 price: game.price,
                 description: game.description,
+                downloadTimes: game.downloadTimes,
                 tags: allTags,
             };
         })
