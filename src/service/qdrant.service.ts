@@ -43,7 +43,7 @@ export async function upsertGameEmbedding(gameId: number, embedding: number[]) {
     }
 }
 
-export async function searchSimilarGames(queryEmbedding: number[], threshold: number = 0.8) {
+export async function searchSimilarGames(queryEmbedding: number[], threshold: number = 0.3) {
     try {
         const result = await client.search('game', {
             vector: queryEmbedding,
