@@ -4,44 +4,59 @@ const client = qdrantClient;
 
 // Qdrant 컬렉션이 없으면 생성
 export async function ensureGameCollection() {
-    const exists = await client.getCollections().then(res =>
-        res.collections.some(c => c.name === 'game')
-    );
+    try {
+        const exists = await client.getCollections().then(res =>
+            res.collections.some(c => c.name === 'game')
+        );
 
-    if (!exists) {
-        await client.createCollection('game', {
-            vectors: {
-                size: 1536,         // 임베딩 벡터 차원 수
-                distance: 'Cosine'  // cosine similarity
-            }
-        });
+        if (!exists) {
+            await client.createCollection('game', {
+                vectors: {
+                    size: 1536,         // 임베딩 벡터 차원 수
+                    distance: 'Cosine'  // cosine similarity
+                }
+            });
+        }
+
+        console.log('Qdrant collection created');
+    } catch (error) {
+        console.error('Failed to create Qdrant collection:', (error as Error).message);
+        throw new Error('Failed to create Qdrant collection');
     }
-
-    console.log('Qdrant collection created');
 }
 
 export async function upsertGameEmbedding(gameId: number, embedding: number[]) {
-  await client.upsert('game', {
-    points: [
-      {
-        id: gameId.toString(),
-        vector: embedding
-      },
-    ],
-  });
+    try {
+        await client.upsert('game', {
+            points: [
+                {
+                    id: gameId.toString(),
+                    vector: embedding
+                },
+            ],
+        });
 
-  console.log('Game embedding upserted' + JSON.stringify(embedding));
+        console.log('Game embedding upserted' + JSON.stringify(embedding));
+    } catch (error) {
+        console.error('Failed to upsert game embedding:', (error as Error).message);
+        throw new Error('Failed to upsert game embedding');
+    }
 }
 
 export async function searchSimilarGames(queryEmbedding: number[], threshold: number = 0.8) {
-  const result = await client.search('game', {
-    vector: queryEmbedding,
-    limit: 50, // fallback upper bound
-  });
+    try {
+        const result = await client.search('game', {
+            vector: queryEmbedding,
+            limit: 50, // fallback upper bound
+        });
 
-  return result
-    .filter(item => item.score >= threshold)
-    .sort((a, b) => b.score - a.score)
-    .map(item => (
-      Number(item.id)));
+        return result
+            .filter(item => item.score >= threshold)
+            .sort((a, b) => b.score - a.score)
+            .map(item => (
+                Number(item.id)));
+    } catch (error) {
+        console.error('Failed to search similar games:', (error as Error).message);
+        throw new Error('Failed to search similar games');
+    }
 }
