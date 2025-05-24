@@ -50,6 +50,8 @@ export async function searchSimilarGames(queryEmbedding: number[], threshold: nu
             limit: 50, // fallback upper bound
         });
 
+        console.log('Raw Qdrant search results:', result.map(r => ({ id: r.id, score: r.score })));
+
         return result
             .filter(item => item.score >= threshold)
             .sort((a, b) => b.score - a.score)

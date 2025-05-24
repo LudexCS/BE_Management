@@ -36,9 +36,7 @@ export function mergeWeightedNormalizedEmbeddingVectors(
     const norm = Math.sqrt(combined.reduce((sum, val) => sum + val * val, 0));
 
     // 3. L2 정규화
-    const normalized = combined.map(val => val / norm);
-    console.log("embedding vector: ", normalized);
-    return normalized;
+    return combined.map(val => val / norm);
 }
 
 /*
