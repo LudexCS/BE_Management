@@ -5,5 +5,6 @@ export class GamesListDto {
     itemId: string;
     price: string;
     description: string;
+    downloadTimes: number;
     tags: string[];
 }
