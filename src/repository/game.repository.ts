@@ -234,6 +234,8 @@ export const searchGameByChoseong = async (keyword: string) => {
  * @returns Promise<any[]> List of games matching the IDs
  */
 export const findGamesByIds = async (gameIds: number[]) => {
+    if (gameIds.length === 0) return [];
+
     return await gameRepo
         .createQueryBuilder('game')
         .select([
