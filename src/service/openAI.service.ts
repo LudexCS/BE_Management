@@ -7,6 +7,7 @@ export async function createEmbeddingVector(text: string) {
             input: text,
             encoding_format: "float"
         });
+        console.log("embedding vector: " + embedding.data[0].embedding);
         return embedding.data[0].embedding;
     } catch (error) {
         console.error("Failed to create embedding vector:", (error as Error).message);
