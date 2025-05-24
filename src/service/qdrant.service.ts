@@ -30,7 +30,7 @@ export async function upsertGameEmbedding(gameId: number, embedding: number[]) {
         await client.upsert('game', {
             points: [
                 {
-                    id: gameId.toString(),
+                    id: gameId,
                     vector: embedding
                 },
             ],
