@@ -25,5 +25,5 @@ app.use('/api/protected/game', gameRoute);
 app.use('/api/protected/resource', resourceRoute);
 app.use('/api/get', getGameRoute);
 app.use('/api/protected/get/', tradeInfoRoute)
-app.use('/api/protected/fatch', updateData)
+app.use('/api/protected/patch', updateData)
 export default app;
