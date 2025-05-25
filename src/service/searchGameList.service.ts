@@ -1,4 +1,4 @@
-import {GamesListDto} from "../dto/gamesListDto";
+import {GamesListDto} from "../dto/gamesList.dto";
 import {findGamesByIds, searchGameByChoseong, searchGameByKeyword} from "../repository/game.repository";
 import {findTagByGameId} from "../repository/gameTag.repository";
 import {createEmbeddingVector} from "./openAI.service";

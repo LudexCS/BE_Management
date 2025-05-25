@@ -4,7 +4,7 @@ import {
     searchGameByKeywordLikeService
 } from "../service/searchGameList.service";
 import {canBeChoseong} from "es-hangul";
-import {GamesListDto} from "../dto/gamesListDto";
+import {GamesListDto} from "../dto/gamesList.dto";
 
 export const searchGameControl = async (keyword: string) => {
     if (!keyword?.trim()) {
