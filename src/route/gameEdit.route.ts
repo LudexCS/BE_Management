@@ -152,7 +152,7 @@ const router: Router = Router();
 
 /**
  * @swagger
- * /api/protected/update/game:
+ * /api/protected/patch/game:
  *   patch:
  *     summary: Update an existing game
  *     tags: [Games]
@@ -241,7 +241,7 @@ router.patch('/game', upload.fields([
 
 /**
  * @swagger
- * /api/protected/update/resource:
+ * /api/protected/patch/resource:
  *   patch:
  *     summary: Update an existing resource
  *     tags: [Resources]
