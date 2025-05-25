@@ -12,8 +12,8 @@ import {
     findGameImageUrlsByGameId,
     saveGameImageUrl
 } from "../repository/gameImageUrl.repository";
-import {saveGameTag} from "../repository/gameTag.repository";
-import {saveGameRequirement} from "../repository/gameRequirement.repository";
+import {deleteGameTagsByGameId, saveGameTag} from "../repository/gameTag.repository";
+import {deleteGameRequirementsByGameId, saveGameRequirement} from "../repository/gameRequirement.repository";
 import {CreateResourceDto, toResourceEntity, toResourceImageUrlEntities} from "../dto/createResource.dto";
 import {saveResourceImageUrl, findResourceImageUrlsByResourceId, deleteResourceImageUrlsByResourceId} from "../repository/resourceImageUrl.repository";
 import {findResourceByGameId, updateResourceFields} from "../repository/resource.repository"
@@ -36,11 +36,15 @@ export const updateGameData = async (dto: CreateGameDto, gameId: number) => {
         await Promise.all(gameImageUrls.map(saveGameImageUrl));
     }
 
+    await deleteGameTagsByGameId(gameId);
     const gameTags = toGameTagEntities(dto, gameId);
     await Promise.all(gameTags.map(saveGameTag));
 
+    await deleteGameRequirementsByGameId(gameId);
     const requirements = toGameRequirementEntities(dto, gameId);
     await Promise.all(requirements.map(saveGameRequirement));
+
+
 };
 
 export const updateResourceData = async (dto: CreateResourceDto) => {

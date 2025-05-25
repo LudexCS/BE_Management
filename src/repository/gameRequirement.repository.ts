@@ -32,3 +32,7 @@ export const findGameRequirementWithGameId = async (gameId: number): Promise<Gam
     }));
     return requirements;
 };
+
+export const deleteGameRequirementsByGameId = async (gameId: number) => {
+    await gameRequirementRepo.delete({ gameId });
+};
