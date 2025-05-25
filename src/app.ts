@@ -7,7 +7,7 @@ import gameRoute from './route/game.route';
 import resourceRoute from './route/resource.route';
 import jwtGuard from './middleware/jwt.guard';
 import tradeInfoRoute from "./route/tradeInfo.route";
-import editGameData from './route/gameEdit.route'
+import updateData from './route/gameEdit.route'
 
 const app : Express = express();
 app.use(express.json());
@@ -25,5 +25,5 @@ app.use('/api/protected/game', gameRoute);
 app.use('/api/protected/resource', resourceRoute);
 app.use('/api/get', getGameRoute);
 app.use('/api/protected/get/', tradeInfoRoute)
-app.use('/api/protected/gameData', editGameData)
+app.use('/api/protected/fatch', updateData)
 export default app;
