@@ -1,5 +1,5 @@
 import AppDataSource from "../config/mysql.config";
-import {GameTradeDto, RequirementDto, TradeInfoRawDto, ResourceTradeDto} from "../dto/tradeInfoRawDto";
+import {GameTradeDto, RequirementDto, TradeInfoRawDto, ResourceTradeDto} from "../dto/tradeInfoRaw.dto";
 
 
 export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => {
