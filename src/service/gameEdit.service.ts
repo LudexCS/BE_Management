@@ -6,12 +6,16 @@ import {
     toGameTagEntities
 } from "../dto/createGame.dto"
 import {updateGameFields} from "../repository/game.repository";
-import {uploadGameImageToS3, uploadResourceImageToS3} from "./s3.service";
-import {saveGameImageUrl} from "../repository/gameImageUrl.repository";
+import {deleteFromS3, uploadGameImageToS3, uploadResourceImageToS3} from "./s3.service";
+import {
+    deleteGameImageUrlsByGameId,
+    findGameImageUrlsByGameId,
+    saveGameImageUrl
+} from "../repository/gameImageUrl.repository";
 import {saveGameTag} from "../repository/gameTag.repository";
 import {saveGameRequirement} from "../repository/gameRequirement.repository";
 import {CreateResourceDto, toResourceEntity, toResourceImageUrlEntities} from "../dto/createResource.dto";
-import {saveResourceImageUrl} from "../repository/resourceImageUrl.repository";
+import {saveResourceImageUrl, findResourceImageUrlsByResourceId, deleteResourceImageUrlsByResourceId} from "../repository/resourceImageUrl.repository";
 import {findResourceByGameId, updateResourceFields} from "../repository/resource.repository"
 import {Resource} from "../entity/resource.entity";
 
@@ -20,6 +24,11 @@ export const updateGameData = async (dto: CreateGameDto, gameId: number) => {
 
     const { url, key } = await uploadGameImageToS3(dto.thumbnailUrl, gameId);
     await updateGameFields(gameId, { thumbnailUrl: url, key });
+
+    const existingImages = await findGameImageUrlsByGameId(gameId); // [{ url, key }]
+    await Promise.all(existingImages.map(img => deleteFromS3(img.key)));
+    await deleteGameImageUrlsByGameId(gameId);
+
 
     if (dto.imageUrls?.length) {
         const uploaded = await Promise.all(dto.imageUrls.map(img => uploadGameImageToS3(img, gameId)));
@@ -42,6 +51,10 @@ export const updateResourceData = async (dto: CreateResourceDto) => {
         if (!resource) {
             throw new Error(`Resource not found for gameId ${dto.gameId}`);
         }
+        const existingImages = await findResourceImageUrlsByResourceId(resource.id); // [{ url, key }[]]
+        await Promise.all(existingImages.map(img => deleteFromS3(img.key)));
+        await deleteResourceImageUrlsByResourceId(resource.id);
+
         const uploaded = await Promise.all(dto.imageUrls.map(img => uploadResourceImageToS3(img, resource.id)));
         const imageEntities = toResourceImageUrlEntities(uploaded, resource.id);
         await Promise.all(imageEntities.map(saveResourceImageUrl));

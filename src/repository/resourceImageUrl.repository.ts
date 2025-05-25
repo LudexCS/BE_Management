@@ -19,3 +19,18 @@ export const findResourceImageUrlByResourceId = async (resourceId: number) => {
     });
     return imageUrls.map(imageUrl => imageUrl.url);
 }
+
+export const findResourceImageUrlsByResourceId = async (
+    resourceId: number
+): Promise<{ url: string; key: string }[]> => {
+    return await ResourceImageUrlRepo.find({
+        where: { resourceId },
+        select: ["url", "key"]
+    });
+};
+
+export const deleteResourceImageUrlsByResourceId = async (
+    resourceId: number
+): Promise<void> => {
+    await ResourceImageUrlRepo.delete({ resourceId });
+};
