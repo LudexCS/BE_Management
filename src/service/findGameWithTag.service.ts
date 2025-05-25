@@ -1,5 +1,5 @@
 import { findGameWithTag } from '../repository/game.repository'
-import {GamesListDto} from "../dto/gamesListDto";
+import {GamesListDto} from "../dto/gamesList.dto";
 import {findTagByGameId} from "../repository/gameTag.repository";
 
 export const findGameWithTagService = async (
