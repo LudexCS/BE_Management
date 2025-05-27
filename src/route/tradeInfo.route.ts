@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
 import { getTradeHistoryControl } from "../controller/tradeInfo.controller";
-import { TradeHistoryDto } from "../dto/tradeInfoRawDto"
+import { TradeHistoryDto } from "../dto/tradeInfoRaw.dto"
 
 /**
  * @swagger

@@ -16,6 +16,12 @@ export class Game {
     @Column({ type: 'varchar', length: 255, nullable: false })
     title: string;
 
+    @Column({ name: 'title_ko', type: 'varchar', length: 255, nullable: true })
+    titleKo: string;
+
+    @Column({ name: 'title_choseong', type: 'varchar', length: 255, nullable: true })
+    titleChoseong: string;
+
     @Column({ name: 'user_id', type: 'int', default: 0 })
     userId: number;
 

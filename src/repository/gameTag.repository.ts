@@ -23,9 +23,12 @@ export const findTagByGameId = async(gameId: number): Promise<string[]> =>{
             .orderBy('game_tag.priority', 'ASC')
             .getRawMany();
 
-        const tags = tagRows.map(tag => tag.name);
-        return tags;
+        return tagRows.map(tag => tag.name);
     } catch(err){
         throw err;
     }
-}
+};
+
+export const deleteGameTagsByGameId = async (gameId: number) => {
+    await gameTagRepo.delete({ gameId });
+};

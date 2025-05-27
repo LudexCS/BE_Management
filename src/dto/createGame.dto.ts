@@ -4,9 +4,11 @@ import {GameTag} from "../entity/gameTag.entity";
 import {GameRequirement} from "../entity/gameRequirement.entity";
 import {OriginGame} from "../entity/originGame.entity";
 import {Tag} from "../entity/tag.entity";
+import {getChoseong} from "es-hangul";
 
 interface BaseGameDto {
     title: string;
+    titleKo?: string;
     userId?: number;
     price: number;
     thumbnailUrl: {
@@ -44,6 +46,8 @@ export type CreateGameDto =
 export function toGameEntity(createGameDto: CreateGameDto): Game {
     const game = new Game();
     game.title = createGameDto.title;
+    if (createGameDto.titleKo !== undefined) game.titleKo = createGameDto.titleKo;
+    game.titleChoseong = getChoseong(game.titleKo);
     if (createGameDto.userId !== undefined) game.userId = createGameDto.userId;
     game.price = createGameDto.price;
     //game.thumbnailUrl = createGameDto.thumbnailUrl.path;
