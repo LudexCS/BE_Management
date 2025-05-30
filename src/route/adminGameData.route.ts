@@ -1,15 +1,10 @@
 import { Request, Response, Router } from "express";
 import {
     adminLoadGameListControl, adminShowOriginGameHierarchyControl, adminShowVarientGameHierarchyControl,
-    loadGameListControl,
-    showOriginGameHierarchyControl,
-    showVarientGameHierarchyControl
 } from "../controller/showGameList.controller";
-import {adminGetGameByTagControl, getGameByTagControl} from "../controller/getGameByTag.controller";
-import { getGameDetailControl } from "../controller/getGameDetail.controller";
+import {adminGetGameByTagControl} from "../controller/getGameByTag.controller";
 import {GameListRequestDto} from "../dto/gameListRequest.dto";
-import {getResourceDetailControl} from "../controller/getResourceDetail.controller";
-import {adminSearchGameControl, searchGameControl} from "../controller/search.controller";
+import {adminSearchGameControl} from "../controller/search.controller";
 
 
 /**
@@ -41,7 +36,7 @@ import {adminSearchGameControl, searchGameControl} from "../controller/search.co
  *           type: string
  *           nullable: true
  *
- *     GamesListDto:
+ *     GameListDto:
  *       type: object
  *       properties:
  *         gameId:
@@ -69,7 +64,6 @@ import {adminSearchGameControl, searchGameControl} from "../controller/search.co
  *           example: ["action", "rpg", "indie"]
  *         isBlocked:
  *           type: boolean
- *           nullable: true
  *           example: false
  *
  *     MessageResponse:
@@ -111,7 +105,7 @@ const router: Router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameDetailDto'
+ *                 $ref: '#/components/schemas/GameListDto'
  *       500:
  *         description: 서버 오류
  *         content:
@@ -158,7 +152,7 @@ router.get('/list', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameDetailDto'
+ *                 $ref: '#/components/schemas/GameListDto'
  *       500:
  *         description: 서버 오류
  *         content:
@@ -200,7 +194,7 @@ router.get('/origin', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameDetailDto'
+ *                 $ref: '#/components/schemas/GameListDto'
  *       500:
  *         description: 서버 오류
  *         content:

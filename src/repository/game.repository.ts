@@ -174,6 +174,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
         const gameDetails = await gameRepo
             .createQueryBuilder("game")
             .innerJoin("account", "account", "account.id = game.userId")
+            .leftJoin("origin_game", "og", "og.game_id = game.id")
             .where('game.is_blocked = :isBlocked', { isBlocked: false })
             .select([
                 "game.id AS id",
@@ -187,7 +188,8 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 "game.downloadTimes AS downloadTimes",
                 "game.itemId AS itemId",
                 "game.registeredAt AS registeredAt",
-                "game.updatedAt AS updatedAt"
+                "game.updatedAt AS updatedAt",
+                "og.origin_game_id AS originId"
             ])
             .andWhere("game.id = :gameId", { gameId })
             .getRawOne();

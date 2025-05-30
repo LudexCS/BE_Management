@@ -60,6 +60,7 @@ export const adminGetGameList = async(gameListRequestDto: GameListRequestDto) =>
             titleKo: game.titleKo,
             thumbnailUrl: game.thumbnailUrl,
             itemId: game.itemId,
+            isBlocked: game.isBlocked,
         };
         return base;
     });
@@ -72,7 +73,8 @@ export const adminGetOriginGameInfo = async(gameId: number) => {
             gameId: game.gameId,
             title: game.title,
             titleKo: game.titleKo,
-            thumbnailUrl: game.thumbnailUrl
+            thumbnailUrl: game.thumbnailUrl,
+            isBlocked: game.isBlocked,
         };
         return base;
     });
@@ -86,7 +88,8 @@ export const adminGetVariantGameInfo = async(gameId: number) => {
             gameId: game.gameId,
             title: game.title,
             titleKo: game.titleKo,
-            thumbnailUrl: game.thumbnailUrl
+            thumbnailUrl: game.thumbnailUrl,
+            isBlocked: game.isBlocked,
         };
         return base;
     });
