@@ -40,7 +40,7 @@ import {searchGameControl} from "../controller/search.controller";
  *           type: string
  *           nullable: true
  *
- *     GamesListDto:
+ *     GameListDto:
  *       type: object
  *       properties:
  *         gameId:
@@ -191,7 +191,7 @@ const router: Router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameDetailDto'
+ *                 $ref: '#/components/schemas/GameLIstDto'
  *       500:
  *         description: 서버 오류
  *         content:
@@ -236,7 +236,7 @@ router.get('/list', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameDetailDto'
+ *                 $ref: '#/components/schemas/GameListDto'
  *       500:
  *         description: 서버 오류
  *         content:
@@ -276,7 +276,7 @@ router.get('/origin', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameDetailDto'
+ *                 $ref: '#/components/schemas/GameListDto'
  *       500:
  *         description: 서버 오류
  *         content:
@@ -325,7 +325,7 @@ router.get('/variant', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GamesListDto'
+ *                 $ref: '#/components/schemas/GameListDto'
  *       400:
  *         description: 잘못된 요청 (예: tags가 배열이 아님)
  *         content:
@@ -382,7 +382,7 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GamesListDto'
+ *                 $ref: '#/components/schemas/GameListDto'
  *       500:
  *         description: 서버 내부 오류
  *         content:

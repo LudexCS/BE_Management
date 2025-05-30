@@ -11,4 +11,5 @@ export interface GameTempDetailDto {
     itemId: string;
     registeredAt: Date;
     updatedAt: Date;
+    originId: number | null;
 }
