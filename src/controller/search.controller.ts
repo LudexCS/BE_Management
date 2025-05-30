@@ -6,7 +6,7 @@ import {
 import {canBeChoseong} from "es-hangul";
 import {GamesListDto} from "../dto/gamesList.dto";
 
-export const searchGameControl = async (keyword: string) => {
+export const searchGameControl = async (keyword: string, isAdmin: boolean) => {
     if (!keyword?.trim()) {
         throw new Error("Keyword must be provided");
     }

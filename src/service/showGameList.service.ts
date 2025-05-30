@@ -2,41 +2,60 @@ import { GameListRequestDto} from "../dto/gameListRequest.dto";
 import { findGameList, findOriginGameList, findVarientGameList } from '../repository/game.repository'
 
 
-export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
-    const { page, limit } = gameListRequestDto;
-    const offset = (page - 1) * limit;
-    const gameListRows =  await findGameList(gameListRequestDto);
+export const getGameList = async(gameListRequestDto: GameListRequestDto, isAdmin: boolean) => {
+    const gameListRows =  await findGameList(gameListRequestDto, isAdmin);
 
-    return await Promise.all(
-        gameListRows.map(async (game) => ({
+    return gameListRows.map((game) => {
+        const base = {
             gameId: game.id,
             title: game.title,
+            titleKo: game.titleKo,
             thumbnailUrl: game.thumbnailUrl,
-            itemId: game.itemId
+            itemId: game.itemId,
+        };
 
-    }))
-    );
+        // 관리자일 경우 isBlocked 필드 포함
+        if (isAdmin) {
+            return { ...base, isBlocked: game.isBlocked };
+        }
+
+        return base;
+    });
 }
 
-export const getOriginGameInfo = async(gameId: number) => {
-    const originGameListRows = await findOriginGameList(gameId);
-    return await Promise.all(
-        originGameListRows.map(async (game) => ({
+export const getOriginGameInfo = async(gameId: number, isAdmin: boolean) => {
+    const originGameListRows = await findOriginGameList(gameId, isAdmin);
+    return originGameListRows.map((game) => {
+        const base = {
             gameId: game.gameId,
             title: game.title,
-            thumbnailUrl: game.thumbnailUrl
-        }))
-    )
-}
+            titleKo: game.titleKo,
+            thumbnailUrl: game.thumbnailUrl,
+        };
 
-export const getVariantGameInfo = async(gameId: number) => {
-    const varientGameRows = await findVarientGameList(gameId);
+        if (isAdmin) {
+            return { ...base, isBlocked: game.isBlocked };
+        }
 
-    return await Promise.all(
-        varientGameRows.map(async (game) => ({
+        return base;
+    });
+};
+
+export const getVariantGameInfo = async(gameId: number, isAdmin: boolean) => {
+    const varientGameRows = await findVarientGameList(gameId, isAdmin);
+
+    return varientGameRows.map((game) => {
+        const base = {
             gameId: game.gameId,
             title: game.title,
+            titleKo: game.titleKo,
             thumbnailUrl: game.thumbnailUrl
-        }))
-    );
-}
+        };
+
+        if (isAdmin) {
+            return {...base, isBlocked: game.isBlocked};
+        }
+
+        return base;
+    });
+};

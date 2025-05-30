@@ -3,16 +3,17 @@ import {GamesListDto} from "../dto/gamesList.dto";
 import {findTagByGameId} from "../repository/gameTag.repository";
 
 export const findGameWithTagService = async (
-    tags: string[]
-): Promise<GamesListDto[]> => {
-    const taggedGameRows = await findGameWithTag(tags);
+    tags: string[], isAdmin: boolean
+) => {
+    const taggedGameRows = await findGameWithTag(tags, isAdmin);
 
     const games: GamesListDto[] = await Promise.all(
-        taggedGameRows.map(async (game) => {
+        taggedGameRows.map(async (game: any) => {
             const allTags = await findTagByGameId(game.id);
-            return {
+            const baseDto: GamesListDto = {
                 gameId: game.id,
                 title: game.title,
+                titleKo: game.titleKo,
                 thumbnailUrl: game.thumbnailUrl,
                 itemId: game.itemId,
                 price: game.price,
@@ -20,7 +21,18 @@ export const findGameWithTagService = async (
                 downloadTimes: game.downloadTimes,
                 tags: allTags,
             };
+
+            if (isAdmin) {
+                // isBlocked가 존재할 경우에만 포함
+                return {
+                    ...baseDto,
+                    isBlocked: game.isBlocked,
+                };
+            }
+
+            return baseDto;
         })
     );
+
     return games;
 };

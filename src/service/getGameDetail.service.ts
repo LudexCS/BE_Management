@@ -14,6 +14,7 @@ export const getGameDetail = async(gameId: number) =>{
     const gameDetailDto: GameDetailDto = {
         id: gameDetails.id,
         title: gameDetails.title,
+        titleKo: gameDetails.titleKo,
         userId: gameDetails.userId,
         nickName: gameDetails.nickName,
         price: gameDetails.price,

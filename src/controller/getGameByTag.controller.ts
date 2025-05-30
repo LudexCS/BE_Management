@@ -1,5 +1,5 @@
 import {findGameWithTagService} from '../service/findGameWithTag.service'
 
-export const getGameByTagControl = async (tags: string[]) => {
-    return await findGameWithTagService(tags);
+export const getGameByTagControl = async (tags: string[], isAdmin: boolean) => {
+    return await findGameWithTagService(tags, isAdmin);
 };
