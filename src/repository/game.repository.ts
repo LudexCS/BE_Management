@@ -72,8 +72,8 @@ export const findGameList = async(gameListRequestDto: GameListRequestDto, isAdmi
     const limit = gameListRequestDto.limit;
 
     if (!isAdmin) {
-        baseQuery.where('game.is_blocked = false')
-            .andWhere('account.is_blocked = false');
+        baseQuery.where('game.is_blocked = 0')
+            .andWhere('account.is_blocked = 0');
     }
 
     return await baseQuery
