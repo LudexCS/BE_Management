@@ -3,9 +3,9 @@ import {GamesListDto} from "../dto/gamesList.dto";
 import {findTagByGameId} from "../repository/gameTag.repository";
 
 export const findGameWithTagService = async (
-    tags: string[], isAdmin: boolean
+    tags: string[]
 ) => {
-    const taggedGameRows = await findGameWithTag(tags, isAdmin);
+    const taggedGameRows = await findGameWithTag(tags);
 
     const games: GamesListDto[] = await Promise.all(
         taggedGameRows.map(async (game: any) => {
@@ -21,15 +21,6 @@ export const findGameWithTagService = async (
                 downloadTimes: game.downloadTimes,
                 tags: allTags,
             };
-
-            if (isAdmin) {
-                // isBlocked가 존재할 경우에만 포함
-                return {
-                    ...baseDto,
-                    isBlocked: game.isBlocked,
-                };
-            }
-
             return baseDto;
         })
     );

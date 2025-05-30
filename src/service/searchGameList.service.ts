@@ -6,7 +6,7 @@ import {searchSimilarGames} from "./qdrant.service";
 
 export const searchGameByChoseongService = async (keyword: string, isAdmin: boolean): Promise<GamesListDto[]> => {
     // 게임 titleChoseong + 태그 nameChoseong 결과를 return. - 일치하는 것만 가져옴.
-    const searchedGameRows = await searchGameByChoseong(keyword, isAdmin);
+    const searchedGameRows = await searchGameByChoseong(keyword);
 
     const games: GamesListDto[] = await Promise.all(
         searchedGameRows.map(async (game) => {
@@ -32,7 +32,7 @@ export const searchGameByChoseongService = async (keyword: string, isAdmin: bool
 export const searchGameByKeywordLikeService = async ( keyword: string, isAdmin: boolean ): Promise<GamesListDto[]> => {
     // 게임 title + 게임 titleKo + 게임 description + 태그 name + 태그 nameKo 결과를 append해 return. - Like 연산.
     // 최종적으로 중복을 제거하고 리턴.
-    const searchedGameRows = await searchGameByKeyword(keyword, isAdmin);
+    const searchedGameRows = await searchGameByKeyword(keyword);
 
     const games: GamesListDto[] = await Promise.all(
         searchedGameRows.map(async (game) => {
@@ -59,7 +59,7 @@ export const searchGameByEmbeddingSimilarityService = async ( keyword: string, i
     const queryEmbedding = await createEmbeddingVector(keyword);
     const searchedGameIds = await searchSimilarGames(queryEmbedding);
 
-    const searchedGameRows = await findGamesByIds(searchedGameIds, isAdmin);
+    const searchedGameRows = await findGamesByIds(searchedGameIds);
 
     const games: GamesListDto[] = await Promise.all(
         searchedGameRows.map(async (game) => {
