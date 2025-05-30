@@ -11,11 +11,11 @@ export const searchGameControl = async (keyword: string, isAdmin: boolean) => {
         throw new Error("Keyword must be provided");
     }
     if (canBeChoseong(keyword[0])) {
-        return await searchGameByChoseongService(keyword);
+        return await searchGameByChoseongService(keyword, isAdmin);
     }
     else {
-        const byKeyword = await searchGameByKeywordLikeService(keyword);
-        const byEmbedding = await searchGameByEmbeddingSimilarityService(keyword);
+        const byKeyword = await searchGameByKeywordLikeService(keyword, isAdmin);
+        const byEmbedding = await searchGameByEmbeddingSimilarityService(keyword, isAdmin);
 
         // 두 배열을 합치고
         const combined = [...byKeyword, ...byEmbedding];
