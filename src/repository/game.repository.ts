@@ -60,6 +60,7 @@ export const findGameList = async(gameListRequestDto: GameListRequestDto) =>{
     const baseQuery = await gameRepo.createQueryBuilder('game')
         .innerJoin('account', 'account', 'account.id = game.user_id')
         .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -91,7 +92,8 @@ export const findOriginGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS gameId',
             'game.title AS title',
@@ -117,7 +119,8 @@ export const findVarientGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
-        .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS gameId',
             'game.title AS title',
@@ -144,7 +147,8 @@ export const findGameWithTag = async(tags: string[]) => {
         .innerJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .innerJoin('tag', 'tag', 'tag.id = gt.tag_id')
         .where('tag.name IN (:...tagNames)', { tagNames: tags })
-        .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
         .orderBy('game.download_times', 'DESC');
@@ -184,7 +188,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 "game.registeredAt AS registeredAt",
                 "game.updatedAt AS updatedAt"
             ])
-            .where("game.id = :gameId", { gameId })
+            .andWhere("game.id = :gameId", { gameId })
             .getRawOne();
 
         if(!gameDetails){
@@ -205,6 +209,7 @@ export const searchGameByKeyword = async (keyword: string) => {
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
         .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -248,6 +253,7 @@ export const searchGameByChoseong = async (keyword: string) => {
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
         .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -282,6 +288,7 @@ export const findGamesByIds = async (gameIds: number[]) => {
         .createQueryBuilder('game')
         .innerJoin('account', 'account', 'account.id = game.user_id')
         .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -292,7 +299,7 @@ export const findGamesByIds = async (gameIds: number[]) => {
             'game.description AS description',
             'game.download_times AS downloadTimes',
         ])
-        .where('game.id IN (:...gameIds)', { gameIds });
+        .andWhere('game.id IN (:...gameIds)', { gameIds });
     return await query
         .orderBy('game.download_times', 'DESC')
         .getRawMany();
