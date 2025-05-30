@@ -12,13 +12,8 @@ export const getGameList = async(gameListRequestDto: GameListRequestDto, isAdmin
             titleKo: game.titleKo,
             thumbnailUrl: game.thumbnailUrl,
             itemId: game.itemId,
+            isBlocked: game.isBlocked
         };
-
-        // 관리자일 경우 isBlocked 필드 포함
-        if (isAdmin) {
-            return { ...base, isBlocked: game.isBlocked };
-        }
-
         return base;
     });
 }
