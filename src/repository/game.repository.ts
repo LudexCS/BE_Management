@@ -56,20 +56,40 @@ export async function findTitleById(gameId: number): Promise<Game> {
     return game;
 }
 
-export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
-    return await gameRepo.createQueryBuilder('game')
-        .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId'])
-        .orderBy('download_times', 'DESC')
-        .offset((gameListRequestDto.page - 1) * gameListRequestDto.limit)
-        .limit(gameListRequestDto.limit)
+export const findGameList = async(gameListRequestDto: GameListRequestDto, isAdmin: boolean): Promise<Game[]> =>{
+    const baseQuery = await gameRepo.createQueryBuilder('game')
+        .innerJoin('account', 'account', 'account.id = game.user_id')
+        .select([
+            'game.id AS id',
+            'game.title AS title',
+            "game.titleKo AS titleKo",
+            'game.thumbnail_url AS thumbnailUrl',
+            'game.item_id AS itemId',
+        ]);
+
+    if (isAdmin) {
+        baseQuery.addSelect('game.is_blocked AS isBlocked');
+    } else {
+        baseQuery.where('game.is_blocked = FALSE')
+            .andWhere('account.is_blocked = FALSE');
+    }
+
+    const offset = (gameListRequestDto.page - 1) * gameListRequestDto.limit;
+    const limit = gameListRequestDto.limit;
+
+    return await baseQuery
+        .orderBy('game.download_times', 'DESC')
+        .offset(offset)
+        .limit(limit)
         .getRawMany();
 };
 
 export const findOriginGameList = async (
-    gameId: number
-): Promise<{ gameId: number; title: string; thumbnailUrl: string }[]> => {
-    return gameRepo
+    gameId: number, isAdmin: boolean
+) => {
+    const query = gameRepo
         .createQueryBuilder('game')
+        .innerJoin('account', 'account', 'account.id = game.user_id')
         .where(qb => {
             const subQuery = qb
                 .subQuery()
@@ -83,16 +103,26 @@ export const findOriginGameList = async (
         .select([
             'game.id AS gameId',
             'game.title AS title',
+            "game.titleKo AS titleKo",
             'game.thumbnail_url AS thumbnailUrl'
-        ])
-        .getRawMany();
+        ]);
+
+    if (isAdmin) {
+        query.addSelect('game.is_blocked AS isBlocked');
+    } else {
+        query.andWhere('game.is_blocked = FALSE')
+            .andWhere('account.is_blocked = FALSE');
+    }
+
+    return await query.getRawMany();
 };
 
 export const findVarientGameList = async (
-    gameId: number
-): Promise<{ gameId: number; title: string; thumbnailUrl: string }[]> => {
-    return gameRepo
+    gameId: number, isAdmin: boolean
+) => {
+    const query = gameRepo
         .createQueryBuilder('game')
+        .innerJoin('account', 'account', 'account.id = game.user_id')
         .where(qb => {
             const subQuery = qb
                 .subQuery()
@@ -106,9 +136,18 @@ export const findVarientGameList = async (
         .select([
             'game.id AS gameId',
             'game.title AS title',
+            "game.titleKo AS titleKo",
             'game.thumbnail_url AS thumbnailUrl'
-        ])
-        .getRawMany();
+        ]);
+
+    if (isAdmin) {
+        query.addSelect('game.is_blocked AS isBlocked');
+    } else {
+        query.andWhere('game.is_blocked = FALSE')
+            .andWhere('account.is_blocked = FALSE');
+    }
+
+    return await query.getRawMany();
 };
 
 export const isGameExist = async (id: number): Promise<boolean> => {
@@ -117,23 +156,42 @@ export const isGameExist = async (id: number): Promise<boolean> => {
     });
 }
 
-export const findGameWithTag = async(tags: string[])=>{
+export const findGameWithTag = async(tags: string[], isAdmin: boolean) => {
     const tagCount = tags.length;
 
-    const result = await gameRepo
+
+    const query = gameRepo
         .createQueryBuilder('game')
+        .innerJoin('account', 'account', 'account.id = game.user_id')
         .innerJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .innerJoin('tag', 'tag', 'tag.id = gt.tag_id')
         .where('tag.name IN (:...tagNames)', { tagNames: tags })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
-        .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId',
-            'game.price AS price','game.description AS description', 'game.download_times AS downloadTimes'])
-        .orderBy('game.download_times', 'DESC')
-        .getRawMany();
+        .orderBy('game.download_times', 'DESC');
 
-    return result;
-}
+    const selectFields = [
+        'game.id AS id',
+        'game.title AS title',
+        'game.titleKo AS titleKo',
+        'game.thumbnail_url AS thumbnailUrl',
+        'game.item_id AS itemId',
+        'game.price AS price',
+        'game.description AS description',
+        'game.download_times AS downloadTimes',
+    ];
+
+    if (isAdmin) {
+        selectFields.push('game.is_blocked AS isBlocked');
+    } else {
+        query.andWhere('game.is_blocked = FALSE')
+            .andWhere('account.is_blocked = FALSE');
+    }
+
+    return await query
+        .select(selectFields)
+        .getRawMany();
+};
 
 export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempDetailDto> =>{
     try{
@@ -143,6 +201,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
             .select([
                 "game.id AS id",
                 "game.title AS title",
+                "game.titleKo AS titleKo",
                 "game.userId AS userId",
                 "account.nickname AS nickName",
                 "game.price AS price",
@@ -154,6 +213,21 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 "game.updatedAt AS updatedAt"
             ])
             .where("game.id = :gameId", { gameId })
+            .where(qb => {
+                const subQuery1 = qb
+                    .subQuery()
+                    .select('sg.game_id')
+                    .from('sanction_game', 'sg')
+                    .getQuery();
+
+                const subQuery2 = qb
+                    .subQuery()
+                    .select('su.user_id')
+                    .from('sanction_user', 'su')
+                    .getQuery();
+
+                return `game.id NOT IN ${subQuery1} AND game.user_id NOT IN ${subQuery2}`;
+            })
             .getRawOne();
 
         if(!gameDetails){
@@ -165,32 +239,44 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
     }
 }
 
-export const searchGameByKeyword = async (keyword: string) => {
+export const searchGameByKeyword = async (keyword: string, isAdmin: boolean) => {
     const like = `%${keyword}%`;
 
-    return await gameRepo
+    const query = gameRepo
         .createQueryBuilder('game')
-        .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')   // JOIN game_tag
-        .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')         // JOIN tag
+        .leftJoin('account', 'account', 'account.id = game.user_id')
+        .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
+        .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
         .select([
             'game.id AS id',
             'game.title AS title',
+            'game.titleKo AS titleKo',
             'game.thumbnail_url AS thumbnailUrl',
             'game.item_id AS itemId',
             'game.price AS price',
             'game.description AS description',
             'game.download_times AS downloadTimes'
-        ])
-        .where(new Brackets(qb => {
-            qb.where('game.title LIKE :like', { like })
-              .orWhere('game.title_ko LIKE :like', { like })
-              .orWhere('game.description LIKE :like', { like })
-              .orWhere('tag.name LIKE :like', { like })
-              .orWhere('tag.name_ko LIKE :like', { like });
-        }))
-        .groupBy('game.id')
-        .orderBy('game.download_times', 'DESC')
-        .getRawMany();
+        ]);
+
+    if (isAdmin) {
+        query.addSelect('game.is_blocked AS isBlocked');
+    } else {
+        query.where('game.is_blocked = FALSE')
+            .andWhere('account.is_blocked = FALSE');
+    }
+
+    query.andWhere(new Brackets(qb => {
+        qb.where('game.title LIKE :like', { like })
+            .orWhere('game.title_ko LIKE :like', { like })
+            .orWhere('game.description LIKE :like', { like })
+            .orWhere('tag.name LIKE :like', { like })
+            .orWhere('tag.name_ko LIKE :like', { like });
+    }));
+
+    query.groupBy('game.id')
+        .orderBy('game.download_times', 'DESC');
+
+    return await query.getRawMany();
 };
 
 
@@ -204,27 +290,39 @@ export const incrementDownloadTimes = async (gameId: number): Promise<void> => {
     }
 };
 
-export const searchGameByChoseong = async (keyword: string) => {
-    return await gameRepo
+export const searchGameByChoseong = async (keyword: string, isAdmin: boolean) => {
+    const query = gameRepo
         .createQueryBuilder('game')
-        .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')   // JOIN game_tag
-        .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')         // JOIN tag
+        .leftJoin('account', 'account', 'account.id = game.user_id')
+        .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
+        .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
         .select([
             'game.id AS id',
             'game.title AS title',
+            'game.titleKo AS titleKo',
             'game.thumbnail_url AS thumbnailUrl',
             'game.item_id AS itemId',
             'game.price AS price',
             'game.description AS description',
             'game.download_times AS downloadTimes'
-        ])
-        .where(new Brackets(qb => {
-            qb.where('game.title_choseong = :keyword', { keyword })
-                .orWhere('tag.name_choseong = :keyword', { keyword });
-        }))
-        .groupBy('game.id')
-        .orderBy('game.download_times', 'DESC')
-        .getRawMany();
+        ]);
+
+    if (isAdmin) {
+        query.addSelect('game.is_blocked AS isBlocked');
+    } else {
+        query.where('game.is_blocked = FALSE')
+            .andWhere('account.is_blocked = FALSE');
+    }
+
+    query.andWhere(new Brackets(qb => {
+        qb.where('game.title_choseong = :keyword', { keyword })
+            .orWhere('tag.name_choseong = :keyword', { keyword });
+    }));
+
+    query.groupBy('game.id')
+        .orderBy('game.download_times', 'DESC');
+
+    return await query.getRawMany();
 };
 
 
@@ -233,21 +331,30 @@ export const searchGameByChoseong = async (keyword: string) => {
  * @param gameIds - Array of game IDs to search for
  * @returns Promise<any[]> List of games matching the IDs
  */
-export const findGamesByIds = async (gameIds: number[]) => {
+export const findGamesByIds = async (gameIds: number[], isAdmin: boolean) => {
     if (gameIds.length === 0) return [];
 
-    return await gameRepo
+    const query = gameRepo
         .createQueryBuilder('game')
+        .innerJoin('account', 'account', 'account.id = game.user_id')
         .select([
             'game.id AS id',
             'game.title AS title',
+            'game.titleKo AS titleKo',
             'game.thumbnail_url AS thumbnailUrl',
             'game.item_id AS itemId',
             'game.price AS price',
             'game.description AS description',
-            'game.download_times AS downloadTimes'
+            'game.download_times AS downloadTimes',
         ])
-        .where('game.id IN (:...gameIds)', { gameIds })
+        .where('game.id IN (:...gameIds)', { gameIds });
+
+    if (!isAdmin) {
+        query.andWhere('game.is_blocked = FALSE')
+            .andWhere('account.is_blocked = FALSE');
+    }
+
+    return await query
         .orderBy('game.download_times', 'DESC')
         .getRawMany();
 };

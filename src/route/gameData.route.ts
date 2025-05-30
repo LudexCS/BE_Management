@@ -66,6 +66,10 @@ import {searchGameControl} from "../controller/search.controller";
  *           items:
  *             type: string
  *           example: ["action", "rpg", "indie"]
+ *         isBlocked:
+ *           type: boolean
+ *           nullable: true
+ *           example: false
  *
  *     GameDetailDto:
  *       type: object
@@ -179,6 +183,12 @@ const router: Router = Router();
  *         schema:
  *           type: integer
  *         description: 페이지당 항목 수
+ *       - in: query
+ *         name: isAdmin
+ *         required: true
+ *         schema:
+ *          type: boolean
+ *         description: 관리자 권한 여부
  *     responses:
  *       200:
  *         description: 게임 목록 조회 성공
@@ -197,13 +207,13 @@ const router: Router = Router();
  */
 router.get('/list', async (req: Request, res: Response) => {
     try {
-        const { page, limit } = req.query;
+        const { page, limit, isAdmin } = req.query;
 
         const gameListRequestDto: GameListRequestDto = {
             page: Number(page),
             limit: Number(limit),
         };
-        const gameList = await loadGameListControl(gameListRequestDto);
+        const gameList = await loadGameListControl(gameListRequestDto, Boolean(isAdmin));
         res.status(200).json(gameList);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -224,6 +234,12 @@ router.get('/list', async (req: Request, res: Response) => {
  *         schema:
  *           type: integer
  *         description: 파생 게임의 ID
+ *       - in: query
+ *         name: isAdmin
+ *         required: true
+ *         schema:
+ *          type: boolean
+ *         description: 관리자 권한 여부
  *     responses:
  *       200:
  *         description: 원본 게임 조회 성공
@@ -243,7 +259,8 @@ router.get('/list', async (req: Request, res: Response) => {
 router.get('/origin', async (req: Request, res: Response) => {
     try {
         const gameId = Number(req.query.gameId);
-        const originGames = await showOriginGameHierarchyControl(gameId);
+        const isAdmin = req.query.isAdmin === 'true';
+        const originGames = await showOriginGameHierarchyControl(gameId, isAdmin);
         res.status(200).json(originGames);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -264,6 +281,12 @@ router.get('/origin', async (req: Request, res: Response) => {
  *         schema:
  *           type: integer
  *         description: 원본 게임 ID
+ *       - in: query
+ *         name: isAdmin
+ *         required: true
+ *         schema:
+ *          type: boolean
+ *         description: 관리자 권한 여부
  *     responses:
  *       200:
  *         description: 파생 게임 조회 성공
@@ -283,7 +306,8 @@ router.get('/origin', async (req: Request, res: Response) => {
 router.get('/variant', async (req: Request, res: Response) => {
     try {
         const gameId = Number(req.query.gameId);
-        const variantGames = await showVarientGameHierarchyControl(gameId);
+        const isAdmin = req.query.isAdmin === 'true';
+        const variantGames = await showVarientGameHierarchyControl(gameId, isAdmin);
         res.status(200).json(variantGames);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -296,8 +320,16 @@ router.get('/variant', async (req: Request, res: Response) => {
  * /api/get/byTags:
  *   post:
  *     summary: 태그 기반 게임 검색
- *     description: 입력한 태그들을 모두 포함하는 게임들을 조회하고, 각 게임의 전체 태그 목록도 함께 반환합니다.
- *     tags: [GameList]
+ *     description: 입력한 태그들을 모두 포함하는 게임 목록을 조회하며, 각 게임의 전체 태그 목록을 함께 반환합니다.
+ *     tags:
+ *       - GameList
+ *     parameters:
+ *       - in: query
+ *         name: isAdmin
+ *         schema:
+ *           type: boolean
+ *         required: false
+ *         description: 관리자 권한 여부 (true일 경우 차단 게임도 포함됨)
  *     requestBody:
  *       required: true
  *       content:
@@ -322,13 +354,13 @@ router.get('/variant', async (req: Request, res: Response) => {
  *               items:
  *                 $ref: '#/components/schemas/GamesListDto'
  *       400:
- *         description: 잘못된 요청
+ *         description: 잘못된 요청 (예: tags가 배열이 아님)
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  *       500:
- *         description: 서버 오류
+ *         description: 서버 내부 오류
  *         content:
  *           application/json:
  *             schema:
@@ -337,12 +369,12 @@ router.get('/variant', async (req: Request, res: Response) => {
 router.post('/byTags', async (req: Request, res: Response) => {
     try {
         const { tags } = req.body;
-
+        const isAdmin = req.query.isAdmin === 'true';
         if (!Array.isArray(tags)) {
             res.status(400).json({ message: 'tags는 문자열 배열이어야 합니다.' });
         }
 
-        const games = await getGameByTagControl(tags);
+        const games = await getGameByTagControl(tags, isAdmin);
         res.status(200).json(games);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -354,8 +386,16 @@ router.post('/byTags', async (req: Request, res: Response) => {
  * /api/get/search:
  *   post:
  *     summary: 키워드 기반 게임 검색
- *     description: 입력된 키워드에 따라 게임 리스트를 반환
- *     tags: [GameList]
+ *     description: 입력된 키워드에 따라 게임 제목, 설명, 태그 등에 일치하는 게임 목록을 반환합니다.
+ *     tags:
+ *       - GameList
+ *     parameters:
+ *       - in: query
+ *         name: isAdmin
+ *         schema:
+ *           type: boolean
+ *         required: false
+ *         description: 관리자 권한 여부 (true일 경우 차단된 게임도 포함됨)
  *     requestBody:
  *       required: true
  *       content:
@@ -378,7 +418,7 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *               items:
  *                 $ref: '#/components/schemas/GamesListDto'
  *       500:
- *         description: 서버 오류
+ *         description: 서버 내부 오류
  *         content:
  *           application/json:
  *             schema:
@@ -387,7 +427,8 @@ router.post('/byTags', async (req: Request, res: Response) => {
 router.post('/search', async (req: Request, res: Response) => {
     try{
         const keyword = req.body.keyword as string;
-        const games = await searchGameControl(keyword);
+        const isAdmin = req.query.isAdmin === 'true';
+        const games = await searchGameControl(keyword, isAdmin);
         res.status(200).json(games);
     }catch(error){
         res.status(500).json({ message: (error as Error).message });
