@@ -8,6 +8,7 @@ import resourceRoute from './route/resource.route';
 import jwtGuard from './middleware/jwt.guard';
 import tradeInfoRoute from "./route/tradeInfo.route";
 import updateData from './route/gameEdit.route'
+import adminGetGameRoute from "./route/adminGameData.route";
 
 const app : Express = express();
 app.use(express.json());
@@ -26,4 +27,5 @@ app.use('/api/protected/resource', resourceRoute);
 app.use('/api/get', getGameRoute);
 app.use('/api/protected/get/', tradeInfoRoute)
 app.use('/api/protected/patch', updateData)
+app.use('/api/admin/get', adminGetGameRoute);
 export default app;
