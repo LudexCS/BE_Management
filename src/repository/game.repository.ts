@@ -56,20 +56,32 @@ export async function findTitleById(gameId: number): Promise<Game> {
     return game;
 }
 
-export const findGameList = async(gameListRequestDto: GameListRequestDto): Promise<Game[]> =>{
-    return await gameRepo.createQueryBuilder('game')
-        .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId'])
-        .orderBy('download_times', 'DESC')
-        .offset((gameListRequestDto.page - 1) * gameListRequestDto.limit)
-        .limit(gameListRequestDto.limit)
+export const findGameList = async(gameListRequestDto: GameListRequestDto) =>{
+    const baseQuery = await gameRepo.createQueryBuilder('game')
+        .innerJoin('account', 'account', 'account.id = game.user_id')
+        .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
+        .select([
+            'game.id AS id',
+            'game.title AS title',
+            "game.titleKo AS titleKo",
+            'game.thumbnail_url AS thumbnailUrl',
+            'game.item_id AS itemId',
+        ]);
+    const offset = (gameListRequestDto.page - 1) * gameListRequestDto.limit;
+    const limit = gameListRequestDto.limit;
+    return await baseQuery
+        .orderBy('game.download_times', 'DESC')
+        .offset(offset)
+        .limit(limit)
         .getRawMany();
 };
 
 export const findOriginGameList = async (
-    gameId: number
-): Promise<{ gameId: number; title: string; thumbnailUrl: string }[]> => {
-    return gameRepo
+    gameId: number) => {
+    const query = gameRepo
         .createQueryBuilder('game')
+        .innerJoin('account', 'account', 'account.id = game.user_id')
         .where(qb => {
             const subQuery = qb
                 .subQuery()
@@ -80,19 +92,23 @@ export const findOriginGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
+        .andWhere('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS gameId',
             'game.title AS title',
-            'game.thumbnail_url AS thumbnailUrl'
-        ])
-        .getRawMany();
+            "game.titleKo AS titleKo",
+            'game.thumbnail_url AS thumbnailUrl',
+        ]);
+
+    return await query.getRawMany();
 };
 
 export const findVarientGameList = async (
-    gameId: number
-): Promise<{ gameId: number; title: string; thumbnailUrl: string }[]> => {
-    return gameRepo
+    gameId: number) => {
+    const query = gameRepo
         .createQueryBuilder('game')
+        .innerJoin('account', 'account', 'account.id = game.user_id')
         .where(qb => {
             const subQuery = qb
                 .subQuery()
@@ -103,12 +119,16 @@ export const findVarientGameList = async (
             return 'game.id IN ' + subQuery;
         })
         .setParameter('gameId', gameId)
+        .andWhere('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS gameId',
             'game.title AS title',
-            'game.thumbnail_url AS thumbnailUrl'
-        ])
-        .getRawMany();
+            "game.titleKo AS titleKo",
+            'game.thumbnail_url AS thumbnailUrl',
+        ]);
+
+    return await query.getRawMany();
 };
 
 export const isGameExist = async (id: number): Promise<boolean> => {
@@ -117,32 +137,47 @@ export const isGameExist = async (id: number): Promise<boolean> => {
     });
 }
 
-export const findGameWithTag = async(tags: string[])=>{
+export const findGameWithTag = async(tags: string[]) => {
     const tagCount = tags.length;
 
-    const result = await gameRepo
+
+    const query = gameRepo
         .createQueryBuilder('game')
+        .innerJoin('account', 'account', 'account.id = game.user_id')
         .innerJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .innerJoin('tag', 'tag', 'tag.id = gt.tag_id')
         .where('tag.name IN (:...tagNames)', { tagNames: tags })
+        .andWhere('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
-        .select(['game.id AS id', 'game.title AS title', 'game.thumbnail_url AS thumbnailUrl', 'game.item_id AS itemId',
-            'game.price AS price','game.description AS description', 'game.download_times AS downloadTimes'])
-        .orderBy('game.download_times', 'DESC')
-        .getRawMany();
+        .orderBy('game.download_times', 'DESC');
 
-    return result;
-}
+    const selectFields = [
+        'game.id AS id',
+        'game.title AS title',
+        'game.titleKo AS titleKo',
+        'game.thumbnail_url AS thumbnailUrl',
+        'game.item_id AS itemId',
+        'game.price AS price',
+        'game.description AS description',
+        'game.download_times AS downloadTimes',
+    ];
+    return await query
+        .select(selectFields)
+        .getRawMany();
+};
 
 export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempDetailDto> =>{
     try{
         const gameDetails = await gameRepo
             .createQueryBuilder("game")
             .innerJoin("account", "account", "account.id = game.userId")
+            .where('game.is_blocked = :isBlocked', { isBlocked: false })
             .select([
                 "game.id AS id",
                 "game.title AS title",
+                "game.titleKo AS titleKo",
                 "game.userId AS userId",
                 "account.nickname AS nickName",
                 "game.price AS price",
@@ -153,7 +188,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 "game.registeredAt AS registeredAt",
                 "game.updatedAt AS updatedAt"
             ])
-            .where("game.id = :gameId", { gameId })
+            .andWhere("game.id = :gameId", { gameId })
             .getRawOne();
 
         if(!gameDetails){
@@ -168,29 +203,36 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
 export const searchGameByKeyword = async (keyword: string) => {
     const like = `%${keyword}%`;
 
-    return await gameRepo
+    const query = gameRepo
         .createQueryBuilder('game')
-        .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')   // JOIN game_tag
-        .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')         // JOIN tag
+        .leftJoin('account', 'account', 'account.id = game.user_id')
+        .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
+        .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
+        .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS id',
             'game.title AS title',
+            'game.titleKo AS titleKo',
             'game.thumbnail_url AS thumbnailUrl',
             'game.item_id AS itemId',
             'game.price AS price',
             'game.description AS description',
-            'game.download_times AS downloadTimes'
-        ])
-        .where(new Brackets(qb => {
-            qb.where('game.title LIKE :like', { like })
-              .orWhere('game.title_ko LIKE :like', { like })
-              .orWhere('game.description LIKE :like', { like })
-              .orWhere('tag.name LIKE :like', { like })
-              .orWhere('tag.name_ko LIKE :like', { like });
-        }))
-        .groupBy('game.id')
-        .orderBy('game.download_times', 'DESC')
-        .getRawMany();
+            'game.download_times AS downloadTimes',
+        ]);
+
+    query.andWhere(new Brackets(qb => {
+        qb.where('game.title LIKE :like', { like })
+            .orWhere('game.title_ko LIKE :like', { like })
+            .orWhere('game.description LIKE :like', { like })
+            .orWhere('tag.name LIKE :like', { like })
+            .orWhere('tag.name_ko LIKE :like', { like });
+    }));
+
+    query.groupBy('game.id')
+        .orderBy('game.download_times', 'DESC');
+
+    return await query.getRawMany();
 };
 
 
@@ -205,26 +247,32 @@ export const incrementDownloadTimes = async (gameId: number): Promise<void> => {
 };
 
 export const searchGameByChoseong = async (keyword: string) => {
-    return await gameRepo
+    const query = gameRepo
         .createQueryBuilder('game')
-        .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')   // JOIN game_tag
-        .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')         // JOIN tag
+        .leftJoin('account', 'account', 'account.id = game.user_id')
+        .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
+        .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
+        .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS id',
             'game.title AS title',
+            'game.titleKo AS titleKo',
             'game.thumbnail_url AS thumbnailUrl',
             'game.item_id AS itemId',
             'game.price AS price',
             'game.description AS description',
-            'game.download_times AS downloadTimes'
-        ])
-        .where(new Brackets(qb => {
-            qb.where('game.title_choseong = :keyword', { keyword })
-                .orWhere('tag.name_choseong = :keyword', { keyword });
-        }))
-        .groupBy('game.id')
-        .orderBy('game.download_times', 'DESC')
-        .getRawMany();
+        ]);
+
+    query.andWhere(new Brackets(qb => {
+        qb.where('game.title_choseong = :keyword', { keyword })
+            .orWhere('tag.name_choseong = :keyword', { keyword });
+    }));
+
+    query.groupBy('game.id')
+        .orderBy('game.download_times', 'DESC');
+
+    return await query.getRawMany();
 };
 
 
@@ -236,18 +284,23 @@ export const searchGameByChoseong = async (keyword: string) => {
 export const findGamesByIds = async (gameIds: number[]) => {
     if (gameIds.length === 0) return [];
 
-    return await gameRepo
+    const query = gameRepo
         .createQueryBuilder('game')
+        .innerJoin('account', 'account', 'account.id = game.user_id')
+        .where('game.is_blocked = :isBlocked', { isBlocked: false })
+        .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
             'game.id AS id',
             'game.title AS title',
+            'game.titleKo AS titleKo',
             'game.thumbnail_url AS thumbnailUrl',
             'game.item_id AS itemId',
             'game.price AS price',
             'game.description AS description',
-            'game.download_times AS downloadTimes'
+            'game.download_times AS downloadTimes',
         ])
-        .where('game.id IN (:...gameIds)', { gameIds })
+        .andWhere('game.id IN (:...gameIds)', { gameIds });
+    return await query
         .orderBy('game.download_times', 'DESC')
         .getRawMany();
 };

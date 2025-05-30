@@ -3,6 +3,7 @@ import {GameRequirementDto} from "./gameRequirement.dto";
 export interface GameDetailDto {
     id: number;
     title: string;
+    titleKo: string;
     userId: number;
     nickName: string;
     price: number;

@@ -1,5 +1,5 @@
 import { getPurchasedGamesInfo, getSoldGamesInfo, getPurchasedResourcesInfo } from '../repository/tradeInfo.repository'
-import { TradeHistoryDto, GameTradeDto, ResourceTradeDto } from '../dto/tradeInfoRawDto';
+import { TradeHistoryDto, GameTradeDto, ResourceTradeDto } from '../dto/tradeInfoRaw.dto';
 import {getUserIdByEmail} from "../grpc/auth.client";
 
 export const getUserTradeHistory = async (email: string): Promise<TradeHistoryDto> => {

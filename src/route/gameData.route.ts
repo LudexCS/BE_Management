@@ -66,6 +66,10 @@ import {searchGameControl} from "../controller/search.controller";
  *           items:
  *             type: string
  *           example: ["action", "rpg", "indie"]
+ *         isBlocked:
+ *           type: boolean
+ *           nullable: true
+ *           example: false
  *
  *     GameDetailDto:
  *       type: object
@@ -197,7 +201,7 @@ const router: Router = Router();
  */
 router.get('/list', async (req: Request, res: Response) => {
     try {
-        const { page, limit } = req.query;
+        const { page, limit} = req.query;
 
         const gameListRequestDto: GameListRequestDto = {
             page: Number(page),
@@ -296,8 +300,9 @@ router.get('/variant', async (req: Request, res: Response) => {
  * /api/get/byTags:
  *   post:
  *     summary: 태그 기반 게임 검색
- *     description: 입력한 태그들을 모두 포함하는 게임들을 조회하고, 각 게임의 전체 태그 목록도 함께 반환합니다.
- *     tags: [GameList]
+ *     description: 입력한 태그들을 모두 포함하는 게임 목록을 조회하며, 각 게임의 전체 태그 목록을 함께 반환합니다.
+ *     tags:
+ *       - GameList
  *     requestBody:
  *       required: true
  *       content:
@@ -322,13 +327,13 @@ router.get('/variant', async (req: Request, res: Response) => {
  *               items:
  *                 $ref: '#/components/schemas/GamesListDto'
  *       400:
- *         description: 잘못된 요청
+ *         description: 잘못된 요청 (예: tags가 배열이 아님)
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/MessageResponse'
  *       500:
- *         description: 서버 오류
+ *         description: 서버 내부 오류
  *         content:
  *           application/json:
  *             schema:
@@ -337,7 +342,6 @@ router.get('/variant', async (req: Request, res: Response) => {
 router.post('/byTags', async (req: Request, res: Response) => {
     try {
         const { tags } = req.body;
-
         if (!Array.isArray(tags)) {
             res.status(400).json({ message: 'tags는 문자열 배열이어야 합니다.' });
         }
@@ -354,8 +358,10 @@ router.post('/byTags', async (req: Request, res: Response) => {
  * /api/get/search:
  *   post:
  *     summary: 키워드 기반 게임 검색
- *     description: 입력된 키워드에 따라 게임 리스트를 반환
- *     tags: [GameList]
+ *     description: 입력된 키워드에 따라 게임 제목, 설명, 태그 등에 일치하는 게임 목록을 반환합니다.
+ *     tags:
+ *       - GameList
+ *     parameters:
  *     requestBody:
  *       required: true
  *       content:
@@ -378,7 +384,7 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *               items:
  *                 $ref: '#/components/schemas/GamesListDto'
  *       500:
- *         description: 서버 오류
+ *         description: 서버 내부 오류
  *         content:
  *           application/json:
  *             schema:

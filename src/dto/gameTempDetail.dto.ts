@@ -1,6 +1,7 @@
 export interface GameTempDetailDto {
     id: number;
     title: string;
+    titleKo: string;
     userId: number;
     nickName: string;
     price: number;

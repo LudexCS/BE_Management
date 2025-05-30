@@ -24,5 +24,17 @@ export const findImageURLwithGameId = async(gameId: number): Promise<string[]> =
     } catch(err){
         throw err;
     }
+};
 
-}
+export const deleteGameImageUrlsByGameId = async (gameId: number) => {
+    await gameImageUrlRepo.delete({ gameId });
+};
+
+export const findGameImageUrlsByGameId = async (
+    gameId: number
+): Promise<{ url: string; key: string }[]> => {
+    return await gameImageUrlRepo.find({
+        where: { gameId },
+        select: ["url", "key"]
+    });
+};

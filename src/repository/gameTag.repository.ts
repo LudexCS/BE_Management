@@ -27,4 +27,8 @@ export const findTagByGameId = async(gameId: number): Promise<string[]> =>{
     } catch(err){
         throw err;
     }
-}
+};
+
+export const deleteGameTagsByGameId = async (gameId: number) => {
+    await gameTagRepo.delete({ gameId });
+};
