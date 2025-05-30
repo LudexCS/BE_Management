@@ -281,6 +281,7 @@ export const findGamesByIds = async (gameIds: number[]) => {
     const query = gameRepo
         .createQueryBuilder('game')
         .innerJoin('account', 'account', 'account.id = game.user_id')
+        .where('game.is_blocked = :isBlocked', { isBlocked: false })
         .select([
             'game.id AS id',
             'game.title AS title',
