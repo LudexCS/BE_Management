@@ -1,14 +1,10 @@
 import { Request, Response, Router } from "express";
 import {
-    loadGameListControl,
-    showOriginGameHierarchyControl,
-    showVarientGameHierarchyControl
+    adminLoadGameListControl, adminShowOriginGameHierarchyControl, adminShowVarientGameHierarchyControl,
 } from "../controller/showGameList.controller";
-import { getGameByTagControl } from "../controller/getGameByTag.controller";
-import { getGameDetailControl } from "../controller/getGameDetail.controller";
+import {adminGetGameByTagControl} from "../controller/getGameByTag.controller";
 import {GameListRequestDto} from "../dto/gameListRequest.dto";
-import {getResourceDetailControl} from "../controller/getResourceDetail.controller";
-import {searchGameControl} from "../controller/search.controller";
+import {adminSearchGameControl} from "../controller/search.controller";
 
 
 /**
@@ -68,91 +64,7 @@ import {searchGameControl} from "../controller/search.controller";
  *           example: ["action", "rpg", "indie"]
  *         isBlocked:
  *           type: boolean
- *           nullable: true
  *           example: false
- *
- *     GameDetailDto:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *         title:
- *           type: string
- *         userId:
- *           type: integer
- *         userName:
- *           type: string
- *         price:
- *           type: number
- *           format: float
- *         thumbnailUrl:
- *           type: string
- *           format: uri
- *         description:
- *           type: string
- *         itemId:
- *           type: integer
- *         registeredAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
- *         tags:
- *           type: array
- *           items:
- *             type: string
- *         imageUrls:
- *           type: array
- *           items:
- *             type: string
- *             format: uri
- *         requirements:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/GameRequirementDto'
- *
- *     ResourceDetailDto:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *         gameId:
- *           type: integer
- *         userId:
- *           type: integer
- *         sellerRatio:
- *           type: integer
- *         creatorRatio:
- *           type: integer
- *         allowDerivation:
- *           type: boolean
- *         additionalCondition:
- *           type: string
- *           nullable: true
- *         description:
- *           type: string
- *           nullable: true
- *         downloadTimes:
- *           type: integer
- *         sharerId:
- *           type: integer
- *         registeredAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
- *         imageUrls:
- *           type: array
- *           items:
- *             type: string
- *             format: uri
- *         downloadUrls:
- *           type: array
- *           items:
- *             type: string
- *             format: uri
  *
  *     MessageResponse:
  *       type: object
@@ -165,11 +77,13 @@ const router: Router = Router();
 
 /**
  * @swagger
- * /api/get/list:
+ * /api/admin/get/list:
  *   get:
  *     summary: 게임 목록 조회
  *     description: 페이지네이션 및 정렬 기준에 따라 게임 목록을 조회합니다.
  *     tags: [GameList]
+ *     security:
+ *     - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: page
@@ -191,7 +105,7 @@ const router: Router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameLIstDto'
+ *                 $ref: '#/components/schemas/GameListDto'
  *       500:
  *         description: 서버 오류
  *         content:
@@ -207,7 +121,7 @@ router.get('/list', async (req: Request, res: Response) => {
             page: Number(page),
             limit: Number(limit),
         };
-        const gameList = await loadGameListControl(gameListRequestDto);
+        const gameList = await adminLoadGameListControl(gameListRequestDto);
         res.status(200).json(gameList);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -216,11 +130,13 @@ router.get('/list', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/get/origin:
+ * /api/admin/get/origin:
  *   get:
  *     summary: 원본 게임 목록 조회
  *     description: 파생 게임의 원본 게임 목록을 반환합니다.
  *     tags: [GameList]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: gameId
@@ -247,7 +163,7 @@ router.get('/list', async (req: Request, res: Response) => {
 router.get('/origin', async (req: Request, res: Response) => {
     try {
         const gameId = Number(req.query.gameId);
-        const originGames = await showOriginGameHierarchyControl(gameId);
+        const originGames = await adminShowOriginGameHierarchyControl(gameId);
         res.status(200).json(originGames);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -256,11 +172,13 @@ router.get('/origin', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/get/variant:
+ * /api/admin/get/variant:
  *   get:
  *     summary: 파생 게임 목록 조회
  *     description: 특정 원본 게임의 파생 게임 목록을 조회합니다.
  *     tags: [GameList]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: gameId
@@ -287,7 +205,7 @@ router.get('/origin', async (req: Request, res: Response) => {
 router.get('/variant', async (req: Request, res: Response) => {
     try {
         const gameId = Number(req.query.gameId);
-        const variantGames = await showVarientGameHierarchyControl(gameId);
+        const variantGames = await adminShowVarientGameHierarchyControl(gameId);
         res.status(200).json(variantGames);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -297,12 +215,13 @@ router.get('/variant', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/get/byTags:
+ * /api/admin/get/byTags:
  *   post:
  *     summary: 태그 기반 게임 검색
  *     description: 입력한 태그들을 모두 포함하는 게임 목록을 조회하며, 각 게임의 전체 태그 목록을 함께 반환합니다.
- *     tags:
- *       - GameList
+ *     tags: [GameList]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -325,7 +244,7 @@ router.get('/variant', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameListDto'
+ *                 $ref: '#/components/schemas/GamesListDto'
  *       400:
  *         description: 잘못된 요청 (예: tags가 배열이 아님)
  *         content:
@@ -346,7 +265,7 @@ router.post('/byTags', async (req: Request, res: Response) => {
             res.status(400).json({ message: 'tags는 문자열 배열이어야 합니다.' });
         }
 
-        const games = await getGameByTagControl(tags);
+        const games = await adminGetGameByTagControl(tags);
         res.status(200).json(games);
     } catch (error) {
         res.status(500).json({ message: (error as Error).message });
@@ -355,12 +274,13 @@ router.post('/byTags', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /api/get/search:
+ * /api/admin/get/search:
  *   post:
  *     summary: 키워드 기반 게임 검색
  *     description: 입력된 키워드에 따라 게임 제목, 설명, 태그 등에 일치하는 게임 목록을 반환합니다.
- *     tags:
- *       - GameList
+ *     tags: [GameList]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *     requestBody:
  *       required: true
@@ -382,7 +302,7 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameListDto'
+ *                 $ref: '#/components/schemas/GamesListDto'
  *       500:
  *         description: 서버 내부 오류
  *         content:
@@ -393,98 +313,11 @@ router.post('/byTags', async (req: Request, res: Response) => {
 router.post('/search', async (req: Request, res: Response) => {
     try{
         const keyword = req.body.keyword as string;
-        const games = await searchGameControl(keyword);
+        const games = await adminSearchGameControl(keyword);
         res.status(200).json(games);
     }catch(error){
         res.status(500).json({ message: (error as Error).message });
     }
 });
-
-/**
- * @swagger
- * /api/get/gameDetail:
- *   get:
- *     summary: 특정 게임 상세 정보 조회
- *     description: 게임 ID를 통해 게임 상세 정보를 조회합니다.
- *     tags: [Game]
- *     parameters:
- *       - in: query
- *         name: gameId
- *         required: true
- *         schema:
- *           type: integer
- *         description: 조회할 게임 ID
- *     responses:
- *       200:
- *         description: 게임 상세 정보 조회 성공
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/GameDetailDto'
- *       500:
- *         description: 서버 오류
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/MessageResponse'
- */
-router.get('/gameDetail', async (req: Request, res: Response) => {
-    try {
-        const gameId = Number(req.query.gameId);
-        const gameDetails = await getGameDetailControl(gameId);
-        res.status(200).json(gameDetails);
-    } catch (error) {
-        res.status(500).json({ message: (error as Error).message });
-    }
-});
-
-/**
- * @swagger
- * /api/get/resourceDetail:
- *   get:
- *     summary: 게임 ID 기반 리소스 상세 조회
- *     description: 특정 게임 ID에 해당하는 리소스의 상세 정보를 반환합니다.
- *     tags: [Resource]
- *     parameters:
- *       - in: query
- *         name: gameId
- *         required: true
- *         schema:
- *           type: integer
- *         description: 리소스를 조회할 게임 ID
- *     responses:
- *       200:
- *         description: 리소스 상세 정보 조회 성공
- *         content:
- *           application/json:
- *             schema:
- *               oneOf:
- *                 - $ref: '#/components/schemas/ResourceDetailDto'
- *                 - type: array
- *                   items: {}  # 빈 배열을 의미
- *       400:
- *         description: 잘못된 요청
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/MessageResponse'
- *       500:
- *         description: 서버 오류
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/MessageResponse'
- */
-router.get('/resourceDetail', async (req: Request, res: Response) => {
-    try{
-        const gameId = Number(req.query.gameId);
-        const resourceDetails = await getResourceDetailControl(gameId);
-        if(!resourceDetails)
-            res.status(200).json([]);
-        res.status(200).json(resourceDetails);
-    }catch(error){
-        res.status(500).json({ message: (error as Error).message });
-    }
-})
 
 export default router;

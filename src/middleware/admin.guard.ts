@@ -1,16 +1,7 @@
-declare global {
-    namespace Express {
-        interface Request {
-            user?: string;
-            userId?: number;
-        }
-    }
-}
-
 import { Request, Response, NextFunction } from 'express';
-import {authAccount} from "../grpc/auth.client";
+import {adminAuthAccount} from "../grpc/auth.client";
 
-const jwtGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const adminGuard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const jwtHeader: string | undefined = req.headers.authorization;
 
     if (!jwtHeader || !jwtHeader.startsWith('Bearer ')) {
@@ -18,8 +9,8 @@ const jwtGuard = async (req: Request, res: Response, next: NextFunction): Promis
         return;
     }
     try {
-        const email = await authAccount(jwtHeader);
-        req.user = email;
+        const userId = await adminAuthAccount(jwtHeader);
+        req.userId = userId;
 
         next();
     } catch (error) {
@@ -28,4 +19,4 @@ const jwtGuard = async (req: Request, res: Response, next: NextFunction): Promis
     }
 };
 
-export default jwtGuard;
+export default adminGuard;

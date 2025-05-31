@@ -38,3 +38,18 @@ export const getUserIdByEmail = (email: string): Promise<number> => {
         });
     });
 };
+
+export const adminAuthAccount = (jwt: string): Promise<number> => {
+    return new Promise((resolve, reject) => {
+        const request = new AuthRequest();
+        request.setJwt(jwt);
+
+        client.adminAuthByJWT(request, (err, res) => {
+            if (err) {
+                console.error('gRPC Error:', err);
+                return reject(err);
+            }
+            resolve(res.getUserId());
+        });
+    });
+};

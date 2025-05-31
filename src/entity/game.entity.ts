@@ -43,6 +43,9 @@ export class Game {
     @Column({ name: 'download_times', type: 'int', default: 0 })
     downloadTimes: number;
 
+    @Column({ name: 'is_blocked', default: false })
+    isBlocked: boolean;
+
     @CreateDateColumn({
         type: 'timestamp',
         name: 'registered_at',
