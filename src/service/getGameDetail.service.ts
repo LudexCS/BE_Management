@@ -27,6 +27,8 @@ export const getGameDetail = async(gameId: number) =>{
         tags,
         imageUrls: imageUrls,
         requirements,
+        originId: gameDetails.originId
     };
     return gameDetailDto;
 }
+

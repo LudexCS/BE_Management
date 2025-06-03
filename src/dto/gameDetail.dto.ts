@@ -16,4 +16,5 @@ export interface GameDetailDto {
     tags: string[];            // 태그 문자열 배열
     imageUrls: string[];       // 이미지 URL 문자열 배열
     requirements: GameRequirementDto[]; // 시스템 요구사항 배열
+    originId: number | null;
 }

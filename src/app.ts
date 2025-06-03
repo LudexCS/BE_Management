@@ -8,6 +8,8 @@ import resourceRoute from './route/resource.route';
 import jwtGuard from './middleware/jwt.guard';
 import tradeInfoRoute from "./route/tradeInfo.route";
 import updateData from './route/gameEdit.route'
+import adminGetGameRoute from "./route/adminGameData.route";
+import adminGuard from './middleware/admin.guard'
 
 const app : Express = express();
 app.use(express.json());
@@ -21,9 +23,11 @@ app.use('/management/api-docs', swaggerUi.serve, swaggerUi.setup(specs, swaggerU
 
 // jwt middleware
 app.use('/management/api/protected', jwtGuard);
+app.use('/management/api/admin', adminGuard);
 app.use('/management/api/protected/game', gameRoute);
 app.use('/management/api/protected/resource', resourceRoute);
 app.use('/management/api/get', getGameRoute);
 app.use('/management/api/protected/get/', tradeInfoRoute)
 app.use('/management/api/protected/patch', updateData)
+app.use('/management/api/admin/get', adminGetGameRoute);
 export default app;
