@@ -19,15 +19,15 @@ app.use(cors({
 }))
 
 // Swagger UI 설정
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, swaggerUiOptions));
+app.use('/management/api-docs', swaggerUi.serve, swaggerUi.setup(specs, swaggerUiOptions));
 
 // jwt middleware
-app.use('/api/protected', jwtGuard);
-app.use('/api/admin', adminGuard);
-app.use('/api/protected/game', gameRoute);
-app.use('/api/protected/resource', resourceRoute);
-app.use('/api/get', getGameRoute);
-app.use('/api/protected/get/', tradeInfoRoute)
-app.use('/api/protected/patch', updateData)
-app.use('/api/admin/get', adminGetGameRoute);
+app.use('/management/api/protected', jwtGuard);
+app.use('/management/api/admin', adminGuard);
+app.use('/management/api/protected/game', gameRoute);
+app.use('/management/api/protected/resource', resourceRoute);
+app.use('/management/api/get', getGameRoute);
+app.use('/management/api/protected/get/', tradeInfoRoute)
+app.use('/management/api/protected/patch', updateData)
+app.use('/management/api/admin/get', adminGetGameRoute);
 export default app;

@@ -19,7 +19,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://16.184.9.194:30353',
+        url: 'http://api.uosludex.com/management',
         description: '게임 관리 API 서버'
       }
     ],
