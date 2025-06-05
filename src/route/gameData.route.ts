@@ -187,7 +187,7 @@ const router: Router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameLIstDto'
+ *                 $ref: '#/components/schemas/GameListDto'
  *       500:
  *         description: 서버 오류
  *         content:
