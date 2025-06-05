@@ -27,6 +27,7 @@ export const searchGameByChoseongService = async (keyword: string): Promise<Game
                 description: game.description,
                 downloadTimes: game.downloadTimes,
                 tags: allTags,
+
             };
         })
     );
@@ -106,6 +107,7 @@ export const adminSearchGameByChoseongService = async (keyword: string): Promise
                 description: game.description,
                 downloadTimes: game.downloadTimes,
                 tags: allTags,
+                isBlocked: game.isBlocked
             };
         })
     );
@@ -131,6 +133,7 @@ export const adminSearchGameByKeywordLikeService = async (keyword: string): Prom
                 description: game.description,
                 downloadTimes: game.downloadTimes,
                 tags: allTags,
+                isBlocked: game.isBlocked
             };
         })
     );
@@ -157,6 +160,7 @@ export const adminSearchGameByEmbeddingSimilarityService = async (keyword: strin
                 description: game.description,
                 downloadTimes: game.downloadTimes,
                 tags: allTags,
+                isBlocked: game.isBlocked
             };
         })
     );
