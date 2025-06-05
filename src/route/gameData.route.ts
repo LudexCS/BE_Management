@@ -323,7 +323,7 @@ router.get('/variant', async (req: Request, res: Response) => {
  *               items:
  *                 $ref: '#/components/schemas/GameListDto'
  *       400:
- *         description: 잘못된 요청 (예: tags가 배열이 아님)
+ *         description: "잘못된 요청 (예: tags가 배열이 아님)"
  *         content:
  *           application/json:
  *             schema:
