@@ -357,7 +357,6 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *     description: 입력된 키워드에 따라 게임 제목, 설명, 태그 등에 일치하는 게임 목록을 반환합니다.
  *     tags:
  *       - GameList
- *     parameters:
  *     requestBody:
  *       required: true
  *       content:

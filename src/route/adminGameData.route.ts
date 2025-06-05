@@ -279,7 +279,6 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *     tags: [GameList]
  *     security:
  *       - bearerAuth: []
- *     parameters:
  *     requestBody:
  *       required: true
  *       content:
