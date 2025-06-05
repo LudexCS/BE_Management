@@ -39,7 +39,6 @@ import {searchGameControl} from "../controller/search.controller";
  *         network:
  *           type: string
  *           nullable: true
- *
  *     GameListDto:
  *       type: object
  *       properties:
@@ -70,7 +69,6 @@ import {searchGameControl} from "../controller/search.controller";
  *           type: boolean
  *           nullable: true
  *           example: false
- *
  *     GameDetailDto:
  *       type: object
  *       properties:
@@ -111,7 +109,6 @@ import {searchGameControl} from "../controller/search.controller";
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/GameRequirementDto'
- *
  *     ResourceDetailDto:
  *       type: object
  *       properties:
@@ -153,7 +150,6 @@ import {searchGameControl} from "../controller/search.controller";
  *           items:
  *             type: string
  *             format: uri
- *
  *     MessageResponse:
  *       type: object
  *       properties:
