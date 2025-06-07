@@ -32,4 +32,7 @@ export class Account {
 
     @Column({ name: 'registered_at' })
     registeredAt: Date;
+
+    @Column({ name: 'owner_id', nullable: true })
+    ownerId: string;
 }
