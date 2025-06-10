@@ -27,6 +27,7 @@ export const searchGameByChoseongService = async (keyword: string): Promise<Game
                 description: game.description,
                 downloadTimes: game.downloadTimes,
                 tags: allTags,
+
             };
         })
     );
@@ -89,7 +90,7 @@ export const searchGameByEmbeddingSimilarityService = async ( keyword: string): 
 //endregion
 
 //region AdminSearch/
-export const AdminSearchGameByChoseongService = async (keyword: string): Promise<GamesListDto[]> => {
+export const adminSearchGameByChoseongService = async (keyword: string): Promise<GamesListDto[]> => {
     // 게임 titleChoseong + 태그 nameChoseong 결과를 return. - 일치하는 것만 가져옴.
     const searchedGameRows = await adminSearchGameByChoseong(keyword);
 
@@ -106,6 +107,7 @@ export const AdminSearchGameByChoseongService = async (keyword: string): Promise
                 description: game.description,
                 downloadTimes: game.downloadTimes,
                 tags: allTags,
+                isBlocked: game.isBlocked
             };
         })
     );
@@ -113,7 +115,7 @@ export const AdminSearchGameByChoseongService = async (keyword: string): Promise
     return games;
 };
 
-export const AdminSearchGameByKeywordLikeService = async ( keyword: string): Promise<GamesListDto[]> => {
+export const adminSearchGameByKeywordLikeService = async (keyword: string): Promise<GamesListDto[]> => {
     // 게임 title + 게임 titleKo + 게임 description + 태그 name + 태그 nameKo 결과를 append해 return. - Like 연산.
     // 최종적으로 중복을 제거하고 리턴.
     const searchedGameRows = await adminSearchGameByKeyword(keyword);
@@ -131,13 +133,14 @@ export const AdminSearchGameByKeywordLikeService = async ( keyword: string): Pro
                 description: game.description,
                 downloadTimes: game.downloadTimes,
                 tags: allTags,
+                isBlocked: game.isBlocked
             };
         })
     );
     return games;
 };
 
-export const AdminSearchGameByEmbeddingSimilarityService = async ( keyword: string): Promise<GamesListDto[]> => {
+export const adminSearchGameByEmbeddingSimilarityService = async (keyword: string): Promise<GamesListDto[]> => {
     // 게임 embedding vector와 코사인 유사도를 측정해 threshold를 넘는 게임만 append.
     const queryEmbedding = await createEmbeddingVector(keyword);
     const searchedGameIds = await searchSimilarGames(queryEmbedding);
@@ -157,6 +160,7 @@ export const AdminSearchGameByEmbeddingSimilarityService = async ( keyword: stri
                 description: game.description,
                 downloadTimes: game.downloadTimes,
                 tags: allTags,
+                isBlocked: game.isBlocked
             };
         })
     );

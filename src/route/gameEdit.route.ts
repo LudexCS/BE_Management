@@ -26,7 +26,6 @@ const upload = multer({ dest: "uploads/" });
  *         mimetype:
  *           type: string
  *           example: image/webp
-
  *     GameRequirement:
  *       type: object
  *       required:
@@ -46,7 +45,6 @@ const upload = multer({ dest: "uploads/" });
  *           type: string
  *         network:
  *           type: string
-
  *     GameTag:
  *       type: object
  *       required:
@@ -57,7 +55,6 @@ const upload = multer({ dest: "uploads/" });
  *           type: number
  *         priority:
  *           type: number
-
  *     BaseGameDto:
  *       type: object
  *       required:
@@ -93,7 +90,6 @@ const upload = multer({ dest: "uploads/" });
  *             $ref: '#/components/schemas/GameTag'
  *         isOrigin:
  *           type: boolean
-
  *     CreateGameDto:
  *       oneOf:
  *         - allOf:
@@ -116,7 +112,6 @@ const upload = multer({ dest: "uploads/" });
  *                   type: array
  *                   items:
  *                     type: number
-
  *     CreateResourceDto:
  *       type: object
  *       required:

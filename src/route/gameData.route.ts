@@ -39,7 +39,6 @@ import {searchGameControl} from "../controller/search.controller";
  *         network:
  *           type: string
  *           nullable: true
- *
  *     GameListDto:
  *       type: object
  *       properties:
@@ -70,7 +69,6 @@ import {searchGameControl} from "../controller/search.controller";
  *           type: boolean
  *           nullable: true
  *           example: false
- *
  *     GameDetailDto:
  *       type: object
  *       properties:
@@ -111,7 +109,6 @@ import {searchGameControl} from "../controller/search.controller";
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/GameRequirementDto'
- *
  *     ResourceDetailDto:
  *       type: object
  *       properties:
@@ -153,7 +150,6 @@ import {searchGameControl} from "../controller/search.controller";
  *           items:
  *             type: string
  *             format: uri
- *
  *     MessageResponse:
  *       type: object
  *       properties:
@@ -191,7 +187,7 @@ const router: Router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/GameLIstDto'
+ *                 $ref: '#/components/schemas/GameListDto'
  *       500:
  *         description: 서버 오류
  *         content:
@@ -327,7 +323,7 @@ router.get('/variant', async (req: Request, res: Response) => {
  *               items:
  *                 $ref: '#/components/schemas/GameListDto'
  *       400:
- *         description: 잘못된 요청 (예: tags가 배열이 아님)
+ *         description: "잘못된 요청 (예: tags가 배열이 아님)"
  *         content:
  *           application/json:
  *             schema:
@@ -361,7 +357,6 @@ router.post('/byTags', async (req: Request, res: Response) => {
  *     description: 입력된 키워드에 따라 게임 제목, 설명, 태그 등에 일치하는 게임 목록을 반환합니다.
  *     tags:
  *       - GameList
- *     parameters:
  *     requestBody:
  *       required: true
  *       content:
