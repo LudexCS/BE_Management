@@ -6,10 +6,19 @@ message IncreaseDownloadCountRequest {
     int32 gameId = 1;
 }
 
+message IncreaseTransactionCountRequest {
+    int32 resourceId = 1;
+}
+
 message IncreaseDownloadCountResponse {
+    bool success = 1;
+}
+
+message IncreaseTransactionCountResponse {
     bool success = 1;
 }
 
 service PurchaseService {
     rpc IncreaseDownloadCount (IncreaseDownloadCountRequest) returns (IncreaseDownloadCountResponse);
+    rpc IncreaseTransactionCount (IncreaseTransactionCountRequest) returns (IncreaseTransactionCountResponse);
 }

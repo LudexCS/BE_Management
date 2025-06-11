@@ -26,6 +26,28 @@ function deserialize_purchase_IncreaseDownloadCountResponse(buffer_arg) {
   return downloadCount_pb.IncreaseDownloadCountResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_purchase_IncreaseTransactionCountRequest(arg) {
+  if (!(arg instanceof downloadCount_pb.IncreaseTransactionCountRequest)) {
+    throw new Error('Expected argument of type purchase.IncreaseTransactionCountRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_purchase_IncreaseTransactionCountRequest(buffer_arg) {
+  return downloadCount_pb.IncreaseTransactionCountRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_purchase_IncreaseTransactionCountResponse(arg) {
+  if (!(arg instanceof downloadCount_pb.IncreaseTransactionCountResponse)) {
+    throw new Error('Expected argument of type purchase.IncreaseTransactionCountResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_purchase_IncreaseTransactionCountResponse(buffer_arg) {
+  return downloadCount_pb.IncreaseTransactionCountResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 
 var PurchaseServiceService = exports.PurchaseServiceService = {
   increaseDownloadCount: {
@@ -38,6 +60,17 @@ var PurchaseServiceService = exports.PurchaseServiceService = {
     requestDeserialize: deserialize_purchase_IncreaseDownloadCountRequest,
     responseSerialize: serialize_purchase_IncreaseDownloadCountResponse,
     responseDeserialize: deserialize_purchase_IncreaseDownloadCountResponse,
+  },
+  increaseTransactionCount: {
+    path: '/purchase.PurchaseService/IncreaseTransactionCount',
+    requestStream: false,
+    responseStream: false,
+    requestType: downloadCount_pb.IncreaseTransactionCountRequest,
+    responseType: downloadCount_pb.IncreaseTransactionCountResponse,
+    requestSerialize: serialize_purchase_IncreaseTransactionCountRequest,
+    requestDeserialize: deserialize_purchase_IncreaseTransactionCountRequest,
+    responseSerialize: serialize_purchase_IncreaseTransactionCountResponse,
+    responseDeserialize: deserialize_purchase_IncreaseTransactionCountResponse,
   },
 };
 
