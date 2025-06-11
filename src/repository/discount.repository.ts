@@ -17,3 +17,9 @@ export async function saveDiscount(discount: Discount) {
         throw new Error('Failed to save discount to database');
     }
 }
+
+export async function existsDiscount(gameId: number) {
+    return await discountRepo.exists({
+        where: { gameId: gameId }
+    });
+}

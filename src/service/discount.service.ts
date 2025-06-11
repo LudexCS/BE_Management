@@ -4,7 +4,7 @@ import {
     toDiscountEntity,
     toResponseDto
 } from "../dto/discount.dto";
-import {saveDiscount} from "../repository/discount.repository";
+import {existsDiscount, saveDiscount} from "../repository/discount.repository";
 import {adminFindGameDetailWithGameId} from "../repository/game.repository";
 
 function calculateDiscountRate(price: string, discountPrice: string) {
@@ -18,6 +18,10 @@ export async function registerDiscount(discountDto: DiscountRequestDto): Promise
 
     if (discountDto.userId !== game.userId) {
         throw new Error('Only the creator of the game can set a discount.');
+    }
+
+    if (await existsDiscount(discountDto.gameId)) {
+        throw new Error('이미 등록된 할인이 존재합니다.');
     }
 
     discountDto.discountRate = calculateDiscountRate(game.price, discountDto.discountPrice);
