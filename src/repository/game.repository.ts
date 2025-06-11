@@ -147,6 +147,7 @@ export const findGameWithTag = async(tags: string[]) => {
         .innerJoin('account', 'account', 'account.id = game.user_id')
         .innerJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .innerJoin('tag', 'tag', 'tag.id = gt.tag_id')
+        .leftJoin('discount', 'discount', 'discount.game_id = game.id')
         .where('tag.name IN (:...tagNames)', { tagNames: tags })
         .andWhere('game.is_blocked = :isBlocked', { isBlocked: false })
         .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
@@ -163,6 +164,8 @@ export const findGameWithTag = async(tags: string[]) => {
         'game.price AS price',
         'game.description AS description',
         'game.download_times AS downloadTimes',
+        'discount.discount_rate AS discountRate',
+        'discount.discount_price AS discountPrice'
     ];
     return await query
         .select(selectFields)
@@ -174,6 +177,7 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
         const gameDetails = await gameRepo
             .createQueryBuilder("game")
             .innerJoin("account", "account", "account.id = game.userId")
+            .leftJoin("discount", "discount", "discount.game_id = game.id")
             .leftJoin("origin_game", "og", "og.game_id = game.id")
             .where('game.is_blocked = :isBlocked', { isBlocked: false })
             .select([
@@ -189,7 +193,9 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 "game.itemId AS itemId",
                 "game.registeredAt AS registeredAt",
                 "game.updatedAt AS updatedAt",
-                "og.origin_game_id AS originId"
+                "og.origin_game_id AS originId",
+                'discount.discount_rate AS discountRate',
+                'discount.discount_price AS discountPrice'
             ])
             .andWhere("game.id = :gameId", { gameId })
             .getRawOne();
@@ -208,6 +214,7 @@ export const searchGameByKeyword = async (keyword: string) => {
 
     const query = gameRepo
         .createQueryBuilder('game')
+        .leftJoin("discount", "discount", "discount.game_id = game.id")
         .leftJoin('account', 'account', 'account.id = game.user_id')
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
@@ -222,6 +229,8 @@ export const searchGameByKeyword = async (keyword: string) => {
             'game.price AS price',
             'game.description AS description',
             'game.download_times AS downloadTimes',
+            'discount.discount_rate AS discountRate',
+            'discount.discount_price AS discountPrice'
         ]);
 
     query.andWhere(new Brackets(qb => {
@@ -252,6 +261,7 @@ export const incrementDownloadTimes = async (gameId: number): Promise<void> => {
 export const searchGameByChoseong = async (keyword: string) => {
     const query = gameRepo
         .createQueryBuilder('game')
+        .leftJoin("discount", "discount", "discount.game_id = game.id")
         .leftJoin('account', 'account', 'account.id = game.user_id')
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
@@ -265,6 +275,8 @@ export const searchGameByChoseong = async (keyword: string) => {
             'game.item_id AS itemId',
             'game.price AS price',
             'game.description AS description',
+            'discount.discount_rate AS discountRate',
+            'discount.discount_price AS discountPrice'
         ]);
 
     query.andWhere(new Brackets(qb => {
@@ -290,6 +302,7 @@ export const findGamesByIds = async (gameIds: number[]) => {
     const query = gameRepo
         .createQueryBuilder('game')
         .innerJoin('account', 'account', 'account.id = game.user_id')
+        .leftJoin("discount", "discount", "discount.game_id = game.id")
         .where('game.is_blocked = :isBlocked', { isBlocked: false })
         .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
         .select([
@@ -301,6 +314,8 @@ export const findGamesByIds = async (gameIds: number[]) => {
             'game.price AS price',
             'game.description AS description',
             'game.download_times AS downloadTimes',
+            'discount.discount_rate AS discountRate',
+            'discount.discount_price AS discountPrice'
         ])
         .andWhere('game.id IN (:...gameIds)', { gameIds });
     return await query
@@ -388,6 +403,7 @@ export const adminFindGameWithTag = async(tags: string[]) => {
         .createQueryBuilder('game')
         .innerJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .innerJoin('tag', 'tag', 'tag.id = gt.tag_id')
+        .leftJoin("discount", "discount", "discount.game_id = game.id")
         .where('tag.name IN (:...tagNames)', { tagNames: tags })
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
@@ -403,6 +419,9 @@ export const adminFindGameWithTag = async(tags: string[]) => {
         'game.description AS description',
         'game.download_times AS downloadTimes',
         'game.is_blocked AS isBlocked',
+        'discount.discount_rate AS discountRate',
+        'discount.discount_price AS discountPrice'
+
     ];
     return await query
         .select(selectFields)
@@ -413,6 +432,8 @@ export const adminFindGameDetailWithGameId = async(gameId: number): Promise<Game
     try{
         const gameDetails = await gameRepo
             .createQueryBuilder("game")
+            .innerJoin("account", "account", "account.id = game.user_id")
+            .leftJoin("discount", "discount", "discount.game_id = game.id")
             .select([
                 "game.id AS id",
                 "game.title AS title",
@@ -427,6 +448,8 @@ export const adminFindGameDetailWithGameId = async(gameId: number): Promise<Game
                 "game.registeredAt AS registeredAt",
                 "game.updatedAt AS updatedAt",
                 'game.is_blocked AS isBlocked',
+                'discount.discount_rate AS discountRate',
+                'discount.discount_price AS discountPrice'
             ])
             .andWhere("game.id = :gameId", { gameId })
             .getRawOne();
@@ -447,6 +470,7 @@ export const adminSearchGameByKeyword = async (keyword: string) => {
         .createQueryBuilder('game')
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
+        .leftJoin("discount", "discount", "discount.game_id = game.id")
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -457,6 +481,8 @@ export const adminSearchGameByKeyword = async (keyword: string) => {
             'game.description AS description',
             'game.download_times AS downloadTimes',
             'game.is_blocked AS isBlocked',
+            'discount.discount_rate AS discountRate',
+            'discount.discount_price AS discountPrice'
         ]);
 
     query.andWhere(new Brackets(qb => {
@@ -478,6 +504,7 @@ export const adminSearchGameByChoseong = async (keyword: string) => {
         .createQueryBuilder('game')
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
+        .leftJoin("discount", "discount", "discount.game_id = game.id")
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -487,6 +514,8 @@ export const adminSearchGameByChoseong = async (keyword: string) => {
             'game.price AS price',
             'game.description AS description',
             'game.is_blocked AS isBlocked',
+            'discount.discount_rate AS discountRate',
+            'discount.discount_price AS discountPrice'
         ]);
 
     query.andWhere(new Brackets(qb => {
@@ -506,6 +535,7 @@ export const adminFindGamesByIds = async (gameIds: number[]) => {
 
     const query = gameRepo
         .createQueryBuilder('game')
+        .leftJoin("discount", "discount", "discount.game_id = game.id")
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -516,6 +546,8 @@ export const adminFindGamesByIds = async (gameIds: number[]) => {
             'game.description AS description',
             'game.download_times AS downloadTimes',
             'game.is_blocked AS isBlocked',
+            'discount.discount_rate AS discountRate',
+            'discount.discount_price AS discountPrice'
         ])
         .andWhere('game.id IN (:...gameIds)', { gameIds });
     return await query

@@ -5,6 +5,8 @@ export interface GameTempDetailDto {
     userId: number;
     nickName: string;
     price: number;
+    discountRate: number;
+    discountPrice: number;
     thumbnailUrl: string;
     description: string;
     downloadTimes: number;
