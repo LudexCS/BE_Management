@@ -2,13 +2,18 @@ import * as grpc from '@grpc/grpc-js';
 import { IdResponse } from '../generated/management_pb';
 import { ValidationServiceService, IValidationServiceServer } from '../generated/management_grpc_pb';
 import {incrementDownloadTimes, isGameExist, updateGameFields} from "../repository/game.repository";
-import {findUserId, isResourceExist, updateResourceFields} from "../repository/resource.repository";
+import {
+    findUserId,
+    incrementResourceDownloadTimes,
+    isResourceExist,
+    updateResourceFields
+} from "../repository/resource.repository";
 import { BoolResult } from '../generated/storeId_pb';
 import {IStoreIdServiceServer, StoreIdServiceService} from "../generated/storeId_grpc_pb";
 import {IResourceServiceServer, ResourceServiceService} from "../generated/resource_grpc_pb";
 import {userIdResponse} from "../generated/resource_pb";
 import {IPurchaseServiceServer, PurchaseServiceService} from "../generated/downloadCount_grpc_pb";
-import {IncreaseDownloadCountResponse} from "../generated/downloadCount_pb";
+import {IncreaseDownloadCountResponse, IncreaseTransactionCountResponse} from "../generated/downloadCount_pb";
 
 const validationServiceImpl: IValidationServiceServer = {
     isValidGameId: async (call, callback) => {
@@ -83,10 +88,37 @@ const purchaseServiceImpl: IPurchaseServiceServer = {
             response.setSuccess(true);
             callback(null, response);
         } catch (error) {
-            console.error("Failed to increase download count:", error);
+            if (error instanceof Error) {
+                console.error("Failed to increase download count:", error.message);
+            }
+            else {
+                console.error("Failed to increase download count: Unknown Error");
+            }
             callback({
-                code: grpc.status.NOT_FOUND,
-                message: error instanceof Error ? error.message : String(error),
+                code: grpc.status.INTERNAL,
+                message: "Failed to increase download count.",
+            }, null);
+        }
+    },
+    increaseTransactionCount: async (call, callback) => {
+        const resourceId = call.request.getResourceid();
+        console.log(`Increasing transaction count - resourceId: ${resourceId}`);
+
+        try {
+            const response = new IncreaseTransactionCountResponse();
+            await incrementResourceDownloadTimes(resourceId);
+            response.setSuccess(true);
+            callback(null, response);
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error("Failed to increase transaction count:", error.message);
+            }
+            else {
+                console.error("Failed to increase transaction count: Unknown Error");
+            }
+            callback({
+                code: grpc.status.INTERNAL,
+                message: "Failed to increase transaction count.",
             }, null);
         }
     }

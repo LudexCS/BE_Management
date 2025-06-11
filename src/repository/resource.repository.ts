@@ -49,3 +49,17 @@ export const findResourceByGameId = async (gameId: number) => {
     });
     return await resource;
 }
+
+export const incrementResourceDownloadTimes = async (resourceId: number): Promise<void> => {
+    try {
+        await resourceRepo.increment({ id: resourceId }, "downloadTimes", 1);
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error('Failed to increment resource download times:', error.message);
+        }
+        else {
+            console.error('Failed to increment resource download times: Unknown Error');
+        }
+        throw new Error('Failed to increment resource download times in database');
+    }
+};
