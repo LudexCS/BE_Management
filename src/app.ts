@@ -10,7 +10,7 @@ import tradeInfoRoute from "./route/tradeInfo.route";
 import updateData from './route/gameEdit.route'
 import adminGetGameRoute from "./route/adminGameData.route";
 import adminGuard from './middleware/admin.guard'
-import authDiscountRoute from "./route/authDiscount.route";
+import discountRoute from "./route/discount.route";
 
 const app : Express = express();
 app.use(express.json());
@@ -31,5 +31,5 @@ app.use('/management/api/get', getGameRoute);
 app.use('/management/api/protected/get/', tradeInfoRoute)
 app.use('/management/api/protected/patch', updateData)
 app.use('/management/api/admin/get', adminGetGameRoute);
-app.use('/management/api/protected/discount', authDiscountRoute);
+app.use('/management/api/protected/discount', discountRoute);
 export default app;
