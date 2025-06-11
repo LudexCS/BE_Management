@@ -7,8 +7,8 @@ import {
 import {saveDiscount} from "../repository/discount.repository";
 import {adminFindGameDetailWithGameId} from "../repository/game.repository";
 
-function calculateDiscountRate(price: number, discountPrice: string) {
-    const rate = (price - Number(discountPrice)) / price;
+function calculateDiscountRate(price: string, discountPrice: string) {
+    const rate = (Number(price) - Number(discountPrice)) / Number(price);
     const roundedRate = Math.round(rate * 100) / 100;
     return roundedRate;
 }

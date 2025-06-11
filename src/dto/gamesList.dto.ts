@@ -5,8 +5,8 @@ export class GamesListDto {
     thumbnailUrl: string;
     itemId: string;
     price: string;
-    discountRate: number;
-    discountPrice: number;
+    discountRate: string;
+    discountPrice: string;
     description: string;
     downloadTimes: number;
     tags: string[];
