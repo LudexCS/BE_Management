@@ -57,7 +57,7 @@ export const getPurchasedGameRowsWithRequirements = async (userId: number): Prom
             gr.gpu AS gpu,
             gr.ram AS ram,
             gr.storage AS storage,
-            pg.purchase_id AS purchaseId,
+            pg.purchase_id AS purchaseId
         FROM purchased_game pg
                  JOIN game g ON pg.game_id = g.id
                  LEFT JOIN game_requirement gr ON gr.game_id = g.id
@@ -88,7 +88,7 @@ export const getSoldGameRowsWithRequirements = async (userId: number): Promise<T
             gr.gpu AS gpu,
             gr.ram AS ram,
             gr.storage AS storage,
-            g.download_times AS downloadTimes,
+            g.download_times AS downloadTimes
         FROM game g
                  LEFT JOIN game_requirement gr ON gr.game_id = g.id
         WHERE g.user_id = ?
