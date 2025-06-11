@@ -4,9 +4,9 @@ export interface GameTempDetailDto {
     titleKo: string;
     userId: number;
     nickName: string;
-    price: number;
-    discountRate: number;
-    discountPrice: number;
+    price: string;
+    discountRate: string | null;
+    discountPrice: string | null;
     thumbnailUrl: string;
     description: string;
     downloadTimes: number;
