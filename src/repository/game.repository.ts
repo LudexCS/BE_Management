@@ -522,4 +522,3 @@ export const adminFindGamesByIds = async (gameIds: number[]) => {
         .orderBy('game.download_times', 'DESC')
         .getRawMany();
 };
-//endregion
