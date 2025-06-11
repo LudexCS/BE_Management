@@ -147,15 +147,16 @@ export const findGameWithTag = async(tags: string[]) => {
         .innerJoin('account', 'account', 'account.id = game.user_id')
         .innerJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .innerJoin('tag', 'tag', 'tag.id = gt.tag_id')
-        .leftJoin('discount', 'discount', 'discount.game_id = game.id')
+        .leftJoin(
+            "discount",
+            "discount",
+            `discount.game_id = game.id
+                       AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                       AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)`
+        )
         .where('tag.name IN (:...tagNames)', { tagNames: tags })
         .andWhere('game.is_blocked = :isBlocked', { isBlocked: false })
         .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
-        .andWhere(`
-            discount.id IS NULL
-            OR (discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                AND discount.ends_at > (NOW() + INTERVAL 9 HOUR))
-          `)
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
         .orderBy('game.download_times', 'DESC');
@@ -182,7 +183,13 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
         const gameDetails = await gameRepo
             .createQueryBuilder("game")
             .innerJoin("account", "account", "account.id = game.userId")
-            .leftJoin("discount", "discount", "discount.game_id = game.id")
+            .leftJoin(
+                "discount",
+                "discount",
+                `discount.game_id = game.id
+                       AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                       AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)`
+            )
             .leftJoin("origin_game", "og", "og.game_id = game.id")
             .where('game.is_blocked = :isBlocked', { isBlocked: false })
             .select([
@@ -203,11 +210,6 @@ export const findGameDetailWithGameId = async(gameId: number): Promise<GameTempD
                 'discount.discount_price AS discountPrice'
             ])
             .andWhere("game.id = :gameId", { gameId })
-            .andWhere(`
-                discount.id IS NULL
-                OR (discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR))
-              `)
             .getRawOne();
 
         if(!gameDetails){
@@ -224,17 +226,18 @@ export const searchGameByKeyword = async (keyword: string) => {
 
     const query = gameRepo
         .createQueryBuilder('game')
-        .leftJoin("discount", "discount", "discount.game_id = game.id")
+        .leftJoin(
+            "discount",
+            "discount",
+            `discount.game_id = game.id
+                       AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                       AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)`
+        )
         .leftJoin('account', 'account', 'account.id = game.user_id')
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
         .where('game.is_blocked = :isBlocked', { isBlocked: false })
         .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
-        .andWhere(`
-                discount.id IS NULL
-                OR (discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR))
-              `)
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -276,17 +279,18 @@ export const incrementDownloadTimes = async (gameId: number): Promise<void> => {
 export const searchGameByChoseong = async (keyword: string) => {
     const query = gameRepo
         .createQueryBuilder('game')
-        .leftJoin("discount", "discount", "discount.game_id = game.id")
+        .leftJoin(
+            "discount",
+            "discount",
+            `discount.game_id = game.id
+                       AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                       AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)`
+        )
         .leftJoin('account', 'account', 'account.id = game.user_id')
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
         .where('game.is_blocked = :isBlocked', { isBlocked: false })
         .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
-        .andWhere(`
-                discount.id IS NULL
-                OR (discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR))
-              `)
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -322,14 +326,15 @@ export const findGamesByIds = async (gameIds: number[]) => {
     const query = gameRepo
         .createQueryBuilder('game')
         .innerJoin('account', 'account', 'account.id = game.user_id')
-        .leftJoin("discount", "discount", "discount.game_id = game.id")
+        .leftJoin(
+            "discount",
+            "discount",
+            `discount.game_id = game.id
+                       AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                       AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)`
+        )
         .where('game.is_blocked = :isBlocked', { isBlocked: false })
         .andWhere('account.is_blocked = :accountBlocked', { accountBlocked: false })
-        .andWhere(`
-                discount.id IS NULL
-                OR (discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR))
-              `)
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -428,13 +433,14 @@ export const adminFindGameWithTag = async(tags: string[]) => {
         .createQueryBuilder('game')
         .innerJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .innerJoin('tag', 'tag', 'tag.id = gt.tag_id')
-        .leftJoin("discount", "discount", "discount.game_id = game.id")
+        .leftJoin(
+            "discount",
+            "discount",
+            `discount.game_id = game.id
+                       AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                       AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)`
+        )
         .where('tag.name IN (:...tagNames)', { tagNames: tags })
-        .andWhere(`
-                discount.id IS NULL
-                OR (discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR))
-              `)
         .groupBy('game.id')
         .having('COUNT(DISTINCT tag.id) = :tagCount', { tagCount })
         .orderBy('game.download_times', 'DESC');
@@ -463,7 +469,13 @@ export const adminFindGameDetailWithGameId = async(gameId: number): Promise<Game
         const gameDetails = await gameRepo
             .createQueryBuilder("game")
             .innerJoin("account", "account", "account.id = game.user_id")
-            .leftJoin("discount", "discount", "discount.game_id = game.id")
+            .leftJoin(
+                "discount",
+                "discount",
+                `discount.game_id = game.id
+                       AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                       AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)`
+            )
             .select([
                 "game.id AS id",
                 "game.title AS title",
@@ -482,11 +494,6 @@ export const adminFindGameDetailWithGameId = async(gameId: number): Promise<Game
                 'discount.discount_price AS discountPrice'
             ])
             .where("game.id = :gameId", { gameId })
-            .andWhere(`
-                discount.id IS NULL
-                OR (discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR))
-              `)
             .getRawOne();
 
         if(!gameDetails){
@@ -505,12 +512,13 @@ export const adminSearchGameByKeyword = async (keyword: string) => {
         .createQueryBuilder('game')
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
-        .leftJoin("discount", "discount", "discount.game_id = game.id")
-        .where(`
-                discount.id IS NULL
-                OR (discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR))
-              `)
+        .leftJoin(
+            "discount",
+            "discount",
+            `discount.game_id = game.id
+                       AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                       AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)`
+        )
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -544,12 +552,13 @@ export const adminSearchGameByChoseong = async (keyword: string) => {
         .createQueryBuilder('game')
         .leftJoin('game_tag', 'gt', 'gt.game_id = game.id')
         .leftJoin('tag', 'tag', 'tag.id = gt.tag_id')
-        .leftJoin("discount", "discount", "discount.game_id = game.id")
-        .where(`
-                discount.id IS NULL
-                OR (discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR))
-              `)
+        .leftJoin(
+            "discount",
+            "discount",
+            `discount.game_id = game.id
+                       AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                       AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)`
+        )
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -580,7 +589,13 @@ export const adminFindGamesByIds = async (gameIds: number[]) => {
 
     const query = gameRepo
         .createQueryBuilder('game')
-        .leftJoin("discount", "discount", "discount.game_id = game.id")
+        .leftJoin(
+            "discount",
+            "discount",
+            `discount.game_id = game.id
+                       AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                       AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)`
+        )
         .select([
             'game.id AS id',
             'game.title AS title',
@@ -594,12 +609,7 @@ export const adminFindGamesByIds = async (gameIds: number[]) => {
             'discount.discount_rate AS discountRate',
             'discount.discount_price AS discountPrice'
         ])
-        .where(`
-                discount.id IS NULL
-                OR (discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR))
-              `)
-        .andWhere('game.id IN (:...gameIds)', { gameIds });
+        .where('game.id IN (:...gameIds)', { gameIds });
     return await query
         .orderBy('game.download_times', 'DESC')
         .getRawMany();
