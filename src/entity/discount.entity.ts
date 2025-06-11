@@ -11,10 +11,10 @@ export class Discount {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ name: "game_id" })
+    @Column({ name: "game_id", type: "int"})
     gameId: number;
 
-    @Column({ name: "user_id", nullable: true })
+    @Column({ name: "user_id", type: "int", nullable: true })
     userId: number | null;
 
     @Column({ name: "discount_rate", type: "tinyint" })
