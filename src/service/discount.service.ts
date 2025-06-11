@@ -16,8 +16,7 @@ function calculateDiscountRate(price: string, discountPrice: string) {
 export async function registerDiscount(discountDto: DiscountRequestDto): Promise<DiscountResponseDto> {
     const game = await adminFindGameDetailWithGameId(discountDto.gameId);
 
-    console.log("discount user id: ", discountDto.userId, "game user id: ", game.userId);
-    if (discountDto.userId !== game.userId) {
+    if (Number(discountDto.userId) !== Number(game.userId)) {
         throw new Error('Only the creator of the game can set a discount.');
     }
 
