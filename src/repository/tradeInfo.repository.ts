@@ -32,7 +32,8 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
                 itemId: row.itemId,
                 thumbnailUrl: row.thumbnailUrl ? row.thumbnailUrl : "",
                 purchaseId: row.purchaseId,
-                requirement: requirement ? [requirement] : []
+                requirement: requirement ? [requirement] : [],
+                downloadTimes: row.downloadTimes
             });
         }
     }
@@ -56,7 +57,7 @@ export const getPurchasedGameRowsWithRequirements = async (userId: number): Prom
             gr.gpu AS gpu,
             gr.ram AS ram,
             gr.storage AS storage,
-            pg.purchase_id AS purchaseId
+            pg.purchase_id AS purchaseId,
         FROM purchased_game pg
                  JOIN game g ON pg.game_id = g.id
                  LEFT JOIN game_requirement gr ON gr.game_id = g.id
@@ -86,7 +87,8 @@ export const getSoldGameRowsWithRequirements = async (userId: number): Promise<T
             gr.cpu AS cpu,
             gr.gpu AS gpu,
             gr.ram AS ram,
-            gr.storage AS storage
+            gr.storage AS storage,
+            g.download_times AS downloadTimes,
         FROM game g
                  LEFT JOIN game_requirement gr ON gr.game_id = g.id
         WHERE g.user_id = ?
@@ -110,6 +112,7 @@ export const getPurchasedResourcesInfo = async (userId: number): Promise<Resourc
             r.seller_ratio AS sellerRatio,
             r.creator_ratio AS createrRatio,
             r.allow_derivation AS allowDerivation,
+            r.download_times AS downloadTimes,
             ru.url AS imageUrl,
             g.id AS gameId,
             g.title AS title
@@ -130,6 +133,44 @@ export const getPurchasedResourcesInfo = async (userId: number): Promise<Resourc
         sellerRatio: row.sellerRatio,
         createrRatio: row.createrRatio,
         allowDerivation: row.allowDerivation,
+        downloadTimes: row.downloadTimes,
+        imageUrl: row.imageUrl ? row.imageUrl : "",
+        gameId: row.gameId,
+        title: row.title,
+    })));
+};
+
+export const getSoldResourcesInfo = async (userId: number): Promise<ResourceTradeDto[]> => {
+    const rows = await AppDataSource.query(`
+        SELECT
+            r.id AS resourceId,
+            r.user_id AS userId,
+            r.description,
+            r.sharer_id AS sharerId,
+            r.seller_ratio AS sellerRatio,
+            r.creator_ratio AS createrRatio,
+            r.allow_derivation AS allowDerivation,
+            r.download_times AS downloadTimes,
+            ru.url AS imageUrl,
+            g.id AS gameId,
+            g.title AS title
+        FROM game g
+                 LEFT JOIN resource r ON r.game_id = g.id
+                 LEFT JOIN resource_image_url ru ON r.id = ru.resource_id
+        WHERE g.user_id = ?
+    `, [userId]);
+
+    if(rows.length == 0) return [];
+
+    return await Promise.all((rows as ResourceTradeDto[]).map(async (row) => ({
+        resourceId: row.resourceId,
+        userId: row.userId,
+        description: row.description,
+        sharerId: row.sharerId,
+        sellerRatio: row.sellerRatio,
+        createrRatio: row.createrRatio,
+        allowDerivation: row.allowDerivation,
+        downloadTimes: row.downloadTimes,
         imageUrl: row.imageUrl ? row.imageUrl : "",
         gameId: row.gameId,
         title: row.title,

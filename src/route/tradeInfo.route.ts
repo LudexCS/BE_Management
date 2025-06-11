@@ -59,6 +59,8 @@ import { TradeHistoryDto } from "../dto/tradeInfoRaw.dto"
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/GameRequirementDto'
+ *         downloadTimes:
+ *           type: number
  *     ResourceTradeDto:
  *       type: object
  *       properties:
@@ -82,6 +84,8 @@ import { TradeHistoryDto } from "../dto/tradeInfoRaw.dto"
  *           type: number
  *         title:
  *           type: string
+ *         downloadTimes:
+ *           type: number
  *     TradeHistoryDto:
  *       type: object
  *       properties:
@@ -103,6 +107,10 @@ import { TradeHistoryDto } from "../dto/tradeInfoRaw.dto"
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/GameTradeDto'
+ *             resources:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ResourceTradeDto'
  *     MessageResponse:
  *       type: object
  *       properties:

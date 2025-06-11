@@ -17,6 +17,7 @@ export interface GameTradeDto {
     itemId: string;
     purchaseId: string;
     requirement: RequirementDto[];
+    downloadTimes?: number;
 }
 
 export interface ResourceTradeDto {
@@ -27,6 +28,7 @@ export interface ResourceTradeDto {
     sellerRatio: string;
     createrRatio: string;
     allowDerivation: boolean;
+    downloadTimes: number;
     imageUrl: string | null;
     gameId: number;
     title: string;
@@ -49,6 +51,7 @@ export interface TradeInfoRawDto {
     ram: string | null;
     storage: string | null;
     purchaseId: string;
+    downloadTimes: number;
 }
 
 export interface TradeHistoryDto {
@@ -58,5 +61,6 @@ export interface TradeHistoryDto {
     };
     sold: {
         games: GameTradeDto[];
+        resources: ResourceTradeDto[];
     };
 }
