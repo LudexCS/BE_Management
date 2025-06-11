@@ -3,6 +3,7 @@ import app from './app';
 import AppDataSource from './config/mysql.config';
 import {startGrpcServer} from "./grpc/management.server";
 import {ensureGameCollection} from "./service/qdrant.service";
+import './scheduler/deleteDiscount.scheduler';
 
 dotenv.config();
 const PORT = 3000;
