@@ -8,7 +8,9 @@ import {saveDiscount} from "../repository/discount.repository";
 import {adminFindGameDetailWithGameId} from "../repository/game.repository";
 
 function calculateDiscountRate(price: number, discountPrice: string) {
-    return (price - Number(discountPrice)) / price;
+    const rate = (price - Number(discountPrice)) / price;
+    const roundedRate = Math.round(rate * 100) / 100;
+    return roundedRate;
 }
 
 export async function registerDiscount(discountDto: DiscountRequestDto): Promise<DiscountResponseDto> {
