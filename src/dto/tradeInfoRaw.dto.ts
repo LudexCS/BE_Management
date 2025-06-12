@@ -12,6 +12,8 @@ export interface GameTradeDto {
     userId: number;
     title: string;
     price: string;
+    discountRate: string | null;
+    discountPrice: string | null;
     description: string;
     thumbnailUrl: string;
     itemId: string;
@@ -41,6 +43,8 @@ export interface TradeInfoRawDto {
     userId: number;
     title: string;
     price: string;
+    discountRate: string | null;
+    discountPrice: string | null;
     description: string;
     thumbnailUrl: string | null;
     itemId: string;
