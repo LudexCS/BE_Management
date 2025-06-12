@@ -28,6 +28,8 @@ export const groupGameRowsWithRequirements = async (rows: TradeInfoRawDto[]) => 
                 userId: row.userId,
                 title: row.title,
                 price: row.price,
+                discountRate: row.discountRate,
+                discountPrice: row.discountPrice,
                 description: row.description,
                 itemId: row.itemId,
                 thumbnailUrl: row.thumbnailUrl ? row.thumbnailUrl : "",
@@ -57,10 +59,15 @@ export const getPurchasedGameRowsWithRequirements = async (userId: number): Prom
             gr.gpu AS gpu,
             gr.ram AS ram,
             gr.storage AS storage,
-            pg.purchase_id AS purchaseId
+            pg.purchase_id AS purchaseId,
+            d.discount_rate AS discountRate,
+            d.discount_price AS discountPrice
         FROM purchased_game pg
                  JOIN game g ON pg.game_id = g.id
                  LEFT JOIN game_requirement gr ON gr.game_id = g.id
+                 LEFT JOIN discount d ON d.game_id = g.id
+                    AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)
         WHERE pg.user_id = ?
     `, [userId]);
 };
@@ -88,9 +95,14 @@ export const getSoldGameRowsWithRequirements = async (userId: number): Promise<T
             gr.gpu AS gpu,
             gr.ram AS ram,
             gr.storage AS storage,
-            g.download_times AS downloadTimes
+            g.download_times AS downloadTimes,
+            d.discount_rate AS discountRate,
+            d.discount_price AS discountPrice
         FROM game g
                  LEFT JOIN game_requirement gr ON gr.game_id = g.id
+                 LEFT JOIN discount d ON d.game_id = g.id 
+                    AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)
         WHERE g.user_id = ?
     `, [userId]);
 };

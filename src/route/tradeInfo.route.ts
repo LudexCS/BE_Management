@@ -47,13 +47,19 @@ import { TradeHistoryDto } from "../dto/tradeInfoRaw.dto"
  *           type: string
  *         price:
  *           type: string
+ *         discountRate:
+ *           type: string
+ *           nullable: true
+ *         discountPrice:
+ *           type: string
+ *           nullable: true
  *         description:
  *           type: string
  *         thumbnailUrl:
  *           type: string
  *         itemId:
- *           type: integer
- *         purchasedId:
+ *           type: string
+ *         purchaseId:
  *           type: string
  *         requirement:
  *           type: array
