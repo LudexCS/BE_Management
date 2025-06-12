@@ -66,8 +66,8 @@ export const getPurchasedGameRowsWithRequirements = async (userId: number): Prom
                  JOIN game g ON pg.game_id = g.id
                  LEFT JOIN game_requirement gr ON gr.game_id = g.id
                  LEFT JOIN discount d ON d.game_id = g.id
-                    AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)
+                    AND d.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                    AND d.ends_at > (NOW() + INTERVAL 9 HOUR)
         WHERE pg.user_id = ?
     `, [userId]);
 };
@@ -101,8 +101,8 @@ export const getSoldGameRowsWithRequirements = async (userId: number): Promise<T
         FROM game g
                  LEFT JOIN game_requirement gr ON gr.game_id = g.id
                  LEFT JOIN discount d ON d.game_id = g.id 
-                    AND discount.starts_at <= (NOW() + INTERVAL 9 HOUR)
-                    AND discount.ends_at > (NOW() + INTERVAL 9 HOUR)
+                    AND d.starts_at <= (NOW() + INTERVAL 9 HOUR)
+                    AND d.ends_at > (NOW() + INTERVAL 9 HOUR)
         WHERE g.user_id = ?
     `, [userId]);
 };
