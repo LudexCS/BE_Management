@@ -619,27 +619,3 @@ export const adminFindGamesByIds = async (gameIds: number[]) => {
         .orderBy('game.download_times', 'DESC')
         .getRawMany();
 };
-
-export const findOtherGameWithGameId = async(gameId: number) => {
-    const result = await gameRepo.findOne({
-        where: { id: gameId },
-        select: ['userId'],
-    });
-
-    if (!result) {
-        throw new Error(`Game with ID ${result} not found`);
-    }
-
-    const userId = result.userId;
-
-    const otherGamesId = await gameRepo.find({
-        where: {
-            userId: userId,
-            id: Not(gameId),
-        },
-        select: ['id'], // id만 가져옴
-    });
-
-    // 3. id만 배열로 반환
-    return otherGamesId.map(g => g.id);
-}

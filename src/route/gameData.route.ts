@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import {
+    getOtherGames,
     loadGameListControl,
     showOriginGameHierarchyControl,
     showVarientGameHierarchyControl
@@ -69,6 +70,23 @@ import {searchGameControl} from "../controller/search.controller";
  *           type: boolean
  *           nullable: true
  *           example: false
+ *     LerpGameListDto:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         title:
+ *           type: string
+ *         titleKo:
+ *           type: string
+ *         thumbnailUrl:
+ *           type: string
+ *           format: url
+ *         price:
+ *           type: number
+ *           format: float
+ *         downloadTimes:
+ *           type: number
  *     GameDetailDto:
  *       type: object
  *       properties:
@@ -85,7 +103,7 @@ import {searchGameControl} from "../controller/search.controller";
  *           format: float
  *         thumbnailUrl:
  *           type: string
- *           format: uri
+ *           format: url
  *         description:
  *           type: string
  *         itemId:
@@ -111,10 +129,6 @@ import {searchGameControl} from "../controller/search.controller";
  *             $ref: '#/components/schemas/GameRequirementDto'
  *         originId:
  *           type: number
- *         otherGamesId:
- *           type: array
- *           items:
- *             type: number
  *     ResourceDetailDto:
  *       type: object
  *       properties:
@@ -484,6 +498,54 @@ router.get('/resourceDetail', async (req: Request, res: Response) => {
             res.status(200).json([]);
         res.status(200).json(resourceDetails);
     }catch(error){
+        res.status(500).json({ message: (error as Error).message });
+    }
+})
+
+
+/**
+ * @swagger
+ * /api/get/findOtherGames:
+ *   get:
+ *     summary: 게임 닉네임 기반 다른 게임 조회
+ *     description: 특정 게임 닉네임이 제작한 모든 게임의 간략 정보를 불러옵니다.
+ *     tags: [Game]
+ *     parameters:
+ *       - in: query
+ *         name: nickname
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 게임을 조회할 닉네임
+ *     responses:
+ *       200:
+ *         description: 리소스 상세 정보 조회 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - $ref: '#/components/schemas/LerpGameListDto'
+ *                 - type: array
+ *                   items: {}  # 빈 배열을 의미
+ *       400:
+ *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
+ */
+router.get('/findOtherGames', async (req: Request, res: Response) => {
+    try{
+        const nickname = String(req.query.userNickname);
+        const result = await getOtherGames(nickname);
+        res.status(200).json(result);
+    } catch(error){
         res.status(500).json({ message: (error as Error).message });
     }
 })

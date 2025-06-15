@@ -12,3 +12,12 @@ export class GamesListDto {
     tags: string[];
     isBlocked?: boolean;
 }
+
+export class LerpGameListDto {
+    gameId: number;
+    title: string;
+    titleKo: string;
+    thumbnailUrl: string;
+    price: string;
+    downloadTimes: number;
+}

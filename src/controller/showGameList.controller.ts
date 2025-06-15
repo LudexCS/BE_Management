@@ -1,4 +1,12 @@
-import {adminGetGameList, adminGetOriginGameInfo, adminGetVariantGameInfo, getGameList, getOriginGameInfo, getVariantGameInfo} from '../service/showGameList.service'
+import {
+    adminGetGameList,
+    adminGetOriginGameInfo,
+    adminGetVariantGameInfo,
+    getGameList,
+    getOriginGameInfo,
+    getOtherGamesInfo,
+    getVariantGameInfo
+} from '../service/showGameList.service'
 import { GameListRequestDto} from "../dto/gameListRequest.dto";
 
 export const loadGameListControl = async (gameListRequestDto: GameListRequestDto) =>{
@@ -23,4 +31,8 @@ export const adminShowOriginGameHierarchyControl = async (gameId: number) =>{
 
 export const adminShowVarientGameHierarchyControl = async (gameId: number) =>{
     return await adminGetVariantGameInfo(gameId);
+}
+
+export const getOtherGames = async (nickname: string) =>{
+    return await getOtherGamesInfo(nickname);
 }

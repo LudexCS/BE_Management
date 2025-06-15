@@ -10,7 +10,6 @@ export const getGameDetail = async(gameId: number) =>{
     const tags = await findTagByGameId(gameId);
     const imageUrls = await findImageURLwithGameId(gameId);
     const requirements = await findGameRequirementWithGameId(gameId);
-    const otherGamesId = await findOtherGameWithGameId(gameId);
 
     const gameDetailDto: GameDetailDto = {
         id: gameDetails.id,
@@ -31,7 +30,6 @@ export const getGameDetail = async(gameId: number) =>{
         imageUrls: imageUrls,
         requirements,
         originId: gameDetails.originId,
-        otherGamesId: otherGamesId
     };
     return gameDetailDto;
 }
