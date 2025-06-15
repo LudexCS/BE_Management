@@ -6,6 +6,10 @@ import {
     findOriginGameList,
     findVarientGameList
 } from '../repository/game.repository'
+import AppDataSource from "../config/mysql.config";
+import {Game} from "../entity/game.entity";
+import {Account} from "../entity/account.entity";
+import {LerpGameListDto} from "../dto/gamesList.dto";
 
 
 export const getGameList = async(gameListRequestDto: GameListRequestDto) => {
@@ -94,3 +98,23 @@ export const adminGetVariantGameInfo = async(gameId: number) => {
         return base;
     });
 };
+
+export const getOtherGamesInfo = async(nickname: string): Promise<LerpGameListDto[]> => {
+    const gameRepo = AppDataSource.getRepository(Game);
+
+    const games = await gameRepo
+        .createQueryBuilder('game')
+        .innerJoin(Account, 'account', 'account.id = game.userId')
+        .where('account.nickname = :nickname', { nickname })
+        .select([
+            'game.id AS gameId',
+            'game.title AS title',
+            'game.titleKo AS titleKo',
+            'game.thumbnailUrl AS thumbnailUrl',
+            'game.price AS price',
+            'game.download_times AS download_times'
+        ])
+        .getRawMany();
+
+    return games;
+}
