@@ -100,21 +100,18 @@ export const adminGetVariantGameInfo = async(gameId: number) => {
 };
 
 export const getOtherGamesInfo = async(nickname: string): Promise<LerpGameListDto[]> => {
-    const gameRepo = AppDataSource.getRepository(Game);
-
-    const games = await gameRepo
-        .createQueryBuilder('game')
-        .innerJoin(Account, 'account', 'account.id = game.userId')
-        .where('account.nickname = :nickname', { nickname })
-        .select([
-            'game.id AS gameId',
-            'game.title AS title',
-            'game.titleKo AS titleKo',
-            'game.thumbnailUrl AS thumbnailUrl',
-            'game.price AS price',
-            'game.download_times AS download_times'
-        ])
-        .getRawMany();
+    const games = await AppDataSource.query(`
+  SELECT 
+    game.id AS gameId,
+    game.title,
+    game.titleKo,
+    game.thumbnail,
+    game.price,
+    game.download_times
+  FROM game
+  INNER JOIN account ON account.id = game.userId
+  WHERE account.nickname = ?
+`, [nickname]);
 
     return games;
 }
