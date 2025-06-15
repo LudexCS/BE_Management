@@ -1,4 +1,4 @@
-import {findGameDetailWithGameId} from "../repository/game.repository";
+import {findGameDetailWithGameId, findOtherGameWithGameId} from "../repository/game.repository";
 import {findTagByGameId} from "../repository/gameTag.repository";
 import {findImageURLwithGameId} from "../repository/gameImageUrl.repository";
 import {GameDetailDto} from "../dto/gameDetail.dto";
@@ -10,6 +10,7 @@ export const getGameDetail = async(gameId: number) =>{
     const tags = await findTagByGameId(gameId);
     const imageUrls = await findImageURLwithGameId(gameId);
     const requirements = await findGameRequirementWithGameId(gameId);
+    const otherGamesId = await findOtherGameWithGameId(gameId);
 
     const gameDetailDto: GameDetailDto = {
         id: gameDetails.id,
@@ -29,7 +30,8 @@ export const getGameDetail = async(gameId: number) =>{
         tags,
         imageUrls: imageUrls,
         requirements,
-        originId: gameDetails.originId
+        originId: gameDetails.originId,
+        otherGamesId: otherGamesId
     };
     return gameDetailDto;
 }

@@ -109,6 +109,12 @@ import {searchGameControl} from "../controller/search.controller";
  *           type: array
  *           items:
  *             $ref: '#/components/schemas/GameRequirementDto'
+ *         originId:
+ *           type: number
+ *         otherGamesId:
+ *           type: array
+ *           items:
+ *             type: number
  *     ResourceDetailDto:
  *       type: object
  *       properties:

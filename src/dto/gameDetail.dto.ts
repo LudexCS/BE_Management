@@ -19,4 +19,5 @@ export interface GameDetailDto {
     imageUrls: string[];       // 이미지 URL 문자열 배열
     requirements: GameRequirementDto[]; // 시스템 요구사항 배열
     originId: number | null;
+    otherGamesId: number[];
 }
