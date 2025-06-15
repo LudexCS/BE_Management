@@ -104,8 +104,8 @@ export const getOtherGamesInfo = async(nickname: string): Promise<LerpGameListDt
   SELECT 
     game.id AS gameId,
     game.title,
-    game.titleKo,
-    game.thumbnail,
+    game.title_ko,
+    game.thumbnail_url,
     game.price,
     game.download_times
   FROM game
