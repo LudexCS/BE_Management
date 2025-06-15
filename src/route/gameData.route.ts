@@ -519,14 +519,13 @@ router.get('/resourceDetail', async (req: Request, res: Response) => {
  *         description: 게임을 조회할 닉네임
  *     responses:
  *       200:
- *         description: 리소스 상세 정보 조회 성공
+ *         description: 제작한 다른 게임 조회 성공
  *         content:
  *           application/json:
  *             schema:
- *               oneOf:
- *                 - $ref: '#/components/schemas/LerpGameListDto'
- *                 - type: array
- *                   items: {}  # 빈 배열을 의미
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/LerpGameListDto'
  *       400:
  *         description: 잘못된 요청
  *         content:
