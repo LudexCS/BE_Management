@@ -1,4 +1,4 @@
-import {findGameDetailWithGameId, findOtherGameWithGameId} from "../repository/game.repository";
+import {findGameDetailWithGameId} from "../repository/game.repository";
 import {findTagByGameId} from "../repository/gameTag.repository";
 import {findImageURLwithGameId} from "../repository/gameImageUrl.repository";
 import {GameDetailDto} from "../dto/gameDetail.dto";
