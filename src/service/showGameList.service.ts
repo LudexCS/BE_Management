@@ -103,11 +103,11 @@ export const getOtherGamesInfo = async(nickname: string): Promise<LerpGameListDt
     const games = await AppDataSource.query(`
   SELECT 
     game.id AS gameId,
-    game.title,
-    game.title_ko,
-    game.thumbnail_url,
-    game.price,
-    game.download_times
+    game.title AS title,
+    game.title_ko AS titleKo,
+    game.thumbnail_url AS thumbnailUrl,
+    game.price AS price,
+    game.download_times AS downloadTimes
   FROM game
   INNER JOIN account ON account.id = game.user_id
   WHERE account.nickname = ?
