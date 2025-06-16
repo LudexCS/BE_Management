@@ -109,7 +109,7 @@ export const getOtherGamesInfo = async(nickname: string): Promise<LerpGameListDt
     game.price,
     game.download_times
   FROM game
-  INNER JOIN account ON account.id = game.user_Id
+  INNER JOIN account ON account.id = game.user_id
   WHERE account.nickname = ?
 `, [nickname]);
 
