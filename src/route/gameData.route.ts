@@ -541,7 +541,7 @@ router.get('/resourceDetail', async (req: Request, res: Response) => {
  */
 router.get('/findOtherGames', async (req: Request, res: Response) => {
     try{
-        const nickname = String(req.query.userNickname);
+        const nickname = String(req.query.nickname);
         const result = await getOtherGames(nickname);
         res.status(200).json(result);
     } catch(error){
