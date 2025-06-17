@@ -6,11 +6,19 @@ import {
 } from "../dto/discount.dto";
 import {existsDiscount, saveDiscount} from "../repository/discount.repository";
 import {adminFindGameDetailWithGameId} from "../repository/game.repository";
+import {ReductionRequestDto, toDiscountEntityFromReductionDto} from "../dto/reduction.dto";
+import {findGameIdByResourceId, findUserId} from "../repository/resource.repository";
+import {findVariantGameIdByOriginGameId} from "../repository/originGame.repository";
 
 function calculateDiscountRate(price: string, discountPrice: string) {
     const rate = (Number(price) - Number(discountPrice)) / Number(price);
     const roundedRate = Math.round(rate * 100) / 100;
     return roundedRate;
+}
+
+function calculateDiscountPrice(price: string, discountRate: number) {
+    const discountPrice = Number(price) * (1 - discountRate);
+    return discountPrice.toFixed(2);
 }
 
 export async function registerDiscount(discountDto: DiscountRequestDto): Promise<DiscountResponseDto> {
@@ -40,4 +48,28 @@ export async function registerDiscount(discountDto: DiscountRequestDto): Promise
     let entity = toDiscountEntity(discountDto);
     entity = await saveDiscount(entity);
     return toResponseDto(entity);
+}
+
+export async function registerReduction(reductionDto: ReductionRequestDto): Promise<DiscountResponseDto[]> {
+    if (Number(await findUserId(reductionDto.resourceId)) !== Number(reductionDto.userId)) {
+        throw new Error('Only the creator of the resource can set a reduction.');
+    }
+
+    const gameId = await findGameIdByResourceId(reductionDto.resourceId);
+    const variantGameIds = await findVariantGameIdByOriginGameId(gameId);
+    const variantGames = await Promise.all(variantGameIds.map(adminFindGameDetailWithGameId));
+
+    if (reductionDto.discountRate < 0 || reductionDto.discountRate > 100) {
+        throw new Error('Invalid discount rate');
+    }
+    if (reductionDto.startsAt > reductionDto.endsAt) {
+        throw new Error('Invalid discount time');
+    }
+
+    return await Promise.all(variantGames.map(async game => {
+        const discountPrice = calculateDiscountPrice(game.price, reductionDto.discountRate);
+        let entity = toDiscountEntityFromReductionDto(reductionDto, game.id, discountPrice);
+        entity = await saveDiscount(entity);
+        return toResponseDto(entity);
+    }))
 }
