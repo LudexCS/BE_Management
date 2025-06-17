@@ -11,6 +11,7 @@ import updateData from './route/gameEdit.route'
 import adminGetGameRoute from "./route/adminGameData.route";
 import adminGuard from './middleware/admin.guard'
 import discountRoute from "./route/discount.route";
+import reductionRoute from "./route/reduction.route";
 
 const app : Express = express();
 app.use(express.json());
@@ -32,4 +33,6 @@ app.use('/management/api/protected/get/', tradeInfoRoute)
 app.use('/management/api/protected/patch', updateData)
 app.use('/management/api/admin/get', adminGetGameRoute);
 app.use('/management/api/protected/discount', discountRoute);
+app.use('/management/api/protected/reduction', reductionRoute);
+
 export default app;

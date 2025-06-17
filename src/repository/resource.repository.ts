@@ -63,3 +63,14 @@ export const incrementResourceDownloadTimes = async (resourceId: number): Promis
         throw new Error('Failed to increment resource download times in database');
     }
 };
+
+export const findGameIdByResourceId = async (resourceId: number) => {
+    const resource = await resourceRepo.findOne({
+        select: ['gameId'],
+        where: { id: resourceId}
+    });
+    if (!resource) {
+        throw new Error(`Resource with id ${resourceId} not found`);
+    }
+    return await resource.gameId;
+}
